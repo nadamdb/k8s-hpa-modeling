@@ -1,7 +1,8 @@
 #!/bin/bash
 
-for ((i=1;i<=400;i++)); do
-	sleep 1
+for ((i=1;i<=480;i++)); do
+	sleep 0.25
 	echo "$i;`date "+%H:%M:%S:%N"`" | sed 's/......$//' >> example.local
-	curl "localhost:30820/exponential_serving?id=$i&rate=0.33" &
+	curl "localhost:31165/exponential_serving?id=$i&rate=2" &
 done
+
