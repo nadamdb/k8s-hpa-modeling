@@ -5,9 +5,13 @@ import time
 import numpy
 import os
 
-rate = 4  #req/sec
+rate = 12  #req/sec
 
-for i in range(1,2000):
+measurement_length = 120*60
+start_time = time.time()
+
+while(time.time() < start_time + measurement_length):
+#for i in range(1,2000):
    os.system('curl "localhost:31165/exponential_serving?id=${i}&rate=2" &')
-   print('SENT')
+#   print('SENT')
    time.sleep(numpy.random.exponential(1/rate))
