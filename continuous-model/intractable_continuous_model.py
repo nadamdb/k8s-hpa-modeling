@@ -5,7 +5,7 @@ import continuous_model
 sys.setrecursionlimit(100000)
 
 
-class MMc_WeightedBusyTimeAnalyzer(continuous_model.MMc_Analyzer):
+class MMcWeightedBusyTimeAnalyzer(continuous_model.MMcAnalyzer):
 
     def __init__(self, lambda_, mu_, c, n1=1, n2=1, nc=10, nk=10):
         """
@@ -15,7 +15,7 @@ class MMc_WeightedBusyTimeAnalyzer(continuous_model.MMc_Analyzer):
         :param mu_:
         :param c:
         """
-        super(MMc_WeightedBusyTimeAnalyzer, self).__init__(lambda_, mu_, c)
+        super(MMcWeightedBusyTimeAnalyzer, self).__init__(lambda_, mu_, c)
         self.n2 = n2
         self.n1 = n1
         self.nc = nc
@@ -261,8 +261,8 @@ class MMc_WeightedBusyTimeAnalyzer(continuous_model.MMc_Analyzer):
 
 
 if __name__ == '__main__':
-    analyzer = MMc_WeightedBusyTimeAnalyzer(lambda_=1, mu_=1, c=3, n1=0, n2=1, nc=1, nk=3)
+    analyzer = MMcWeightedBusyTimeAnalyzer(lambda_=250, mu_=1, c=300, n1=0, n2=10, nc=10, nk=300)
     # NOTE: the result must be a NEGATIVE number, because its (-1)* will be the expected value!
-    res = analyzer.func_delta_der1(k=2, s=0)
+    res = analyzer.func_delta_der1(k=5, s=0)
     print len(res)
     print sorted(list(res))
