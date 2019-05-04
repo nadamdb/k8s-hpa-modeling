@@ -4,6 +4,8 @@ import statistics
 import os
 import time
 import math
+import json
+from datetime import datetime
 
 #TODO seed erteket is be kell allitani
 numpy.random.seed(0)
@@ -25,8 +27,8 @@ class Model:
             T (int): count of timeslots
             arrival_rate (float): mean value of the poisson arrival
             serving_rate (float): mean value of exponential serving rate
-            desiredCPU (float): desired CPU for scaling ( 0 < desiredCPU < 1) 
-            timeOut (int): defined in periods 
+            desiredCPU (float): desired CPU for scaling ( 0 < desiredCPU < 1)
+            timeOut (int): defined in periods
         """
         self.min_server = min_server
         self.max_server = max_server
@@ -49,21 +51,21 @@ class Model:
         #self.calculate_Served_t(1)
 
         self.waiting = [] #-> stores in every iteration the count of the waiting requests in an array (i. index means that array[] piece of request is waiting for i iteration)
-        self.responseTimes = {} #-> stores in every iteration the count of finished requests group by period 
+        self.responseTimes = {} #-> stores in every iteration the count of finished requests group by period
         self.waitingData = [] # stores the waiting arrays in every iteration
         self.responseTimesData = [] #stores the responseTimes data in every iteration
 
         self.avgRespTime = []
         #init time period -> I do not use this
         self.t = 2
-    
+
     #Setters
     def set_min_server(self,min_server):
         self.min_server = min_server
-    
+
     def set_max_server(self,max_server):
         self.max_server = max_server
-    
+
     def set_init_server(self,init_server):
         self.initial_server = init_server
         self.S = [init_server,init_server]
@@ -102,7 +104,7 @@ class Model:
             timeout = timedout_requests
         #timeout = self.L[t-2] - self.Served[t-1] - self.Served[t]
         served -= timeout if timeout > 0 else 0
-        
+
         self.L.append(served if served > 0 else 0)
 
     def calculate_Served_t(self,t):
@@ -131,7 +133,7 @@ class Model:
             self.S.append(self.min_server)
         elif self.max_server < S_t_temp:
             self.S.append(self.max_server)
-        
+
     def calculate_Mu_t(self,t):
         rates = []
 
@@ -142,7 +144,7 @@ class Model:
             while time < 1:
                 number_of_served_requests += 1
                 time += numpy.random.exponential(scale = 1 / self.serving_rate)
-            
+
             rates.append(number_of_served_requests)
         self.Mu.append( numpy.average(rates) )
 
@@ -153,7 +155,7 @@ class Model:
             while timeout+1 <= len(self.waiting):
                 self.waiting.pop()
 
-        # subtract served from the waiting queue from the last index 
+        # subtract served from the waiting queue from the last index
         i = len(self.waiting)-1
         served = self.Served[t]
         while served > 0 and i >=0 :
@@ -166,7 +168,7 @@ class Model:
                 self.waiting[i] -= served
                 finished = served
                 served = 0
-            
+
             # update finished requests count
             if self.responseTimes.get(i) is None:
                 self.responseTimes.update({i:finished})
@@ -197,7 +199,7 @@ class Model:
             #calulate L[t]
             self.calculate_L_t(t)
 
-            
+
 
             #calculate S[t]
             self.calculate_S_t(t)
@@ -211,11 +213,40 @@ class Model:
 
             #add shift waiting queue to right and add the newly arrived requests
             self.waiting.insert(0,self.La[t])
-        
+
         #print response and waiting information
         if visualize:
             print(mymodel.waitingData)
             print(mymodel.responseTimesData)
+
+    def write_to_file(self):
+        log = {}
+        metadata = {}
+        data = {}
+
+        timestamp = datetime.now()
+        timestamp = str(timestamp).replace(" ", "_").replace(":", "-")
+
+        metadata["timestamp"] = timestamp
+        metadata["arrival_rate"] = self.arrival_rate
+        metadata["serving_rate"] = self.serving_rate
+        metadata["timeframes"] = self.T
+        metadata["timeframe_length"] = self.timeFrame
+        metadata["timeout"] = self.timeOut
+        metadata["container_start"] = self.cont_start
+        metadata["desired_cpu"] = self.desiredCPU
+        metadata["initial_server"] = self.initial_server
+        metadata["min_servers"] = self.min_server
+        metadata["max_servers"] = self.max_server
+        log["metadata"] = metadata
+
+        data["server_count"] = self.S
+
+        log["data"] = data
+
+        with open("arrival_rate_" + str(self.arrival_rate) + "_serving_rate_" + str(self.serving_rate) + "_timeframe_" + \
+                  str(self.timeFrame) + "_X_" + str(self.T) + "_" + timestamp + ".log", "w") as file:
+            json.dump(log, file)
 
 
 class Visualizer:
@@ -225,7 +256,7 @@ class Visualizer:
         axs[0][0].hist(mymodel.L)
         axs[0][0].set_title('Hist: Requests in the system')
 
-        
+
 
         #plot for [request served in period 0..8 / time]
         #served_plot = plt.figure(2)
@@ -268,10 +299,10 @@ class Visualizer:
         #print(x1)
         x1,y1 = cut_by_frame(x1,y1,firstPeriod,lastPeriod)
         x2,y2 = cut_by_frame(x2,y2,firstPeriod,lastPeriod)
-            
+
         fig, ax1 = plt.subplots()
-        
-        
+
+
         ax1.plot(x1,y1,'b')
         ax1.set_xlabel('time (s), period: {0}s'.format(mymodel.timeFrame))
         # Make the y-axis label, ticks and tick labels match the line color.
@@ -282,7 +313,7 @@ class Visualizer:
         ax2.semilogy(x2,y2,'r')
         ax2.set_ylabel('avg rep time', color='r')
         ax2.tick_params('y', colors='r')
-        
+
 
         fig.tight_layout()
         plt.show()
@@ -293,7 +324,7 @@ class Visualizer:
             for model in models:
                 model_data = self.calc_full_pod_count_data(model,firstPeriod,lastPeriod)
                 ax1.plot(model_data[0],model_data[1],label='Period: {0}s'.format(model.timeFrame))
-        
+
             ax1.set_xlabel('time (s)')
             # Make the y-axis label, ticks and tick labels match the line color.
             ax1.set_ylabel('Pod count', color='b')
@@ -307,7 +338,7 @@ class Visualizer:
             for model in models:
                 model_data = self.calc_full_resp_time_data(model,firstPeriod,lastPeriod)
                 ax1.semilogy(model_data[0],model_data[1],label='Period: {0}s'.format(model.timeFrame))
-        
+
             ax1.set_xlabel('time (s)')
             # Make the y-axis label, ticks and tick labels match the line color.
             ax1.set_ylabel('Response time (s)', color='b')
@@ -315,7 +346,7 @@ class Visualizer:
             ax1.legend(loc='upper right')
             fig.tight_layout()
             plt.show()
-        
+
     def calc_full_pod_count_data(self,model, firstPeriod, lastPeriod):
         pods = self.calc_pod_count(model)
         x1,y1 = create_intervals_for_plot(pods,model.timeFrame)
@@ -358,7 +389,7 @@ class Visualizer:
                 respTimes.append(0)
         return respTimes
 
- 
+
 def create_intervals_for_plot(data,timeFrame):
     y1 = []
 
@@ -369,7 +400,7 @@ def create_intervals_for_plot(data,timeFrame):
     x1 = []
     #0112233
     for i in range(len(y1)):
-        x1.append(i/2 if i % 2 == 0 else i/2+0.5 ) 
+        x1.append(i/2 if i % 2 == 0 else i/2+0.5 )
 
     x1 = list(map(lambda x: x*timeFrame,x1))
 
@@ -386,7 +417,7 @@ def cut_by_frame(x,y,firstPeriod,lastPeriod):
                 y= y[round(i):round(j)]
                 return x,y
             j=k
-            
+
     return x,y
 
 if __name__ == "__main__":
@@ -398,12 +429,14 @@ if __name__ == "__main__":
     T = 120
     mymodel = Model(1,20,1,120,rate*timeFrame,serv_rate*timeFrame,cpu,None,cont_start,timeFrame)
     #mymodel = Model(1,10,1,9,240,120,0.5)
-    
+
     mymodel.run(visualize=True)
+
+    mymodel.write_to_file()
 
     visualizer = Visualizer()
     visualizer.basic_data(mymodel)
     visualizer.pod_count_resp_time(mymodel)
-    
 
-    
+
+
