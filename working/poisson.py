@@ -2,6 +2,7 @@
 
 import time, os, argparse, json
 import numpy as np
+from prometheuscollector import PrometheusCollector
 from datetime import datetime
 
 # Parsing arguments
@@ -18,7 +19,7 @@ load_rate = args.load_rate
 # [easurement_length] = sec
 measurement_length = args.length * 60
 
-wait_time = args.wait_time
+wait_time = args.wait_time * 60
 
 start_time = time.time()
 i = 0
@@ -28,20 +29,21 @@ timestamp = str(timestamp).replace(" ", "_").replace(":", "-")
 
 # json logging
 log = {}
-log["timestamp"] = timestamp
-log["load_rate"] = load_rate
-log["length"] = measurement_length
-log["wait"] = wait_time
-log["start_time"] = start_time
+metadata = {}
+metadata["timestamp"] = timestamp
+metadata["load_rate"] = load_rate
+metadata["length"] = measurement_length
+metadata["wait"] = wait_time
+metadata["start_time"] = start_time
 
-'''while(time.time() < start_time + measurement_length): 
+while(time.time() < start_time + measurement_length): 
     os.system('curl "localhost:30884/exponential_serving?id=${i}&rate=2" &')
     print("SENT_" + str(i))
     time.sleep(np.random.exponential(1/load_rate))
     i += 1
-'''
+
 requests_sent_time = time.time()
-log["requests_sent_time"] = requests_sent_time
+metadata["requests_sent_time"] = requests_sent_time
 print("********  All requests has been sent  ********")
 
 print("********  Waiting starts  ********")
@@ -49,8 +51,13 @@ while(time.time() < requests_sent_time + wait_time):
     time.sleep(1)
 
 end_time = time.time()
-log["end_time"] = end_time
+metadata["end_time"] = end_time
 print("********  Measurements ended  ********")
+
+log["metadata"] = metadata
+
+pc = PrometheusCollector(log)
+log = pc.collect_logs()
 
 with open("load_rate_" + str(load_rate) + "_length_" + str(args.length) + "_" + timestamp + ".metadata", "w") as file:
     json.dump(log, file)
