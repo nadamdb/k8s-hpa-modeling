@@ -34,8 +34,8 @@ def plot_data(k8s_log, model_log):
 
     fig, ax = plt.subplots()
     ax.plot(k8s_pod_count["time"], k8s_pod_count["data"], label="real measurement", color="blue")
-    ax.plot(k8s_hpa_current["time"], k8s_hpa_current["data"], label="hpa current", color="green")
-    ax.plot(k8s_hpa_desired["time"], k8s_hpa_desired["data"], label="hpa desired", color="yellow")
+    # ax.plot(k8s_hpa_current["time"], k8s_hpa_current["data"], label="hpa current", color="green")
+    # ax.plot(k8s_hpa_desired["time"], k8s_hpa_desired["data"], label="hpa desired", color="yellow")
     ax.plot(model_pod_count["time"], model_pod_count["data"], label="model", color="red")
     plt.xlabel("Time [sec]")
     plt.ylabel("Number of pods")
