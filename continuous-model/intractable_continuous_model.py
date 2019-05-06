@@ -7,7 +7,7 @@ sys.setrecursionlimit(100000)
 
 class MMcWeightedBusyTimeAnalyzer(continuous_model.MMcAnalyzer):
 
-    def __init__(self, lambda_, mu_, c, n1=1, n2=1, nc=10, nk=10):
+    def __init__(self, lambda_, mu_, c, solution_pair_index=None, n1=1, n2=1, nc=10, nk=10):
         """
         Models an M/M/c queue.
 
@@ -15,7 +15,7 @@ class MMcWeightedBusyTimeAnalyzer(continuous_model.MMcAnalyzer):
         :param mu_:
         :param c:
         """
-        super(MMcWeightedBusyTimeAnalyzer, self).__init__(lambda_, mu_, c)
+        super(MMcWeightedBusyTimeAnalyzer, self).__init__(lambda_, mu_, c, solution_pair_index)
         self.n2 = n2
         self.n1 = n1
         self.nc = nc
@@ -259,10 +259,9 @@ class MMcWeightedBusyTimeAnalyzer(continuous_model.MMcAnalyzer):
             self.set_cache(cache_key, final_solution_list)
             return final_solution_list
 
-
 if __name__ == '__main__':
-    analyzer = MMcWeightedBusyTimeAnalyzer(lambda_=250, mu_=1, c=300, n1=0, n2=10, nc=10, nk=300)
+    analyzer = MMcWeightedBusyTimeAnalyzer(lambda_=250, mu_=1, c=300, n1=0, n2=10, nc=10, nk=100, solution_pair_index=1)
     # NOTE: the result must be a NEGATIVE number, because its (-1)* will be the expected value!
-    res = analyzer.func_delta_der1(k=5, s=0)
+    res = analyzer.func_delta_der1(k=150, s=0)
     print len(res)
     print sorted(list(res))

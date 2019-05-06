@@ -1,3 +1,5 @@
+import itertools
+import math
 
 
 class MMcAnalyzer(object):
@@ -71,6 +73,8 @@ class MMcAnalyzer(object):
         if s != 0:
             raise ValueError("s can only be 0")
         if derivate_order == 0:
+            # solution index 0 means assuming the etha_c value to be the 0th value in this list, and building the rest of the calculation
+            #  with this assumption.
             solutions = [1.0,
                         self.c * self.mu_ / self.lambda_]
         elif derivate_order == 1:
@@ -92,12 +96,9 @@ class MMcAnalyzer(object):
             return solutions
 
 
-# TODO: make function decorator for checking the cache on all input parameters (usable for etha and delta, IF ONLY the parameter sets are
-#  always different. Only useful if we use the combination, otherwise caching is not neccesary.
-
 class SingleSlopeWeightedBusyTimeMMcAnalyer(MMcAnalyzer):
 
-    def __init__(self, lambda_, mu_, c):
+    def __init__(self, lambda_, mu_, c, solution_pair_index=0):
         """
         Models the weighted busy time only until the first occurance of an empty/non-busy (k=0) system state.
         The predictions are the best, when the server is loaded, k is big and the time intervals for checking the average CPU utilization
@@ -107,7 +108,7 @@ class SingleSlopeWeightedBusyTimeMMcAnalyer(MMcAnalyzer):
         :param mu_:
         :param c:
         """
-        super(SingleSlopeWeightedBusyTimeMMcAnalyer, self).__init__(lambda_, mu_, c)
+        super(SingleSlopeWeightedBusyTimeMMcAnalyer, self).__init__(lambda_, mu_, c, solution_pair_index)
 
     def func_etha(self, k, s, derivate_order=0):
         """
@@ -122,14 +123,126 @@ class SingleSlopeWeightedBusyTimeMMcAnalyer(MMcAnalyzer):
         """
         if k == self.c:
             # returns with a sorted list!
-            return self.func_etha_c(s, derivate_order=derivate_order)
-        else:
-            # TODO: use self.solutioin_index!!
+            etha_c_values = self.func_etha_c(s, derivate_order=derivate_order)
+            # the solution index is handled inside func_etha_c
+            return etha_c_values
+        elif 1 <= k < self.c:
             possible_results = []
+            func_etha_k_plus_1_values = self.func_etha(k + 1, s)
             if derivate_order == 0:
-                func_etha_k_plus_1_values = self.func_etha(k + 1, s)
                 for etha_k_plus_1 in func_etha_k_plus_1_values:
                     possible_results.append(k * self.mu_ / (s + self.lambda_ - self.lambda_ * etha_k_plus_1 + k * self.mu_))
-                return set(possible_results)
+                return possible_results
+            elif derivate_order == 1:
+                func_etha_k_plus_1_der1_values = self.func_etha(k + 1, s, derivate_order=1)
+                # if solution index is used, both lists have only one element
+                for der0, der1 in itertools.product(func_etha_k_plus_1_values, func_etha_k_plus_1_der1_values):
+                    possible_results.append(k * self.mu_ * (self.lambda_ * der1 - 1.0) /
+                                            ((s + self.lambda_ - self.lambda_ * der0 + k * self.mu_) ** 2))
+                return possible_results
+            elif derivate_order == 2:
+                func_etha_k_plus_1_der1_values = self.func_etha(k + 1, s, derivate_order=1)
+                func_etha_k_plus_1_der2_values = self.func_etha(k + 1, s, derivate_order=2)
+                # if solution index is used, all lists have only one element
+                for der0, der1, der2 in itertools.product(func_etha_k_plus_1_values,
+                                                          func_etha_k_plus_1_der1_values,
+                                                          func_etha_k_plus_1_der2_values):
+                    expr = s + self.lambda_ - self.lambda_ * der0 + k * self.mu_
+                    possible_results.append( (k * self.mu_ * self.lambda_ * der2 * expr +
+                                              2.0 * k * self.mu_ * ( (1.0 - self.lambda_ * der1) ** 2)) /
+                                              ( expr ** 3 ) )
+                return possible_results
+            else:
+                raise ValueError("Higher derivate order is not supported")
+        else:
+            raise ValueError("k must be between 1 and c")
 
-    # TODO: implement other functinos of the SingleSlope model, and use the solution indexes!!
+    def func_delta_der0(self, k, s):
+        """
+        LST of the area of a single slope while reducing the active servers from k to k-1.
+
+        :param k:
+        :param s:
+        :return:
+        """
+        if k == self.c:
+            etha_c_values = self.func_etha_c(s, derivate_order=0)
+            return etha_c_values
+        elif 1 <= k < self.c:
+            etha_k_values = self.func_etha(k, s)
+            delta_k_plus_1_values = self.func_delta_der0(k + 1, s)
+            possible_results = []
+            # solution index is handled inside etha c and etha k
+            for etha_k, delta_k_plus_1 in itertools.product(etha_k_values, delta_k_plus_1_values):
+                possible_results.append(self.p_dep(k) * self.func_upsilon(k, s) +
+                                        self.p_arr(k) * etha_k * delta_k_plus_1)
+            return possible_results
+        else:
+            raise ValueError("k must be between 1 and c")
+
+    def func_delta_der1(self, k, s):
+        """
+        First derivate of LST of the area of a single slope while reducing the active servers from k to k-1.
+
+        :param k:
+        :param s:
+        :return:
+        """
+        if k == self.c:
+            etha_c_values = self.func_etha_c(s, derivate_order=1)
+            return etha_c_values
+        elif 1 <= k < self.c:
+            possible_results = []
+            delta_k_plus_1_values = self.func_delta_der0(k + 1, s)
+            delta_k_plus_1_values_der1 = self.func_delta_der1(k + 1, s)
+            etha_k_values = self.func_etha(k, s)
+            etha_k_values_der1 = self.func_etha(k, s, derivate_order=1)
+            # all values are single element lists if the solution index is used.
+            for delta, delta_der1, etha, etha_der1 in itertools.product(delta_k_plus_1_values, delta_k_plus_1_values_der1,
+                                                                        etha_k_values, etha_k_values_der1):
+                possible_results.append(self.p_dep(k) * self.func_upsilon(k, s, derivate_order=1) +
+                                        self.p_arr(k) * (etha_der1 * delta + delta_der1 * etha))
+            return possible_results
+        else:
+            raise ValueError("k must be between 1 and c")
+
+    def func_delta_der2(self, k, s):
+        """
+        Second derivate of LST of the area of a single slope while reducing the active servers from k to k-1.
+
+        :param k:
+        :param s:
+        :return:
+        """
+        if k == self.c:
+            etha_c_values = self.func_etha_c(s, derivate_order=2)
+            return etha_c_values
+        elif 1 <= k < self.c:
+            possible_results = []
+            delta_k_plus_1_values = self.func_delta_der0(k + 1, s)
+            delta_k_plus_1_values_der1 = self.func_delta_der1(k + 1, s)
+            delta_k_plus_1_values_der2 = self.func_delta_der2(k + 1, s)
+            etha_k_values = self.func_etha(k, s)
+            etha_k_values_der1 = self.func_etha(k, s, derivate_order=1)
+            etha_k_values_der2 = self.func_etha(k, s, derivate_order=2)
+            # all values are single element lists if the solution index is used.
+            for delta, delta_der1, delta_der2, etha, etha_der1, etha_der2 in itertools.product(delta_k_plus_1_values,
+                                                                                               delta_k_plus_1_values_der1,
+                                                                                               delta_k_plus_1_values_der2,
+                                                                                               etha_k_values,
+                                                                                               etha_k_values_der1,
+                                                                                               etha_k_values_der2):
+                possible_results.append(self.p_dep(k) * self.func_upsilon(k, s, derivate_order=2) +
+                                        self.p_arr(k) * (etha_der2 * delta + 2.0 * etha_der1 * delta_der1 + delta_der2 * etha))
+            return possible_results
+        else:
+            raise ValueError("k must be between 1 and c")
+
+
+if __name__ == '__main__':
+    analyzer = SingleSlopeWeightedBusyTimeMMcAnalyer(lambda_=5, mu_=1, c=30, solution_pair_index=1)
+    k = 15
+    print "Expected value of a slope: %s" % map(lambda x: -1.0*x, analyzer.func_delta_der1(k=k, s=0))
+    print "Standard deviation of a slope: %s" % map(math.sqrt, analyzer.func_delta_der2(k=k, s=0))
+    print "Expected value of T_%s: %s" % (k, map(lambda x: -1.0*x, analyzer.func_etha(k=k, s=0, derivate_order=1)))
+    print "Standard deviation of T_%s: %s" % (k, map(math.sqrt, analyzer.func_etha(k=k, s=0, derivate_order=2)))
