@@ -1,6 +1,7 @@
 import itertools
 import sys
 import continuous_model
+import math
 
 sys.setrecursionlimit(100000)
 
@@ -192,7 +193,6 @@ class MMcWeightedBusyTimeAnalyzer(continuous_model.MMcAnalyzer):
                     # we have reached the bottom (k==1), but we still need to consider some more 1 --> 2 transitions and some more 0 -->
                     # 1 transitions. For both the derivate and the 0th derivate
                     # so we decrease the desired number of 1 --> 2 transitions. For both the derivate and the 0th derivate
-                    # TODO: can der0 and der1 be in any combinations mathematically?
                     possible_solutions_prev_rec_1_2_der0 = self.func_delta_der0(2, s, current_n1, current_n2 - 1, current_nc, current_nk)
                     possible_solutions_prev_rec_1_2_der1 = self.func_delta_der1(2, s, current_n1, current_n2 - 1, current_nc, current_nk)
                     # so we decrease the desired number of 0 --> 1 transitions. For both the derivate and the 0th derivate
@@ -259,9 +259,10 @@ class MMcWeightedBusyTimeAnalyzer(continuous_model.MMcAnalyzer):
             self.set_cache(cache_key, final_solution_list)
             return final_solution_list
 
+
 if __name__ == '__main__':
-    analyzer = MMcWeightedBusyTimeAnalyzer(lambda_=250, mu_=1, c=300, n1=0, n2=10, nc=10, nk=100, solution_pair_index=1)
-    # NOTE: the result must be a NEGATIVE number, because its (-1)* will be the expected value!
-    res = analyzer.func_delta_der1(k=150, s=0)
-    print len(res)
-    print sorted(list(res))
+    analyzer = MMcWeightedBusyTimeAnalyzer(lambda_=25, mu_=1, c=30, n1=10, n2=1, nc=1, nk=1, solution_pair_index=0)
+    k = 28
+    print "Expected value of T_c: %s" % map(lambda x: -1.0*x, analyzer.func_etha_c(s=0, derivate_order=1))
+    print "Standard deviation of T_c: %s" % map(math.sqrt, analyzer.func_etha_c(s=0, derivate_order=2))
+    print "Expected value of a the weighted busy time: %s" % map(lambda x: -1.0*x, analyzer.func_delta_der1(k=k, s=0))

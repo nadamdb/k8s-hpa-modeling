@@ -238,11 +238,35 @@ class SingleSlopeWeightedBusyTimeMMcAnalyer(MMcAnalyzer):
         else:
             raise ValueError("k must be between 1 and c")
 
+    def func_delta_total_der0(self, k, s):
+        """
+        LST of the total area under a single slope while reducing the active servers from k to k-1.
+
+        :param k:
+        :param s:
+        :return:
+        """
+        possible_results = []
+        if k == self.c:
+            etha_c_values = self.func_etha_c(self.c * s, derivate_order=0)
+            for etha in etha_c_values:
+                possible_results.append(etha / float(self.c))
+            return possible_results
+        elif 1 <= k < self.c:
+            etha_ks_values = self.func_etha(k, k * s)
+            delta_k_plus_1_values = self.func_delta_der0(k + 1, s)
+            for etha_ks, delta_k_plus_1 in itertools.product(etha_ks_values, delta_k_plus_1_values):
+                possible_results.append(self.p_dep(k) * self.func_upsilon(k, k * s) / float(k) +
+                                        self.p_arr(k) * etha_ks / float(k) * delta_k_plus_1)
+            return possible_results
+        else:
+            raise ValueError("k must be between 1 and c")
+
 
 if __name__ == '__main__':
-    analyzer = SingleSlopeWeightedBusyTimeMMcAnalyer(lambda_=5, mu_=1, c=30, solution_pair_index=1)
-    k = 15
-    print "Expected value of a slope: %s" % map(lambda x: -1.0*x, analyzer.func_delta_der1(k=k, s=0))
-    print "Standard deviation of a slope: %s" % map(math.sqrt, analyzer.func_delta_der2(k=k, s=0))
+    analyzer = SingleSlopeWeightedBusyTimeMMcAnalyer(lambda_=20, mu_=1, c=30, solution_pair_index=0)
+    k = 30
     print "Expected value of T_%s: %s" % (k, map(lambda x: -1.0*x, analyzer.func_etha(k=k, s=0, derivate_order=1)))
     print "Standard deviation of T_%s: %s" % (k, map(math.sqrt, analyzer.func_etha(k=k, s=0, derivate_order=2)))
+    print "Expected value of a slope: %s" % map(lambda x: -1.0*x, analyzer.func_delta_der1(k=k, s=0))
+    print "Standard deviation of a slope: %s" % map(math.sqrt, analyzer.func_delta_der2(k=k, s=0))
