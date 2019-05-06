@@ -249,8 +249,9 @@ class Model:
 
         log["data"] = data
 
-        with open("arrival_rate_" + str(self.arrival_rate) + "_serving_rate_" + str(self.serving_rate) + "_timeframe_" + \
-                  str(self.timeFrame) + "_X_" + str(self.T) + "_" + timestamp + ".log", "w") as file:
+        with open("arrival_rate_" + str(self.arrival_rate / self.timeFrame) +
+                  "_serving_rate_" + str(self.serving_rate / self.timeFrame) +
+                  "_timeframe_" + str(self.timeFrame) + "_X_" + str(self.T) + "_" + timestamp + ".log", "w") as file:
             json.dump(log, file)
 
     def calc_stats(self):

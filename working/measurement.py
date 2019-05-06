@@ -59,5 +59,5 @@ log["metadata"] = metadata
 pc = PrometheusCollector(log)
 log = pc.collect_logs()
 
-with open("load_rate_" + str(load_rate) + "_length_" + str(args.length) + "_" + timestamp + ".metadata", "w") as file:
+with open("load_rate_" + str(load_rate) + "_length_" + str(args.length) + "_" + timestamp + ".log", "w") as file:
     json.dump(log, file)
