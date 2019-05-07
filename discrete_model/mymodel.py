@@ -380,11 +380,11 @@ class Visualizer:
         for model in models:
             model_pod_data = self.calc_full_pod_count_data(model,firstPeriod,lastPeriod)
             model_cpu_data = self.calc_full_cpu_usage(model,firstPeriod,lastPeriod)
-            ax1.plot(model_pod_data[0],model_pod_data[1],label='Period: {0}s'.format(model.timeFrame))
-            ax2.plot(model_cpu_data[0],model_cpu_data[1],"r--",label='Period: {0}s'.format(model.timeFrame))
+            ax1.plot(model_pod_data[0],model_pod_data[1],label='Pod count (Period: {0}s)'.format(model.timeFrame))
+            ax2.plot(model_cpu_data[0],model_cpu_data[1],"r--",label='CPU usage')
         
         #scale reference
-        ax2.plot([firstPeriod,lastPeriod],[model.desiredCPU,model.desiredCPU],"y:")
+        ax2.plot([firstPeriod,lastPeriod],[model.desiredCPU,model.desiredCPU],"y:",label="desiredCPU ({0}%)".format(model.desiredCPU*100))
 
         ax1.set_xlabel('time (s)')
         # Make the y-axis label, ticks and tick labels match the line color.
@@ -397,7 +397,8 @@ class Visualizer:
         ax2.tick_params('y', colors='r')
 
         fig.tight_layout()
-        ax1.legend(loc='upper right')
+        ax1.legend(loc='lower right')
+        ax2.legend(loc="upper right")
         plt.show()
 
     def calc_full_pod_count_data(self,model, firstPeriod, lastPeriod):
