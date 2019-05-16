@@ -106,6 +106,7 @@ class MMcWeightedBusyTimeAnalyzer(continuous_model.MMcAnalyzer):
             # only we have the negativity / positivity constraints at the 1st and 2nd order derivates of delta.
             etha_c_values = self.func_etha_c(self.c * s)
             if current_nc == 0:
+                # we skip the dependency on the previous state, only T_c is influencing the value
                 possible_solutions_prev_rec = [1]
             else:
                 # Multiple values might come from evaluating the delta
@@ -119,8 +120,9 @@ class MMcWeightedBusyTimeAnalyzer(continuous_model.MMcAnalyzer):
         else:
             # else: 1 < k < c
             if current_nk == 0:
-                possible_solutions_dep = [1]
-                possible_solutions_arr = [1]
+                # if we disregard the dependency on the previous and next states we have a scaled inter arrival time left.
+                possible_solutions_dep = [1.0]
+                possible_solutions_arr = [1.0]
             else:
                 possible_solutions_dep = self.func_delta_der0(k - 1, s, current_n1, current_n2, current_nc, current_nk - 1)
                 possible_solutions_arr = self.func_delta_der0(k + 1, s, current_n1, current_n2, current_nc, current_nk - 1)
@@ -261,7 +263,7 @@ class MMcWeightedBusyTimeAnalyzer(continuous_model.MMcAnalyzer):
 
 
 if __name__ == '__main__':
-    analyzer = MMcWeightedBusyTimeAnalyzer(lambda_=25, mu_=1, c=30, n1=10, n2=1, nc=1, nk=1, solution_pair_index=0)
+    analyzer = MMcWeightedBusyTimeAnalyzer(lambda_=29.9999, mu_=1, c=30, n1=0, n2=5, nc=5, nk=5, solution_pair_index=0)
     k = 28
     print "Expected value of T_c: %s" % map(lambda x: -1.0*x, analyzer.func_etha_c(s=0, derivate_order=1))
     print "Standard deviation of T_c: %s" % map(math.sqrt, analyzer.func_etha_c(s=0, derivate_order=2))
