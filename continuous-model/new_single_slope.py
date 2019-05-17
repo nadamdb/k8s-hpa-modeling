@@ -29,6 +29,8 @@ class NewSingleSlopeAnalyzer(continuous_model.MMcAnalyzer):
                 return map(lambda x: x / float(self.c), self.func_etha(k=self.c, s=self.c * s))
             elif derivate_order == 1:
                 return self.func_etha(k=self.c, s=self.c * s, derivate_order=1)
+            else:
+                raise ValueError("Higher derivate order is not supported")
         elif 1 <= k < self.c:
             upsilon = self.func_upsilon(k, k * s)
             delta_plus_1_values = self.func_delta_c(k + 1, s)
@@ -95,38 +97,46 @@ class NewSingleSlopeAnalyzer(continuous_model.MMcAnalyzer):
                     derived_sum_products[solution_idx] += derivates[solution_idx] * products[solution_idx]
         return derived_sum_products
 
-    def get_sum_of_first_derivates(self, func, k, s):
+    def get_sum_of_first_derivates(self, func, k, s, list_func=True):
         """
         Sum of the first of func with arguments 1 to k, with fix s.
 
-        :param func: Any function with signature (k, s, derivate_order) -> list
+        :param func: Any function with signature (k, s, derivate_order) -> list | float
         :param k:
         :param s:
+        :param list_func: if func returns float
         :return:
         """
         results = []
         for i in xrange(1, k+1):
             if len(results) == 0:
-                for der in func(i, s, derivate_order=1):
-                    results.append(der)
+                if list_func:
+                    for der in func(i, s, derivate_order=1):
+                        results.append(der)
+                else:
+                    results.append(func(i, s, derivate_order=1))
             else:
                 derivates = func(i, s, derivate_order=1)
-                if len(derivates) != len(results):
+                if list_func and len(derivates) != len(results):
                     raise NotImplementedError("Different sizes of result sets of the first derivate is not implemented")
                 for solution_idx in xrange(0, len(results)):
-                    results[solution_idx] += derivates[solution_idx]
+                    if list_func:
+                        results[solution_idx] += derivates[solution_idx]
+                    else:
+                        results[solution_idx] += derivates
         return results
 
 
 if __name__ == '__main__':
-    l = 28
-    m = 1
+    l = 2.8
+    m = .1
     c = 30
     k = 29
     for solution_idx in (0, 1):
         print "\nSolution index: %s"%solution_idx
         analyzer = NewSingleSlopeAnalyzer(lambda_=l, mu_=m, c=c, solution_pair_index=solution_idx)
         print "lambda / (c * mu): %s" % (l/float(c * m))
+        print "Expected value of interevent time I_%s: %s" % (k, -1.0 * analyzer.func_upsilon(k, 0, derivate_order=1))
         print "Expected value of T_%s: %s" % (k, map(lambda x: -1.0*x, analyzer.func_etha(k, 0, derivate_order=1)))
         print "Expected value of the area under %s-%s transition: %s" % (k, k-1, map(lambda x: -1.0*x,
                                                                                    analyzer.func_delta_c(k, 0, derivate_order=1)))
@@ -134,8 +144,11 @@ if __name__ == '__main__':
         sum_func_delta_c_0 = analyzer.get_sum_of_first_derivates(analyzer.func_delta_c, k, 0)
         print "[SUM_E]Expected value of Summa {i=1 to %s} T_i: %s" % (k, map(lambda x: -1.0*x, sum_func_etha_0))
         print "[SUM_E]Expected value of a slope from state %s: %s" % (k, map(lambda x: -1.0 * x, sum_func_delta_c_0))
+        print "[SUM_E]Expected value of Summa {i=1 to %s} I_i: %s" % (k, map(lambda x: -1.0 * x,
+                                                                      analyzer.get_sum_of_first_derivates(analyzer.func_upsilon, k, 0,
+                                                                                                          list_func=False)))
         print "Time-independent utilization approx: %s" % (map(lambda t: t[0]/t[1], zip(sum_func_delta_c_0, sum_func_etha_0)))
-        print "[DER OF PROD]Expected value of Summa {i=1 to %s} T_i: %s" % (k, map(lambda x: -1.0*x,
+        print "\n[DER OF PROD]Expected value of Summa {i=1 to %s} T_i: %s" % (k, map(lambda x: -1.0*x,
                                                                       analyzer.get_derivate_of_products(analyzer.func_etha, k, 0)))
         print "[DER OF PROD]Expected value of a slope from state %s: %s" % (k, map(lambda x: -1.0 * x,
                                                                       analyzer.get_derivate_of_products(analyzer.func_delta_c, k, 0)))
