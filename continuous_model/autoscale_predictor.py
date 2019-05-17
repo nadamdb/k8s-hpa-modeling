@@ -1,4 +1,4 @@
-from new_single_slope import NewSingleSlopeAnalyzer
+from .new_single_slope import NewSingleSlopeAnalyzer
 import math
 
 

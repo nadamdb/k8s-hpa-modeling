@@ -1,8 +1,8 @@
 import itertools
-import base_continuous_model
+from .base_continuous_model import MMcAnalyzer
 
 
-class NewSingleSlopeAnalyzer(base_continuous_model.MMcAnalyzer):
+class NewSingleSlopeAnalyzer(MMcAnalyzer):
 
     def __init__(self, lambda_, mu_, c, solution_pair_index=0):
         """
