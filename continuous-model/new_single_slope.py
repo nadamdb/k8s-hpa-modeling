@@ -28,7 +28,7 @@ class NewSingleSlopeAnalyzer(continuous_model.MMcAnalyzer):
             if derivate_order == 0:
                 return self.func_etha(k=self.c, s=self.c * s)
             elif derivate_order == 1:
-                return map(lambda x: x * float(self.c), self.func_etha(k=self.c, s=self.c * s, derivate_order=1))
+                return list(map(lambda x: x * float(self.c), self.func_etha(k=self.c, s=self.c * s, derivate_order=1)))
             else:
                 raise ValueError("Higher derivate order is not supported")
         elif 1 <= k < self.c:
@@ -65,14 +65,14 @@ class NewSingleSlopeAnalyzer(continuous_model.MMcAnalyzer):
         if k < 2:
             raise ValueError("Product calculation is only possible with more than 1 functions")
         results_dict = {}
-        for j in xrange(1, k+1):
+        for j in range(1, k+1):
             if except_idx is None or j not in except_idx:
                 # returns an ordered list of possible solutions
                 results_dict[j] = func(j, s, derivate_order=derivate_order)
         # make a list to store the product of each of the possible solutions, all of the dict values should have the same length
-        products = len(results_dict.values()[0]) * [1.0]
-        for j, results in results_dict.iteritems():
-            for solution_idx in xrange(0, len(products)):
+        products = len(list(results_dict.values())[0]) * [1.0]
+        for j, results in results_dict.items():
+            for solution_idx in range(0, len(products)):
                 products[solution_idx] *= results[solution_idx]
         return products
 
@@ -86,7 +86,7 @@ class NewSingleSlopeAnalyzer(continuous_model.MMcAnalyzer):
         :return:
         """
         derived_sum_products = []
-        for i in xrange(1, k+1):
+        for i in range(1, k+1):
             products = self.get_product(func, k, s, derivate_order=0, except_idx=[i])
             derivates = func(i, s, derivate_order=1)
             if len(derivates) != len(products):
@@ -95,7 +95,7 @@ class NewSingleSlopeAnalyzer(continuous_model.MMcAnalyzer):
                 for der, prod in zip(derivates, products):
                     derived_sum_products.append(der * prod)
             else:
-                for solution_idx in xrange(0, len(derived_sum_products)):
+                for solution_idx in range(0, len(derived_sum_products)):
                     derived_sum_products[solution_idx] += derivates[solution_idx] * products[solution_idx]
         return derived_sum_products
 
@@ -110,7 +110,7 @@ class NewSingleSlopeAnalyzer(continuous_model.MMcAnalyzer):
         :return:
         """
         results = []
-        for i in xrange(1, k+1):
+        for i in range(1, k+1):
             if len(results) == 0:
                 if list_func:
                     for der in func(i, s, derivate_order=1):
@@ -121,7 +121,7 @@ class NewSingleSlopeAnalyzer(continuous_model.MMcAnalyzer):
                 derivates = func(i, s, derivate_order=1)
                 if list_func and len(derivates) != len(results):
                     raise NotImplementedError("Different sizes of result sets of the first derivate is not implemented")
-                for solution_idx in xrange(0, len(results)):
+                for solution_idx in range(0, len(results)):
                     if list_func:
                         results[solution_idx] += derivates[solution_idx]
                     else:
@@ -133,24 +133,24 @@ if __name__ == '__main__':
     l = 2.8
     m = .1
     c = 29
-    for k in xrange(1, 30):
+    for k in range(1, 30):
         for solution_idx in (0, ):
             # print "\nSolution index: %s"%solution_idx
             analyzer = NewSingleSlopeAnalyzer(lambda_=l, mu_=m, c=c, solution_pair_index=solution_idx)
-            print "lambda / (c * mu): %s" % (l/float(c * m))
+            print("lambda / (c * mu): %s" % (l/float(c * m)))
             # print "Expected value of interevent time I_%s: %s" % (k, -1.0 * analyzer.func_upsilon(k, 0, derivate_order=1))
             # print "Expected value of T_%s: %s" % (k, map(lambda x: -1.0*x, analyzer.func_etha(k, 0, derivate_order=1)))
             # print "Expected value of the area under %s-%s transition: %s" % (k, k-1, map(lambda x: -1.0*x,
             #                                                                            analyzer.func_delta_c(k, 0, derivate_order=1)))
             sum_func_etha_0 = analyzer.get_sum_of_first_derivates(analyzer.func_etha, k, 0)
             sum_func_delta_c_0 = analyzer.get_sum_of_first_derivates(analyzer.func_delta_c, k, 0)
-            print "[SUM_E]Expected value of Summa {i=1 to %s} T_i: %s" % (k, map(lambda x: -1.0*x, sum_func_etha_0))
-            print "[SUM_E]Expected value of a slope from state %s: %s" % (k, map(lambda x: -1.0 * x, sum_func_delta_c_0))
+            print("[SUM_E]Expected value of Summa {i=1 to %s} T_i: %s" % (k, list(map(lambda x: -1.0*x, sum_func_etha_0))))
+            print("[SUM_E]Expected value of a slope from state %s: %s" % (k, list(map(lambda x: -1.0 * x, sum_func_delta_c_0))))
             # print "[SUM_E]Expected value of Summa {i=1 to %s} I_i: %s" % (k, map(lambda x: -1.0 * x,
             #                                                               analyzer.get_sum_of_first_derivates(analyzer.func_upsilon, k, 0,
             #                                                                                                   list_func=False)))
-            print "[SUM_E]Time-independent utilization approx: %s" % (map(lambda t: t[0]/t[1]/float(analyzer.c),
-                                                                      zip(sum_func_delta_c_0, sum_func_etha_0)))
+            print("[SUM_E]Time-independent utilization approx: %s" % (list(map(lambda t: t[0]/t[1]/float(analyzer.c),
+                                                                      zip(sum_func_delta_c_0, sum_func_etha_0)))))
             # if k > 1:
             #     sum_func_etha_0 = analyzer.get_derivate_of_products(analyzer.func_etha, k, 0)
             #     sum_func_delta_c_0 = analyzer.get_derivate_of_products(analyzer.func_delta_c, k, 0)
