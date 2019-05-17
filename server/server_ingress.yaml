@@ -1,0 +1,13 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: model-ingress
+spec:
+  rules:
+  - host: model.test.com
+    http:
+      paths:
+      - path: /model
+        backend:
+          serviceName: model-service
+          servicePort: 8080
