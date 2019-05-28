@@ -27,9 +27,20 @@ class LoadGenerator:
 
     def plot_send_times(self, to_file=False):
         last_time = self.send_times[len(self.send_times) - 1]
-        plt.hist(self.send_times, bins=int(last_time / 15))
-        plt.ylabel('Request count')
+        #plt.hist(self.send_times, bins=int(last_time / 1))
+        counts = []
+        for i in range(0, int(last_time), 15):
+            cnt = 0
+            for time in self.send_times:
+                if time >= i and time < i+15:
+                    cnt += 1
+            counts.append(cnt)
+        mean = sum(counts) / len(counts)
+        plt.hist(self.send_times, bins=int(last_time / 15), histtype='step', label="Load")
+        plt.axhline(mean, color="r", label="Mean load")
+        plt.ylabel('Request count / 15 sec')
         plt.xlabel('Time in seconds')
+        plt.legend(loc=4)
         if to_file:
             plt.savefig(self.name + ".png")
         else:
@@ -55,6 +66,6 @@ class PoissonLoadGenerator(LoadGenerator):
 
 
 if __name__ == '__main__':
-    test = PoissonLoadGenerator(12, 60)
-    test.write_times_to_csv()
-    test.plot_send_times(True)
+    test = PoissonLoadGenerator(8, 60)
+    #test.write_times_to_csv()
+    test.plot_send_times()
