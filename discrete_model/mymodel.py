@@ -7,6 +7,11 @@ import math
 import json
 from datetime import datetime
 
+import importlib.util
+spec = importlib.util.spec_from_file_location("timegenerator", "../generator/timegenerator.py")
+timegenerator = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(timegenerator)
+
 #TODO seed erteket is be kell allitani
 #numpy.random.seed(0)
 
@@ -17,7 +22,11 @@ class Model:
     Represents the model logic
     """
 
-    def __init__(self,min_server=1, max_server=1,initial_server=1, T=1, arrival_rate=1, serving_rate=1,desiredCPU=0.5,timeOut=None,cont_start=None,timeFrame=60):
+    GENERATE_LOAD = 'GENERATE LOAD'
+    READ_LOAD = 'READ LOAD'
+
+
+    def __init__(self,min_server=1, max_server=1,initial_server=1, T=1, arrival_rate=1, serving_rate=1,desiredCPU=0.5,timeOut=None,cont_start=None,timeFrame=60,mode=GENERATE_LOAD,file=None):
         """
         Basic setup of the model:
 
@@ -30,6 +39,8 @@ class Model:
             desiredCPU (float): desired CPU for scaling ( 0 < desiredCPU < 1)
             timeOut (int): defined in periods
         """
+        self.MODE = mode
+
         self.min_server = min_server
         self.max_server = max_server
         self.initial_server = initial_server
@@ -41,6 +52,30 @@ class Model:
         self.cont_start = cont_start
         self.timeFrame = timeFrame
         self.init()
+
+        #create list storing the traffic
+        if self.MODE == Model.READ_LOAD:
+            load_send_times, load_wait_times, serve_times = timegenerator.load_times_from_file(file)
+            #raise NotImplementedError('I haven\'t programmed that path yet')
+            end = False
+            t=0
+            index=0
+            
+            arrivals = [0,0]
+            while not end:
+                count=0
+                while index<len(load_send_times) and load_send_times[index]<(t+1)*self.timeFrame:
+                    count+=1
+                    index+=1
+                t+=1
+                arrivals.append(count)
+                if index >= len(load_send_times):
+                    end = True
+            print(arrivals)
+            self.arrivals = arrivals
+            self.T = len(arrivals)-2
+            self.load_send_times = load_send_times
+            self.serve_times = serve_times
 
     def init(self):
         #init data arrays
@@ -85,7 +120,11 @@ class Model:
         self.desiredCPU = cpu
 
     #-------
-
+    def calculate_Arrived_t(self,t):
+        if self.MODE == Model.GENERATE_LOAD:
+            self.La.append(numpy.random.poisson(self.arrival_rate))
+        if self.MODE == Model.READ_LOAD:
+            self.La.append(self.arrivals[t])
 
     def calculate_L_t(self,t):
         served = self.L[t-1] - self.Served[t]#self.S[t-1]*self.Mu[t-1]#
@@ -138,19 +177,42 @@ class Model:
             self.S.append(self.max_server)
 
     def calculate_Mu_t(self,t):
-        rates = []
+        if self.MODE == Model.GENERATE_LOAD:
+            rates = []
 
-        for server in range(0,self.S[t]):
-            number_of_served_requests = 0
-            time = 0
-            time += numpy.random.exponential(scale = 1 / self.serving_rate)
-            while time < 1:
-                number_of_served_requests += 1
+            for server in range(0,self.S[t]):
+                number_of_served_requests = 0
+                time = 0
                 time += numpy.random.exponential(scale = 1 / self.serving_rate)
+                while time < 1:
+                    number_of_served_requests += 1
+                    time += numpy.random.exponential(scale = 1 / self.serving_rate)
 
-            rates.append(number_of_served_requests)
-        self.Mu.append( numpy.average(rates) )
-        #self.Mu.append(self.serving_rate)
+                rates.append(number_of_served_requests)
+            self.Mu.append( numpy.average(rates) )
+            #self.Mu.append(self.serving_rate)
+        if self.MODE == Model.READ_LOAD:
+            all_served = 0
+            Mu = 0.1
+            index = 0
+            if t>2:
+                for k,i in self.responseTimesData[-1].items():
+                    all_served+=i
+                index = all_served
+            max_time = self.S[t]*self.timeFrame
+            time = 0
+            count = 0
+            index= round(index)
+            print(len(self.serve_times))
+            print(max_time)
+            while index < len(self.serve_times) and time < max_time:
+                time+=self.serve_times[index]
+                index+=1
+                count+=1
+            if self.S[t] > 0 and count > 0:
+                Mu = count / self.S[t]
+            print('Served: {0},Mu:{1},Count:{2}'.format(index,Mu,count))
+            self.Mu.append(Mu)
 
     def calculate_Waiting_t(self,t):
         #subtract timedout requests
@@ -197,7 +259,7 @@ class Model:
         #T period
         for t in range(2,self.T+2):
             #requests arrive
-            self.La.append(numpy.random.poisson(self.arrival_rate))
+            self.calculate_Arrived_t(t)
 
             self.calculate_Served_t(t)
 
@@ -504,18 +566,18 @@ if __name__ == "__main__":
     timeFrame = 15 # time of one period: [s]
     serv_rate = 2
     cpu = 0.75
-    cont_start = 0.3 # timeFrame * cont_start sec
+    cont_start = 0 # timeFrame * cont_start sec
     T = 120
-    mymodel = Model(1,20,1,120,rate*timeFrame,serv_rate*timeFrame,cpu,None,cont_start,timeFrame)
+    mymodel = Model(1,20,1,120,rate*timeFrame,serv_rate*timeFrame,cpu,None,cont_start,timeFrame,Model.READ_LOAD,file='../generator/generated_times_length_60min_load_rate_12_serve_rate_2.json')
     #mymodel = Model(1,10,1,9,240,120,0.5)
 
-    mymodel.run(visualize=True)
+    mymodel.run(visualize=False)
 
-    mymodel.write_to_file()
+    #mymodel.write_to_file()
 
     visualizer = Visualizer()
-    visualizer.basic_data(mymodel)
-    visualizer.pod_count_resp_time(mymodel)
+    #visualizer.basic_data(mymodel)
+    visualizer.plot_cpu_per_pod([mymodel],mymodel.timeFrame,0,500)
 
 
 

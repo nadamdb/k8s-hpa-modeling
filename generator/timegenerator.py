@@ -62,7 +62,7 @@ class PoissonLoadGenerator(LoadGenerator):
 def generate_serve_times(num_of_reqs, rate):
     serve_times = []
     for i in range(0, num_of_reqs):
-        serve_times.append(np.random.exponential(rate))
+        serve_times.append(np.random.exponential(1/rate))
     return serve_times
 
 
@@ -108,7 +108,7 @@ if __name__ == '__main__':
     #test.plot_send_times(True)
 
     # Pelda a hasznalatra
-    filename = write_times_to_file(1, 4, 3)
+    filename = write_times_to_file(60, 12, 2)
     load_send_times, load_wait_times, serve_times = load_times_from_file(filename)
     print(load_send_times)
     print(load_wait_times)
