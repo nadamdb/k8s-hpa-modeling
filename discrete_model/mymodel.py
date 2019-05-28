@@ -8,7 +8,7 @@ import json
 from datetime import datetime
 
 #TODO seed erteket is be kell allitani
-numpy.random.seed(0)
+#numpy.random.seed(0)
 
 #TODO waiting time
 
@@ -40,7 +40,9 @@ class Model:
         self.timeOut=timeOut
         self.cont_start = cont_start
         self.timeFrame = timeFrame
+        self.init()
 
+    def init(self):
         #init data arrays
         self.L = [0,0]
         self.Mu = [2,2]
@@ -86,7 +88,7 @@ class Model:
 
 
     def calculate_L_t(self,t):
-        served = self.L[t-1] - (self.Mu[t-1] * self.S[t-1])
+        served = self.L[t-1] - self.Served[t]#self.S[t-1]*self.Mu[t-1]#
         served = served if served >= 0 else 0
         served += self.La[t]
 
@@ -125,7 +127,8 @@ class Model:
 
     def calculate_S_t(self,t):
         #S_t_temp = math.ceil( min(self.Mu[t-1] * self.S[t-1],self.L[t-1])/(self.serving_rate * self.desiredCPU) )
-        S_t_temp = math.ceil( min(self.calc_full_serving(t),self.L[t-1])/(self.serving_rate * self.desiredCPU) )
+        #S_t_temp = math.ceil( min(self.calc_full_serving(t),self.L[t-1])/(self.serving_rate * self.desiredCPU) )
+        S_t_temp = math.ceil( min(self.calc_full_serving(t),self.L[t-1])/(self.Mu[t-1] * self.desiredCPU) )
 
         if self.min_server <= S_t_temp <= self.max_server:
             self.S.append(S_t_temp)
@@ -147,6 +150,7 @@ class Model:
 
             rates.append(number_of_served_requests)
         self.Mu.append( numpy.average(rates) )
+        #self.Mu.append(self.serving_rate)
 
     def calculate_Waiting_t(self,t):
         #subtract timedout requests
@@ -189,6 +193,7 @@ class Model:
         print("{3}: Servers: {0}, Requests Arrived: {1}, Served: {2}, L_t: {4}, Waiting: {5}, finished: {6}".format(self.S[t],self.La[t],self.Served[t],t,self.L[t],self.waiting,self.responseTimes))
 
     def run(self,visualize = False):
+        self.init()
         #T period
         for t in range(2,self.T+2):
             #requests arrive
@@ -248,6 +253,14 @@ class Model:
                   "_serving_rate_" + str(self.serving_rate / self.timeFrame) +
                   "_timeframe_" + str(self.timeFrame) + "_X_" + str(self.T) + "_" + timestamp + ".log", "w") as file:
             json.dump(log, file)
+
+    def calc_stats(self):
+        self.stat = {'S_mean':0,'S_max':0,'L_mean':0,'L_max':0}
+        self.stat.update({'S_mean':numpy.mean(self.S[2:])})
+        self.stat.update({'S_max':numpy.max(self.S[2:])})
+        self.stat.update({'L_mean':numpy.mean(self.L[2:])})
+        self.stat.update({'L_max':numpy.max(self.L[2:])})
+        self.stat.update({'S_var':numpy.var(self.S[2:])})
 
 
 class Visualizer:
@@ -347,6 +360,46 @@ class Visualizer:
             ax1.legend(loc='upper right')
             fig.tight_layout()
             plt.show()
+        elif plot_type == 'cpu':
+            fig, ax1 = plt.subplots()
+            for model in models:
+                model_data = self.calc_full_cpu_usage(model,firstPeriod,lastPeriod)
+                ax1.plot(model_data[0],model_data[1],label='Period: {0}s'.format(model.timeFrame))
+
+            ax1.set_xlabel('time (s)')
+            # Make the y-axis label, ticks and tick labels match the line color.
+            ax1.set_ylabel('CPU Usage (%)', color='b')
+            ax1.tick_params('y', colors='b')
+            ax1.legend(loc='upper right')
+            fig.tight_layout()
+            plt.show()
+
+    def plot_cpu_per_pod(self, models, timeFrame=60, firstPeriod=None, lastPeriod=None):
+        fig, ax1 = plt.subplots()
+        ax2 = ax1.twinx()
+        for model in models:
+            model_pod_data = self.calc_full_pod_count_data(model,firstPeriod,lastPeriod)
+            model_cpu_data = self.calc_full_cpu_usage(model,firstPeriod,lastPeriod)
+            ax1.plot(model_pod_data[0],model_pod_data[1],label='Pod count (Period: {0}s)'.format(model.timeFrame))
+            ax2.plot(model_cpu_data[0],model_cpu_data[1],"r--",label='CPU usage')
+        
+        #scale reference
+        ax2.plot([firstPeriod,lastPeriod],[model.desiredCPU,model.desiredCPU],"y:",label="desiredCPU ({0}%)".format(model.desiredCPU*100))
+
+        ax1.set_xlabel('time (s)')
+        # Make the y-axis label, ticks and tick labels match the line color.
+        ax1.set_ylabel('Pod count', color='b')
+        ax1.tick_params('y', colors='b')
+
+        #ax2.set_xlabel('time (s)')
+        # Make the y-axis label, ticks and tick labels match the line color.
+        ax2.set_ylabel('CPU Usage', color='r')
+        ax2.tick_params('y', colors='r')
+
+        fig.tight_layout()
+        ax1.legend(loc='lower right')
+        ax2.legend(loc="upper right")
+        plt.show()
 
     def calc_full_pod_count_data(self,model, firstPeriod, lastPeriod):
         pods = self.calc_pod_count(model)
@@ -360,6 +413,31 @@ class Visualizer:
         #print(x1)
         x2,y2 = cut_by_frame(x2,y2,firstPeriod,lastPeriod)
         return x2,y2
+
+    def calc_full_cpu_usage(self,model, firstPeriod, lastPeriod):
+        cpuUsage = self.calc_cpuUsage(model)
+        x2,y2 = create_intervals_for_plot(cpuUsage, model.timeFrame)
+        #print(x1)
+        x2,y2 = cut_by_frame(x2,y2,firstPeriod,lastPeriod)
+        return x2,y2
+
+    def calc_cpuUsage(self,model):
+        cpuUsage = []
+
+        for i in range(2,len(model.Served)-1):
+            #actual server count           
+            S = 0
+            if model.cont_start is None or model.cont_start == 0:
+                S= model.S[i]
+            elif 0 < model.cont_start < 1:
+                new_cont = 0 if (model.S[i] - model.S[i-1]) < 0 else model.S[i] - model.S[i-1]
+                S = (1-model.cont_start)*new_cont + min(model.S[i],model.S[i-1])
+            else:
+                S = model.S[i-model.cont_start] if (i-model.cont_start) >= 0 else model.S[0]
+
+            cpu = model.Served[i+1] / (model.serving_rate*S)
+            cpuUsage.append(cpu)
+        return cpuUsage
 
     def calc_pod_count(self,model):
         return model.S[2:]

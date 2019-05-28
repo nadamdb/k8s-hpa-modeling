@@ -54,16 +54,30 @@ def plot_data(k8s_log, model_log, to_file=False):
         plt.show()
 
 
+def plot_continuous_model(model_pod_count):
+    fig, ax = plt.subplots()
+    ax.plot(model_pod_count["time"], model_pod_count["data"], label="model", color="red")
+    plt.xlabel("Time [sec]")
+    plt.ylabel("Number of pods")
+    ax.legend(loc='upper right')
+
+    plt.show()
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--k8s-log", help="Logfile of the cluster measurement")
     parser.add_argument("--model-log", help="Logfile of the model")
+    parser.add_argument("--cont-model-log", help="Logfile of the continuous model")
     args = parser.parse_args()
 
-    k8s_log = get_data_from_file(args.k8s_log)
-    model_log = get_data_from_file(args.model_log)
+    if args.cont_model_log:
+        plot_continuous_model(get_data_from_file(args.cont_model_log))
+    else:
+        k8s_log = get_data_from_file(args.k8s_log)
+        model_log = get_data_from_file(args.model_log)
 
-    if k8s_log is None or model_log is None:
-        raise FileNotFoundError
+        if k8s_log is None or model_log is None:
+            raise FileNotFoundError
 
-    plot_data(k8s_log, model_log, True)
+        plot_data(k8s_log, model_log)

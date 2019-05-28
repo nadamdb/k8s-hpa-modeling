@@ -66,6 +66,6 @@ class PoissonLoadGenerator(LoadGenerator):
 
 
 if __name__ == '__main__':
-    test = PoissonLoadGenerator(8, 60)
-    #test.write_times_to_csv()
-    test.plot_send_times()
+    test = PoissonLoadGenerator(12, 60)
+    test.write_times_to_csv()
+    test.plot_send_times(True)
