@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import csv
+import json
 
 
 class LoadGenerator:
@@ -18,12 +18,6 @@ class LoadGenerator:
 
     def get_send_times(self):
         return self.send_times
-
-    def write_times_to_csv(self):
-        with open(self.name + ".csv", mode='w') as wait_times_file:
-            wait_times_writer = csv.writer(wait_times_file, delimiter=',')
-            wait_times_writer.writerow(self.wait_times)
-            wait_times_writer.writerow(self.send_times)
 
     def plot_send_times(self, to_file=False):
         last_time = self.send_times[len(self.send_times) - 1]
@@ -65,7 +59,57 @@ class PoissonLoadGenerator(LoadGenerator):
             self.send_times.append(sum_wait_time)
 
 
+def generate_serve_times(num_of_reqs, rate):
+    serve_times = []
+    for i in range(0, num_of_reqs):
+        serve_times.append(np.random.exponential(rate))
+    return serve_times
+
+
+def write_times_to_file(length, load_rate, serve_rate):
+    load_generator = PoissonLoadGenerator(load_rate, length)
+    load_send_times = load_generator.get_send_times()
+    load_wait_times = load_generator.get_wait_times()
+
+    serve_times = generate_serve_times(len(load_send_times), serve_rate)
+
+    name = "generated_times_length_" + str(length) + "min_load_rate_" + str(load_rate) + "_serve_rate_" + str(serve_rate)
+
+    log = {}
+    metadata = {}
+    data = {}
+
+    metadata["measurements_length"] = length
+    metadata["load_rate"] = load_rate
+    metadata["serve_rate"] = serve_rate
+
+    data["load_send_times"] = load_send_times
+    data["load_wait_times"] = load_wait_times
+    data["serve_times"] = serve_times
+
+    log["metadata"] = metadata
+    log["data"] = data
+
+    with open(name + ".json", "w") as file:
+        json.dump(log, file)
+    return name + ".json"
+
+
+def load_times_from_file(filename):
+    log = {}
+    with open(filename, "r") as file:
+        log = json.load(file)
+    if log == {}:
+        raise FileNotFoundError
+    return log["data"]["load_send_times"], log["data"]["load_wait_times"], log["data"]["serve_times"]
+
 if __name__ == '__main__':
-    test = PoissonLoadGenerator(12, 60)
-    test.write_times_to_csv()
-    test.plot_send_times(True)
+    #test = PoissonLoadGenerator(5, 1)
+    #test.plot_send_times(True)
+
+    # Pelda a hasznalatra
+    filename = write_times_to_file(1, 4, 3)
+    load_send_times, load_wait_times, serve_times = load_times_from_file(filename)
+    print(load_send_times)
+    print(load_wait_times)
+    print(serve_times)
