@@ -101,7 +101,7 @@ def load_times_from_file(filename):
         log = json.load(file)
     if log == {}:
         raise FileNotFoundError
-    return log["data"]["load_send_times"], log["data"]["load_wait_times"], log["data"]["serve_times"]
+    return log["data"]["load_send_times"], log["data"]["load_wait_times"], log["data"]["serve_times"], log["metadata"]
 
 if __name__ == '__main__':
     #test = PoissonLoadGenerator(5, 1)
@@ -109,7 +109,8 @@ if __name__ == '__main__':
 
     # Pelda a hasznalatra
     filename = write_times_to_file(60, 12, 2)
-    load_send_times, load_wait_times, serve_times = load_times_from_file(filename)
+    load_send_times, load_wait_times, serve_times, metadata = load_times_from_file(filename)
     print(load_send_times)
     print(load_wait_times)
     print(serve_times)
+    print(metadata)
