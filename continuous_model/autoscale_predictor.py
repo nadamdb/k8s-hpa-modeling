@@ -1,5 +1,8 @@
-from .new_single_slope import NewSingleSlopeAnalyzer
 import math
+import json
+
+
+from .new_single_slope import NewSingleSlopeAnalyzer
 
 
 class AutoscalePredictor(object):
@@ -86,7 +89,8 @@ class MMcAnalysisBasedAutoscalePredictor(AutoscalePredictor):
         Predicts CPU usage based on the ratio of the expected values of total weighted busy time of a single slope and the time spent
         until the M/M/c system becomes idle.
 
-        :param initial_active_pod: if not given, current_pod_count / 2 is used.
+        :param initial_active_pod: Active pod count at the beginning of the CPU usage prediction interval if not given, current_pod_count /
+                                   2 is used.
         :return:
         """
         prediction = None
@@ -95,6 +99,7 @@ class MMcAnalysisBasedAutoscalePredictor(AutoscalePredictor):
         if self.mmc_analyzer is None:
             # in our analytical approach in case of unstable M/M/c, the cpu usage converges to 1.0
             prediction = 1.0
+            print("Unstable M/M/c CPU usage estimation was used")
         else:
             sum_func_etha_0 = self.mmc_analyzer.get_sum_of_first_derivates(self.mmc_analyzer.func_etha, initial_active_pod, 0)
             sum_func_delta_c_0 = self.mmc_analyzer.get_sum_of_first_derivates(self.mmc_analyzer.func_delta_c, initial_active_pod, 0)
@@ -103,7 +108,8 @@ class MMcAnalysisBasedAutoscalePredictor(AutoscalePredictor):
             expected_sum_T0 = -1.0 * sum_func_etha_0[0]
             expected_sum_weighted_busy_time = -1.0 * sum_func_delta_c_0[0]
 
-            prediction =  expected_sum_weighted_busy_time / expected_sum_T0 / self.current_pod_count
+            prediction = expected_sum_weighted_busy_time / expected_sum_T0 / self.current_pod_count
+            print("Clever M/M/c based CPU usage prediction was used: {}".format(prediction))
         self.current_cpu_prediction = prediction
         return prediction
 
@@ -130,6 +136,23 @@ class MMcAnalysisBasedAutoscalePredictor(AutoscalePredictor):
             self.current_cpu_prediction = self.predict_cpu_usage()
             self.set_new_current_pod_count()
         return self.current_pod_count
+
+    def write_pod_cnt_to_file(self, arrival_time_stamps, file_name):
+        """
+        Writes pod count predictions to a file in format {"time": [], "data": []}
+
+        :param arrival_time_stamps: iterable of arrival times
+        :param file_name:
+        :return:
+        """
+        pod_count_predictions = {"time": [], "data": []}
+        for current_time in arrival_time_stamps:
+            self.get_current_pod_count_set_cpu_pred(current_time)
+            pod_count_predictions["data"].append(self.current_pod_count)
+            pod_count_predictions["time"].append(current_time)
+
+        with open(file_name, "w") as file:
+            json.dump(pod_count_predictions, file)
 
 
 if __name__ == '__main__':
