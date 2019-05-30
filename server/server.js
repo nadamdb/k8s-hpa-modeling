@@ -94,7 +94,27 @@ app.get('/exponential_serving',function(req,res,next){
         res.send('OK');
 });
 
+app.get('/fixed_serving',function(req,res,next){
+        var startTime = Date.now();
+        var id = req.query.id;
+	//var rate = req.query.rate
+	//var servingTimeGenerator = d3.randomExponential(rate);
+	var servingTime = req.query.wait//servingTimeGenerator()*1000;
+	console.log(servingTime);
+	while(Date.now()-startTime < servingTime){
+		doTheMath(false,300)
+	}
 
+        var log = id + ';' + moment(Date.now()).format(format)+
+                  ';'+moment(startTime).format(format);
+        //winston.info(log);
+        //exec('echo "'+log+'" >> '+path+'server.log',(err,stdout,stderr)=>{
+        //   res.send('OK');
+        //});
+        //res.send('OK');
+        fs.appendFileSync(path,log+'\n');
+        res.send('OK');
+});
 
 function checkCPU(startTime, duration, cpuUsage,res,sleepTime){
 	var cpu = process.cpuUsage();
