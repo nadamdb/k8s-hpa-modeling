@@ -42,10 +42,11 @@ class LoadGenerator:
 
 
 class PoissonLoadGenerator(LoadGenerator):
-    def __init__(self, rate, measurement_length):
+    def __init__(self, rate, measurement_length, random_seed=0):
         super().__init__(measurement_length)
         self.rate = rate
         self.name = "poisson_times_rate_" + str(self.rate) + "_length_" + str(measurement_length) + "_min"
+        self.random = np.random.RandomState(seed=random_seed)
         self.__calculate_times()
 
     def __calculate_times(self):
@@ -53,27 +54,30 @@ class PoissonLoadGenerator(LoadGenerator):
         self.send_times = [0]
         sum_wait_time = 0
         while sum_wait_time < self.measurement_length:
-            wait_time = np.random.exponential(1 / self.rate)
+            wait_time = self.random.exponential(1 / self.rate)
             sum_wait_time += wait_time
             self.wait_times.append(wait_time)
             self.send_times.append(sum_wait_time)
 
 
 def generate_serve_times(num_of_reqs, rate):
+    # TODO: why this is not a member of the LoadGenerator?
     serve_times = []
     for i in range(0, num_of_reqs):
         serve_times.append(np.random.exponential(1/rate))
     return serve_times
 
 
-def write_times_to_file(length, load_rate, serve_rate):
+def write_times_to_file(length, load_rate, serve_rate, name=None):
+    # TODO: put this inside the load generator
     load_generator = PoissonLoadGenerator(load_rate, length)
     load_send_times = load_generator.get_send_times()
     load_wait_times = load_generator.get_wait_times()
 
     serve_times = generate_serve_times(len(load_send_times), serve_rate)
 
-    name = "generated_times_length_" + str(length) + "min_load_rate_" + str(load_rate) + "_serve_rate_" + str(serve_rate)
+    if name is None:
+        name = "generated_times_length_" + str(length) + "min_load_rate_" + str(load_rate) + "_serve_rate_" + str(serve_rate)
 
     log = {}
     metadata = {}

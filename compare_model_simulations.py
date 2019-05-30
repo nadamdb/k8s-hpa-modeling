@@ -1,5 +1,5 @@
 from continuous_model.autoscale_predictor import MMcAnalysisBasedAutoscalePredictor
-from load.loadgenerator import PoissonLoadGenerator
+from generator.timegenerator import PoissonLoadGenerator
 import json
 
 if __name__ == "__main__":
