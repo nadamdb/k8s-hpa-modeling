@@ -63,7 +63,7 @@ def plot_data(k8s_log=None, model_log=None, cont_model_pod_count=None, to_file_n
 
     plt.xlabel("Time [sec]")
     plt.ylabel("Number of pods")
-    ax.legend(loc='upper right')
+    ax.legend(loc='lower right')
 
     if to_file_name is not None:
         plt.savefig(to_file_name + ".png")

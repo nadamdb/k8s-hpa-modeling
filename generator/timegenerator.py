@@ -68,7 +68,7 @@ def generate_serve_times(num_of_reqs, rate):
     return serve_times
 
 
-def write_times_to_file(length, load_rate, serve_rate, name=None):
+def write_times_to_file(length, load_rate, serve_rate, name=None, file_extension=".json"):
     # TODO: put this inside the load generator
     load_generator = PoissonLoadGenerator(load_rate, length)
     load_send_times = load_generator.get_send_times()
@@ -94,9 +94,9 @@ def write_times_to_file(length, load_rate, serve_rate, name=None):
     log["metadata"] = metadata
     log["data"] = data
 
-    with open(name + ".json", "w") as file:
+    with open(name + file_extension, "w") as file:
         json.dump(log, file)
-    return name + ".json"
+    return name + file_extension
 
 
 def load_times_from_file(filename):
