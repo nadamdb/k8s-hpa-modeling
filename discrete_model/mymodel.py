@@ -7,11 +7,6 @@ import math
 import json
 from datetime import datetime
 
-import importlib.util
-spec = importlib.util.spec_from_file_location("timegenerator", "../generator/timegenerator.py")
-timegenerator = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(timegenerator)
-
 #TODO seed erteket is be kell allitani
 #numpy.random.seed(0)
 
@@ -26,7 +21,8 @@ class Model:
     READ_LOAD = 'READ LOAD'
 
 
-    def __init__(self,min_server=1, max_server=1,initial_server=1, T=1, arrival_rate=1, serving_rate=1,desiredCPU=0.5,timeOut=None,cont_start=None,timeFrame=60,mode=GENERATE_LOAD,file=None):
+    def __init__(self,min_server=1, max_server=1,initial_server=1, T=1, arrival_rate=1, serving_rate=1,desiredCPU=0.5,timeOut=None,
+                 cont_start=None,timeFrame=60, mode=GENERATE_LOAD, already_read_load=None):
         """
         Basic setup of the model:
 
@@ -55,7 +51,7 @@ class Model:
 
         #create list storing the traffic
         if self.MODE == Model.READ_LOAD:
-            load_send_times, load_wait_times, serve_times = timegenerator.load_times_from_file(file)
+            load_send_times, load_wait_times, serve_times, metadata = already_read_load
             #raise NotImplementedError('I haven\'t programmed that path yet')
             end = False
             t=0
@@ -286,7 +282,7 @@ class Model:
             print(mymodel.waitingData)
             print(mymodel.responseTimesData)
 
-    def write_to_file(self):
+    def write_to_file(self, file_name=None):
         log = {}
         metadata = {}
         data = {}
@@ -311,9 +307,12 @@ class Model:
 
         log["data"] = data
 
-        with open("arrival_rate_" + str(self.arrival_rate / self.timeFrame) +
-                  "_serving_rate_" + str(self.serving_rate / self.timeFrame) +
-                  "_timeframe_" + str(self.timeFrame) + "_X_" + str(self.T) + "_" + timestamp + ".log", "w") as file:
+        if file_name is None:
+            file_name = "arrival_rate_" + str(self.arrival_rate / self.timeFrame) + \
+                  "_serving_rate_" + str(self.serving_rate / self.timeFrame) + \
+                  "_timeframe_" + str(self.timeFrame) + "_X_" + str(self.T) + "_" + timestamp + ".log"
+
+        with open(file_name, "w") as file:
             json.dump(log, file)
 
     def calc_stats(self):
@@ -561,6 +560,7 @@ def cut_by_frame(x,y,firstPeriod,lastPeriod):
 
     return x,y
 
+
 if __name__ == "__main__":
     rate = 8
     timeFrame = 15 # time of one period: [s]
@@ -573,7 +573,7 @@ if __name__ == "__main__":
 
     mymodel.run(visualize=False)
 
-    #mymodel.write_to_file()
+    mymodel.write_to_file()
 
     visualizer = Visualizer()
     #visualizer.basic_data(mymodel)
