@@ -35,6 +35,12 @@ else:
 
     metadata = {"measurements_length": args.length, "load_rate": args.load_rate, "serve_rate": args.serve_rate}
 
+to_file = "k8s_measurement_length_" + str(metadata["measurement_length"]) + \
+                    "min_load_rate_" + str(metadata["load_rate"]) + \
+                    "_serve_rate_" + str(metadata["serve_rate"])
+if args.config is not None:
+    to_file += "_random_seed_" + str(metadata["random_seed"])
+
 # rate = req/sec
 load_rate = metadata["load_rate"]
 
@@ -86,6 +92,5 @@ log["metadata"] = metadata
 pc = PrometheusCollector(log)
 log = pc.collect_logs()
 
-with open("load_rate_" + str(load_rate) + "_length_" + str(metadata["measurements_length"]) +
-          "_" + timestamp + ".log", "w") as file:
+with open(to_file + "_timestamp_" + timestamp + ".log", "w") as file:
     json.dump(log, file)

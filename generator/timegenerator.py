@@ -3,12 +3,13 @@ import matplotlib.pyplot as plt
 import json
 
 
-class LoadGenerator:
+class TimeGenerator:
     def __init__(self, measurement_length):
         self.measurement_length = measurement_length * 60  # minutes * 60 = seconds
         self.wait_times = []
         self.send_times = []
-        self.name = "LoadGenerator"
+        self.serve_times = []
+        self.name = "TimeGenerator"
 
     def __calculate_times(self):
         raise NotImplementedError
@@ -19,14 +20,19 @@ class LoadGenerator:
     def get_send_times(self):
         return self.send_times
 
+    def get_serve_times(self):
+        return self.send_times
+
+    def get_all_times(self):
+        return self.send_times, self.wait_times, self.serve_times
+
     def plot_send_times(self, to_file=False):
         last_time = self.send_times[len(self.send_times) - 1]
-        #plt.hist(self.send_times, bins=int(last_time / 1))
         counts = []
         for i in range(0, int(last_time), 15):
             cnt = 0
             for time in self.send_times:
-                if time >= i and time < i+15:
+                if i <= time < i+15:
                     cnt += 1
             counts.append(cnt)
         mean = sum(counts) / len(counts)
@@ -41,11 +47,16 @@ class LoadGenerator:
             plt.show()
 
 
-class PoissonLoadGenerator(LoadGenerator):
-    def __init__(self, rate, measurement_length, random_seed=0):
+class PoissonTimeGenerator(TimeGenerator):
+    def __init__(self, measurement_length, load_rate, serve_rate, random_seed=0):
         super().__init__(measurement_length)
-        self.rate = rate
-        self.name = "poisson_times_rate_" + str(self.rate) + "_length_" + str(measurement_length) + "_min"
+        self.load_rate = load_rate
+        self.serve_rate = serve_rate
+        self.random_seed = random_seed
+        self.name = "poisson_generated_times_length_" + str(self.measurement_length) + \
+                    "min_load_rate_" + str(self.load_rate) + \
+                    "_serve_rate_" + str(self.serve_rate) + \
+                    "_random_seed_" + str(self.random_seed)
         self.random = np.random.RandomState(seed=random_seed)
         self.__calculate_times()
 
@@ -54,66 +65,51 @@ class PoissonLoadGenerator(LoadGenerator):
         self.send_times = [0]
         sum_wait_time = 0
         while sum_wait_time < self.measurement_length:
-            wait_time = self.random.exponential(1 / self.rate)
+            wait_time = self.random.exponential(1 / self.load_rate)
             sum_wait_time += wait_time
             self.wait_times.append(wait_time)
             self.send_times.append(sum_wait_time)
+        self.serve_times = []
+        for i in range(0, len(self.send_times)):
+            self.serve_times.append(self.random.exponential(1 / self.serve_rate))
 
+    def write_times_to_file(self, filename=None, file_extension=".json"):
+        if filename is None:
+            filename = self.name
+        log = {}
+        metadata = {}
+        data = {}
 
-def generate_serve_times(num_of_reqs, rate):
-    # TODO: why this is not a member of the LoadGenerator?
-    serve_times = []
-    for i in range(0, num_of_reqs):
-        serve_times.append(np.random.exponential(1/rate))
-    return serve_times
+        metadata["measurements_length"] = self.measurement_length
+        metadata["load_rate"] = self.load_rate
+        metadata["serve_rate"] = self.serve_rate
+        metadata["random_seed"] = self.random_seed
 
+        data["load_send_times"] = self.send_times
+        data["load_wait_times"] = self.wait_times
+        data["serve_times"] = self.serve_times
 
-def write_times_to_file(length, load_rate, serve_rate, name=None, file_extension=".json"):
-    # TODO: put this inside the load generator
-    load_generator = PoissonLoadGenerator(load_rate, length)
-    load_send_times = load_generator.get_send_times()
-    load_wait_times = load_generator.get_wait_times()
+        log["metadata"] = metadata
+        log["data"] = data
 
-    serve_times = generate_serve_times(len(load_send_times), serve_rate)
-
-    if name is None:
-        name = "generated_times_length_" + str(length) + "min_load_rate_" + str(load_rate) + "_serve_rate_" + str(serve_rate)
-
-    log = {}
-    metadata = {}
-    data = {}
-
-    metadata["measurements_length"] = length
-    metadata["load_rate"] = load_rate
-    metadata["serve_rate"] = serve_rate
-
-    data["load_send_times"] = load_send_times
-    data["load_wait_times"] = load_wait_times
-    data["serve_times"] = serve_times
-
-    log["metadata"] = metadata
-    log["data"] = data
-
-    with open(name + file_extension, "w") as file:
-        json.dump(log, file)
-    return name + file_extension
+        with open(filename + file_extension, "w") as file:
+            json.dump(log, file)
+        return filename + file_extension
 
 
 def load_times_from_file(filename):
-    log = {}
     with open(filename, "r") as file:
         log = json.load(file)
-    if log == {}:
+    if log is None:
         raise FileNotFoundError
     return log["data"]["load_send_times"], log["data"]["load_wait_times"], log["data"]["serve_times"], log["metadata"]
 
-if __name__ == '__main__':
-    #test = PoissonLoadGenerator(5, 1)
-    #test.plot_send_times(True)
 
+if __name__ == '__main__':
     # Pelda a hasznalatra
-    filename = write_times_to_file(60, 12, 2)
-    load_send_times, load_wait_times, serve_times, metadata = load_times_from_file(filename)
+    test = PoissonTimeGenerator(10, 8, 4)
+    file_name = test.write_times_to_file()
+    load_send_times, load_wait_times, serve_times, metadata = load_times_from_file(file_name)
     print(load_send_times)
     print(load_wait_times)
     print(serve_times)

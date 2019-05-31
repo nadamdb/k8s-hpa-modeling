@@ -31,8 +31,8 @@ if __name__ == "__main__":
             cont_start = 0
 
             # generate load, write to file and read it back to give it to the models
-            filename = load_gen.write_times_to_file(simulation_length_minutes, arrival_rate, service_rate, name=load_file_name,
-                                                    file_extension=".out")
+            ptg = load_gen.PoissonTimeGenerator(simulation_length_minutes, arrival_rate, service_rate)
+            filename = ptg.write_times_to_file(filename=load_file_name, file_extension=".out")
             load_send_times, load_wait_times, serve_times, metadata = load_gen.load_times_from_file(filename)
 
             # instantiate and run the continuous model
