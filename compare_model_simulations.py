@@ -1,6 +1,6 @@
 import math
 
-from continuous_model.autoscale_predictor import MMcAnalysisBasedAutoscalePredictor
+from continuous_model.autoscale_predictor import MMcAnalysisBasedAutoscalePredictor, AutoscalePredictor
 from discrete_model.mymodel import Model
 import generator.timegenerator as load_gen
 
@@ -9,6 +9,7 @@ if __name__ == "__main__":
     for arrival_rate in range(8,20,2):
         for service_rate in range(1, 6):
             # Load parameters
+            print("\nSIMULATION ROUND: arrival rate: {}, service rate: {}".format(arrival_rate, service_rate))
             simulation_length_minutes = 10 # [min]
             base_file_name = "model_comp_results/experiment_length-{length}min_load-rate-{load}_serve-rate-{serve}".format(
                                                     length=simulation_length_minutes, load=arrival_rate, serve=service_rate)
@@ -25,7 +26,7 @@ if __name__ == "__main__":
             # TO BE ALIGNED PARAMETERS (disc)
             min_server = 1
             # estimation of max allowed server counts depending on load level
-            max_server = int(arrival_rate / service_rate * 1.5)
+            max_server = int(arrival_rate / service_rate * 2)
             # the number of scaling events
             number_of_time_frames = math.ceil(simulation_length_minutes * 60 / scale_time_frame)
             cont_start = 0
@@ -35,9 +36,14 @@ if __name__ == "__main__":
                                                     file_extension=".out")
             load_send_times, load_wait_times, serve_times, metadata = load_gen.load_times_from_file(filename)
 
+            # create baseline autoscaler
+            baseline_cont_model = AutoscalePredictor(initial_server_cnt, arrival_rate, service_rate, scale_time_frame,
+                                                        desired_cpu, scaling_tolerance, max_pod_count=max_server)
+            baseline_cont_model.write_pod_cnt_to_file(load_send_times, file_name=base_file_name + ".baseline.out")
+
             # instantiate and run the continuous model
             continuous_model = MMcAnalysisBasedAutoscalePredictor(initial_server_cnt, arrival_rate, service_rate, scale_time_frame,
-                                                                  desired_cpu, scaling_tolerance)
+                                                                  desired_cpu, scaling_tolerance, max_pod_count=max_server)
             continuous_model.write_pod_cnt_to_file(load_send_times, file_name=base_file_name + ".continuous.out")
 
             # instantiate and run the discrete model
