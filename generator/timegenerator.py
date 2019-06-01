@@ -81,7 +81,7 @@ class PoissonTimeGenerator(TimeGenerator):
         metadata = {}
         data = {}
 
-        metadata["measurement_length"] = self.measurement_length
+        metadata["measurement_length"] = int(self.measurement_length / 60)
         metadata["load_rate"] = self.load_rate
         metadata["serve_rate"] = self.serve_rate
         metadata["random_seed"] = self.random_seed
