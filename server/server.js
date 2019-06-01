@@ -99,7 +99,7 @@ app.get('/fixed_serving',function(req,res,next){
         var id = req.query.id;
 	//var rate = req.query.rate
 	//var servingTimeGenerator = d3.randomExponential(rate);
-	var servingTime = req.query.wait//servingTimeGenerator()*1000;
+	var servingTime = req.query.wait*1000; //servingTimeGenerator()*1000;
 	console.log(servingTime);
 	while(Date.now()-startTime < servingTime){
 		doTheMath(false,300)
