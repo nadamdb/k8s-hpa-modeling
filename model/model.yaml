@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: test-server
-        image: balazska/test-server:exponential-serving
+        image: balazska/test-server:fixed-serving
         resources:
           limits:
             cpu: "100m"
