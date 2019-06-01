@@ -70,7 +70,8 @@ metadata["start_time"] = start_time
 #     i += 1
 for i in range(0, len(serve_times)):
     serve = serve_times[i]
-    os.system('curl "localhost:30884/fixed_serving?id=${i}&wait=${serve}" &')
+    curl_string = "localhost:30884/fixed_serving?id=" + str(i) + "&wait=" + str(serve)
+    os.system('curl "' + curl_string + '" &')
     print("SENT_" + str(i))
     if i < len(load_wait_times):
         time.sleep(load_wait_times[i])
