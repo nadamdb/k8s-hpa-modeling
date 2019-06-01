@@ -14,7 +14,7 @@ spec.loader.exec_module(timegenerator)
 parser = argparse.ArgumentParser()
 parser.add_argument("--load-rate", help="Rate for the poisson load generation [rate = req/s]", type=int)
 parser.add_argument("--serve-rate", help="Rate for the exponential serve times [rate = req/s]", type=int)
-parser.add_argument("--length", help="Length of the measurements [min]", type=int)
+parser.add_argument("--length", help="Length of the measurement [min]", type=int)
 parser.add_argument("--wait-time", help="Waiting time after the last request was sent [min]", type=int)
 parser.add_argument("--config", help="Config log file for the measurement")
 
@@ -33,7 +33,7 @@ else:
 
     serve_times = timegenerator.generate_serve_times(len(load_send_times), args.serve_rate)
 
-    metadata = {"measurements_length": args.length, "load_rate": args.load_rate, "serve_rate": args.serve_rate}
+    metadata = {"measurement_length": args.length, "load_rate": args.load_rate, "serve_rate": args.serve_rate}
 
 to_file = "k8s_measurement_length_" + str(metadata["measurement_length"]) + \
                     "min_load_rate_" + str(metadata["load_rate"]) + \
@@ -45,7 +45,7 @@ if args.config is not None:
 load_rate = metadata["load_rate"]
 
 # [measurement_length] = sec
-measurement_length = metadata["measurements_length"] * 60
+measurement_length = metadata["measurement_length"] * 60
 
 wait_time = args.wait_time * 60
 
@@ -85,7 +85,7 @@ while time.time() < requests_sent_time + wait_time:
 
 end_time = time.time()
 metadata["end_time"] = end_time
-print("********  Measurements ended  ********")
+print("********  Measurement ended  ********")
 
 log["metadata"] = metadata
 
