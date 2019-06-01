@@ -54,7 +54,7 @@ class PoissonTimeGenerator(TimeGenerator):
         self.load_rate = load_rate
         self.serve_rate = serve_rate
         self.random_seed = random_seed
-        self.name = "poisson_generated_times_length_" + str(self.measurement_length) + \
+        self.name = "poisson_generated_times_length_" + str(int(self.measurement_length / 60)) + \
                     "min_load_rate_" + str(self.load_rate) + \
                     "_serve_rate_" + str(self.serve_rate) + \
                     "_random_seed_" + str(self.random_seed)
