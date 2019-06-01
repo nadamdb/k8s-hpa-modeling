@@ -6,22 +6,22 @@ import generator.timegenerator as load_gen
 
 
 if __name__ == "__main__":
-    for arrival_rate in range(8,20,2):
-        for service_rate in range(1, 6):
+    for arrival_rate in [4, 10, 20]:
+        for service_rate in [2, 6, 10]:
             # Load parameters
             print("\nSIMULATION ROUND: arrival rate: {}, service rate: {}".format(arrival_rate, service_rate))
-            simulation_length_minutes = 10 # [min]
+            simulation_length_minutes = 30 # [min]
             base_file_name = "model_comp_results/experiment_length-{length}min_load-rate-{load}_serve-rate-{serve}".format(
                                                     length=simulation_length_minutes, load=arrival_rate, serve=service_rate)
             load_file_name = base_file_name + ".load"
 
             # autoscaling parameters
-            scale_time_frame = 10 # [s]
+            scale_time_frame = 30 # [s]
             desired_cpu = 0.75
             initial_server_cnt = 1
 
             # TO BE ALIGNED PARAMETERS (cont)
-            scaling_tolerance = 0.05
+            scaling_tolerance = 0.1
 
             # TO BE ALIGNED PARAMETERS (disc)
             min_server = 1
