@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import json
+import argparse
 
 
 class TimeGenerator:
@@ -106,11 +107,21 @@ def load_times_from_file(filename):
 
 
 if __name__ == '__main__':
-    # Pelda a hasznalatra
-    test = PoissonTimeGenerator(10, 8, 4)
-    file_name = test.write_times_to_file()
-    load_send_times, load_wait_times, serve_times, metadata = load_times_from_file(file_name)
-    print(load_send_times)
-    print(load_wait_times)
-    print(serve_times)
-    print(metadata)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--length", help="Length of the measurement [min]", type=int)
+    parser.add_argument("--load-rate", help="Rate for load time generation", type=int)
+    parser.add_argument("--serve-rate", help="Rate for serve time generation", type=int)
+    parser.add_argument("--random-seed", help="Random seed of generation", type=int, default=None)
+    args = parser.parse_args()
+
+    if args.random_seed is not None:
+        ptg = PoissonTimeGenerator(args.length, args.load_rate, args.serve_rate, args.random_seed)
+    else:
+        ptg = PoissonTimeGenerator(args.length, args.load_rate, args.serve_rate)
+    file_name = ptg.write_times_to_file()
+    print(file_name)
+    # load_send_times, load_wait_times, serve_times, metadata = load_times_from_file(file_name)
+    # print(load_send_times)
+    # print(load_wait_times)
+    # print(serve_times)
+    # print(metadata)
