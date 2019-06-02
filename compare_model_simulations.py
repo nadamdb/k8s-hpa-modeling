@@ -50,7 +50,7 @@ if __name__ == "__main__":
             discrete_model = Model(min_server, max_server, initial_server_cnt, T=number_of_time_frames,
                                    arrival_rate=arrival_rate * scale_time_frame, serving_rate=service_rate * scale_time_frame,
                                    timeFrame=scale_time_frame, desiredCPU=desired_cpu, cont_start=cont_start,
-                                   mode=Model.READ_LOAD, already_read_load=(load_send_times, load_wait_times, serve_times, metadata))
+                                   mode=Model.READ_LOAD, already_read_load=(load_send_times, load_wait_times, serve_times, metadata),tolerance=scaling_tolerance)
             discrete_model.run()
             discrete_model.write_to_file(base_file_name + ".discrete.out")
 

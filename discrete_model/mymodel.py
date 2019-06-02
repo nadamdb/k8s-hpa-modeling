@@ -22,7 +22,7 @@ class Model:
 
 
     def __init__(self,min_server=1, max_server=1,initial_server=1, T=1, arrival_rate=1, serving_rate=1,desiredCPU=0.5,timeOut=None,
-                 cont_start=None,timeFrame=60, mode=GENERATE_LOAD, already_read_load=None):
+                 cont_start=None,timeFrame=60, mode=GENERATE_LOAD, already_read_load=None,tolerance=0.1):
         """
         Basic setup of the model:
 
@@ -47,6 +47,7 @@ class Model:
         self.timeOut=timeOut
         self.cont_start = cont_start
         self.timeFrame = timeFrame
+        self.tolerance = tolerance
         self.init()
 
         #create list storing the traffic
@@ -163,14 +164,19 @@ class Model:
     def calculate_S_t(self,t):
         #S_t_temp = math.ceil( min(self.Mu[t-1] * self.S[t-1],self.L[t-1])/(self.serving_rate * self.desiredCPU) )
         #S_t_temp = math.ceil( min(self.calc_full_serving(t),self.L[t-1])/(self.serving_rate * self.desiredCPU) )
-        S_t_temp = math.ceil( min(self.calc_full_serving(t),self.L[t-1])/(self.Mu[t-1] * self.desiredCPU) )
+        cpu = min(self.Mu[t-1] * self.S[t-1],self.L[t-1]) / (self.Mu[t-1] * self.S[t-1])
+        #print(cpu)
+        if (self.desiredCPU - self.tolerance) < cpu < (self.desiredCPU + self.tolerance):
+            self.S.append(self.S[t-1])
+        else:
+            S_t_temp = math.ceil( min(self.calc_full_serving(t),self.L[t-1])/(self.Mu[t-1] * self.desiredCPU) )
 
-        if self.min_server <= S_t_temp <= self.max_server:
-            self.S.append(S_t_temp)
-        elif self.min_server > S_t_temp:
-            self.S.append(self.min_server)
-        elif self.max_server < S_t_temp:
-            self.S.append(self.max_server)
+            if self.min_server <= S_t_temp <= self.max_server:
+                self.S.append(S_t_temp)
+            elif self.min_server > S_t_temp:
+                self.S.append(self.min_server)
+            elif self.max_server < S_t_temp:
+                self.S.append(self.max_server)
 
     def calculate_Mu_t(self,t):
         if self.MODE == Model.GENERATE_LOAD:
@@ -398,7 +404,7 @@ class Visualizer:
             fig, ax1 = plt.subplots()
             for model in models:
                 model_data = self.calc_full_pod_count_data(model,firstPeriod,lastPeriod)
-                ax1.plot(model_data[0],model_data[1],label='Period: {0}s'.format(model.timeFrame))
+                ax1.plot(model_data[0],model_data[1],label='Period: {0}s - {1}'.format(model.timeFrame,model.tolerance))
 
             ax1.set_xlabel('time (s)')
             # Make the y-axis label, ticks and tick labels match the line color.
@@ -568,16 +574,18 @@ if __name__ == "__main__":
     cpu = 0.75
     cont_start = 0 # timeFrame * cont_start sec
     T = 120
-    mymodel = Model(1,20,1,120,rate*timeFrame,serv_rate*timeFrame,cpu,None,cont_start,timeFrame,Model.READ_LOAD,file='../generator/generated_times_length_60min_load_rate_12_serve_rate_2.json')
+    mymodel = Model(1,20,1,120,rate*timeFrame,serv_rate*timeFrame,cpu,None,cont_start,timeFrame,Model.GENERATE_LOAD,tolerance=0.1)
     #mymodel = Model(1,10,1,9,240,120,0.5)
 
     mymodel.run(visualize=False)
 
-    mymodel.write_to_file()
+    #mymodel.write_to_file()
 
     visualizer = Visualizer()
     #visualizer.basic_data(mymodel)
-    visualizer.plot_cpu_per_pod([mymodel],mymodel.timeFrame,0,500)
 
+    mymodel2 = Model(1,20,1,120,rate*timeFrame,serv_rate*timeFrame,cpu,None,cont_start,timeFrame,Model.GENERATE_LOAD,tolerance=0)
+    mymodel2.run(visualize=False)
+    visualizer.plot_data([mymodel,mymodel2],plot_type = 'pod_count',timeFrame=mymodel.timeFrame,firstPeriod=0,lastPeriod=1000)
 
 
