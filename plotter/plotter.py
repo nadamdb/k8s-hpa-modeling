@@ -86,7 +86,7 @@ if __name__ == '__main__':
     parser.add_argument("--file-name", help="Save the generated figures to file", default=None)
     args = parser.parse_args()
 
-    cont_model_pod_count, k8s_log, disc_model_log = None, None, None
+    cont_model_pod_count, k8s_log, disc_model_log, base_model_pod_count = None, None, None, None
     if args.cont_model_log is not None:
         cont_model_pod_count = get_data_from_file(args.cont_model_log)
     if args.base_model_log is not None:
