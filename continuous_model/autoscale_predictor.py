@@ -25,7 +25,7 @@ class AutoscalePredictor(object):
         self.scaling_tolerance = scaling_tolerance
         self.time_frame = time_frame
         self.current_time = 0.0
-        self.current_pod_count = initial_pod_cnt
+        self.current_pod_count = self.prev_pod_count = initial_pod_cnt
         self.arrival_rate = arrival_rate
         self.pod_service_rate = pod_service_rate
         self.current_cpu_prediction = 0.0
@@ -42,6 +42,7 @@ class AutoscalePredictor(object):
         :param self.current_cpu_prediction:
         :return:
         """
+        self.prev_pod_count = self.current_pod_count
         if self.current_cpu_prediction > self.desired_cpu + self.scaling_tolerance or \
                 self.current_cpu_prediction < self.desired_cpu - self.scaling_tolerance:
             # scaling needs to be done, BUT not above max pod_count
@@ -119,13 +120,21 @@ class MMcAnalysisBasedAutoscalePredictor(AutoscalePredictor):
         :return:
         """
 
-        prediction = None # TODO: maybe a randomized initial active pod count might be better?
+        prediction = None
         if initial_active_pod is None:
-            initial_active_pod = int(self.current_pod_count / 2)
+            # set it based on the previous estimation on the CPU, the value must be bounded by the current maximal number of active pod
+            # count
+            # NOTE: in case of a BIG upscale jump, we assume even all of the new pods can be immediately at work.
+            # We don't allow having 0 initial active pods
+            initial_active_pod = max(1,
+                                     min(math.ceil(self.current_cpu_prediction * self.prev_pod_count),
+                                     self.current_pod_count))
         if self.mmc_analyzer is None:
             # in our analytical approach in case of unstable M/M/c, the cpu usage converges to 1.0
             # It is also possible to use the load parameter to better estimate the next pod count
-            prediction = self.arrival_rate / self.pod_service_rate / self.current_pod_count
+            # TODO: other options based on k8s autoscaling algorithm???
+            # prediction = self.arrival_rate / self.pod_service_rate / self.current_pod_count
+            prediction = 1.0
             print("Unstable M/M/c CPU usage estimation was used")
         else:
             sum_func_etha_0 = self.mmc_analyzer.get_sum_of_first_derivates(self.mmc_analyzer.func_etha, initial_active_pod, 0)
@@ -146,9 +155,8 @@ class MMcAnalysisBasedAutoscalePredictor(AutoscalePredictor):
 
         :return:
         """
-        prev_current_pod = self.current_pod_count
         super().set_new_current_pod_count()
-        if self.current_pod_count != prev_current_pod:
+        if self.current_pod_count != self.prev_pod_count:
             self.mmc_analyzer = self.instantiate_mmc_analyzer()
 
     def get_current_pod_count_set_cpu_pred(self, current_time):

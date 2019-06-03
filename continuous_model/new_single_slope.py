@@ -1,5 +1,6 @@
 import itertools
-from .base_continuous_model import MMcAnalyzer
+
+from continuous_model.base_continuous_model import MMcAnalyzer
 
 
 class NewSingleSlopeAnalyzer(MMcAnalyzer):
@@ -110,29 +111,35 @@ class NewSingleSlopeAnalyzer(MMcAnalyzer):
         :return:
         """
         results = []
-        for i in range(1, k+1):
-            if len(results) == 0:
-                if list_func:
-                    for der in func(i, s, derivate_order=1):
-                        results.append(der)
-                else:
-                    results.append(func(i, s, derivate_order=1))
-            else:
-                derivates = func(i, s, derivate_order=1)
-                if list_func and len(derivates) != len(results):
-                    raise NotImplementedError("Different sizes of result sets of the first derivate is not implemented")
-                for solution_idx in range(0, len(results)):
+        if k == 1:
+            single_result = func(k, s, derivate_order=1)
+            if list_func:
+                single_result = single_result[0]
+            results.append(single_result)
+        else:
+            for i in range(1, k+1):
+                if len(results) == 0:
                     if list_func:
-                        results[solution_idx] += derivates[solution_idx]
+                        for der in func(i, s, derivate_order=1):
+                            results.append(der)
                     else:
-                        results[solution_idx] += derivates
+                        results.append(func(i, s, derivate_order=1))
+                else:
+                    derivates = func(i, s, derivate_order=1)
+                    if list_func and len(derivates) != len(results):
+                        raise NotImplementedError("Different sizes of result sets of the first derivate is not implemented")
+                    for solution_idx in range(0, len(results)):
+                        if list_func:
+                            results[solution_idx] += derivates[solution_idx]
+                        else:
+                            results[solution_idx] += derivates
         return results
 
 
 if __name__ == '__main__':
-    l = 2.8
-    m = .1
-    c = 29
+    l = 0.8
+    m = 1
+    c = 1
     for k in range(1, 30):
         for solution_idx in (0, ):
             # print "\nSolution index: %s"%solution_idx
