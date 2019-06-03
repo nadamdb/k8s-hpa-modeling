@@ -36,11 +36,6 @@ if __name__ == "__main__":
             filename = ptg.write_times_to_file(filename=load_file_name, file_extension=".out")
             load_send_times, load_wait_times, serve_times, metadata = load_gen.load_times_from_file(filename)
 
-            # create baseline autoscaler
-            baseline_cont_model = AutoscalePredictor(initial_server_cnt, arrival_rate, service_rate, scale_time_frame,
-                                                        desired_cpu, scaling_tolerance, max_pod_count=max_server)
-            baseline_cont_model.write_pod_cnt_to_file(load_send_times, file_name=base_file_name + ".baseline.out")
-
             # instantiate and run the continuous model
             continuous_model = MMcAnalysisBasedAutoscalePredictor(initial_server_cnt, arrival_rate, service_rate, scale_time_frame,
                                                                   desired_cpu, scaling_tolerance, max_pod_count=max_server)
@@ -50,7 +45,8 @@ if __name__ == "__main__":
             discrete_model = Model(min_server, max_server, initial_server_cnt, T=number_of_time_frames,
                                    arrival_rate=arrival_rate * scale_time_frame, serving_rate=service_rate * scale_time_frame,
                                    timeFrame=scale_time_frame, desiredCPU=desired_cpu, cont_start=cont_start,
-                                   mode=Model.READ_LOAD, already_read_load=(load_send_times, load_wait_times, serve_times, metadata),tolerance=scaling_tolerance)
+                                   mode=Model.READ_LOAD, already_read_load=(load_send_times, load_wait_times, serve_times, metadata),
+                                   tolerance=scaling_tolerance)
             discrete_model.run()
             discrete_model.write_to_file(base_file_name + ".discrete.out")
 
