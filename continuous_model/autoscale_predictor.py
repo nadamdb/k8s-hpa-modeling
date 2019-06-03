@@ -1,5 +1,6 @@
 import math
 import json
+import random
 
 
 from .new_single_slope import NewSingleSlopeAnalyzer
@@ -7,7 +8,8 @@ from .new_single_slope import NewSingleSlopeAnalyzer
 
 class AutoscalePredictor(object):
 
-    def __init__(self, initial_pod_cnt, arrival_rate, pod_service_rate, time_frame, desired_cpu, scaling_tolerance, max_pod_count=None):
+    def __init__(self, initial_pod_cnt, arrival_rate, pod_service_rate, time_frame, desired_cpu, scaling_tolerance,
+                 min_pod_count=None, max_pod_count=None):
         """
         Interface for autoscaling predictors. Provides a basic autoscaling model, which uses the same amount of infromation as the a more
         sophisticated model but using only the "load paramter" (= self.arrival_rate / self.pod_service_rate / self.current_pod_count) of
@@ -20,6 +22,7 @@ class AutoscalePredictor(object):
         :param desired_cpu: CPU utilization which the autoscaler tries to maintain
         :param scaling_tolerance: No scaling decision shall be made if between desired_cpu +/- scaling_tolerance
         :param max_pod_count:
+        :param min_pod_count:
         """
         self.desired_cpu = desired_cpu
         self.scaling_tolerance = scaling_tolerance
@@ -29,6 +32,10 @@ class AutoscalePredictor(object):
         self.arrival_rate = arrival_rate
         self.pod_service_rate = pod_service_rate
         self.current_cpu_prediction = 0.0
+        if min_pod_count is None:
+            self.min_pod_count = 1
+        else:
+            self.min_pod_count = min_pod_count
         if max_pod_count is None:
             self.max_pod_count = float('inf')
         else:
@@ -46,8 +53,9 @@ class AutoscalePredictor(object):
         if self.current_cpu_prediction > self.desired_cpu + self.scaling_tolerance or \
                 self.current_cpu_prediction < self.desired_cpu - self.scaling_tolerance:
             # scaling needs to be done, BUT not above max pod_count
-            self.current_pod_count = min(math.ceil(self.current_pod_count * self.current_cpu_prediction / self.desired_cpu),
-                                         self.max_pod_count)
+            self.current_pod_count = max(self.min_pod_count,
+                                         min(math.ceil(self.current_pod_count * self.current_cpu_prediction / self.desired_cpu),
+                                             self.max_pod_count))
 
     def get_current_pod_count_set_cpu_pred(self, current_time):
         """
@@ -82,7 +90,8 @@ class AutoscalePredictor(object):
 
 class MMcAnalysisBasedAutoscalePredictor(AutoscalePredictor):
 
-    def __init__(self, initial_pod_cnt, arrival_rate, pod_service_rate, time_frame, desired_cpu, scaling_tolerance, max_pod_count=None):
+    def __init__(self, initial_pod_cnt, arrival_rate, pod_service_rate, time_frame, desired_cpu, scaling_tolerance,
+                 min_pod_count=None, max_pod_count=None):
         """
         Predicts the Kubernetes autoscaling in reaction to the incoming load.
 
@@ -94,7 +103,8 @@ class MMcAnalysisBasedAutoscalePredictor(AutoscalePredictor):
         :param scaling_tolerance:
         """
         # seemingly only solution_pair_index==0 produces valid results.
-        super().__init__(initial_pod_cnt, arrival_rate, pod_service_rate, time_frame, desired_cpu, scaling_tolerance, max_pod_count)
+        super().__init__(initial_pod_cnt, arrival_rate, pod_service_rate, time_frame, desired_cpu, scaling_tolerance,
+                         min_pod_count, max_pod_count)
         self.mmc_analyzer = self.instantiate_mmc_analyzer()
 
     def instantiate_mmc_analyzer(self):
@@ -126,15 +136,17 @@ class MMcAnalysisBasedAutoscalePredictor(AutoscalePredictor):
             # count
             # NOTE: in case of a BIG upscale jump, we assume even all of the new pods can be immediately at work.
             # We don't allow having 0 initial active pods
-            initial_active_pod = max(1,
-                                     min(math.ceil(self.current_cpu_prediction * self.prev_pod_count),
-                                     self.current_pod_count))
+            # initial_active_pod = max(self.min_pod_count,
+            #                          min(math.ceil(self.current_cpu_prediction * self.prev_pod_count),
+            #                              self.current_pod_count))
+            initial_active_pod = random.choice(range(self.min_pod_count, self.current_pod_count + 1))
         if self.mmc_analyzer is None:
             # in our analytical approach in case of unstable M/M/c, the cpu usage converges to 1.0
             # It is also possible to use the load parameter to better estimate the next pod count
             # TODO: other options based on k8s autoscaling algorithm???
-            # prediction = self.arrival_rate / self.pod_service_rate / self.current_pod_count
-            prediction = 1.0
+            # prediction = self.arrival_rate / self.pod_service_rate / self.current_pod_count       # mmcload
+            prediction = 1.0              # 1
+            # prediction = self.arrival_rate / self.pod_service_rate    # Lambdapermu
             print("Unstable M/M/c CPU usage estimation was used")
         else:
             sum_func_etha_0 = self.mmc_analyzer.get_sum_of_first_derivates(self.mmc_analyzer.func_etha, initial_active_pod, 0)

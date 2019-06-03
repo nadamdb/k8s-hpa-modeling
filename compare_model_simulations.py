@@ -19,12 +19,9 @@ if __name__ == "__main__":
             scale_time_frame = 30 # [s]
             desired_cpu = 0.75
             initial_server_cnt = 1
-
-            # TO BE ALIGNED PARAMETERS (cont)
             scaling_tolerance = 0.1
-
-            # TO BE ALIGNED PARAMETERS (disc)
             min_server = 1
+
             # estimation of max allowed server counts depending on load level
             max_server = int(arrival_rate / service_rate * 2)
             # the number of scaling events
@@ -38,7 +35,8 @@ if __name__ == "__main__":
 
             # instantiate and run the continuous model
             continuous_model = MMcAnalysisBasedAutoscalePredictor(initial_server_cnt, arrival_rate, service_rate, scale_time_frame,
-                                                                  desired_cpu, scaling_tolerance, max_pod_count=max_server)
+                                                                  desired_cpu, scaling_tolerance,
+                                                                  min_pod_count=min_server, max_pod_count=max_server)
             continuous_model.write_pod_cnt_to_file(load_send_times, file_name=base_file_name + ".continuous.out")
 
             # instantiate and run the discrete model
