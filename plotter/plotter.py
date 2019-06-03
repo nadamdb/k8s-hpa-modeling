@@ -23,6 +23,8 @@ def convert_model_data(data, timeframe):
     for i in range(0, len(data)):
         converted_data["data"].append(data[i])
         converted_data["time"].append(i * timeframe)
+        converted_data["data"].append(data[i])
+        converted_data["time"].append((i+1) * timeframe)
     return converted_data
 
 

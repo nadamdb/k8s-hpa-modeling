@@ -68,7 +68,7 @@ class Model:
                 arrivals.append(count)
                 if index >= len(load_send_times):
                     end = True
-            print(arrivals)
+            #print(arrivals)
             self.arrivals = arrivals
             self.T = len(arrivals)-2
             self.load_send_times = load_send_times
@@ -164,8 +164,9 @@ class Model:
     def calculate_S_t(self,t):
         #S_t_temp = math.ceil( min(self.Mu[t-1] * self.S[t-1],self.L[t-1])/(self.serving_rate * self.desiredCPU) )
         #S_t_temp = math.ceil( min(self.calc_full_serving(t),self.L[t-1])/(self.serving_rate * self.desiredCPU) )
-        cpu = min(self.Mu[t-1] * self.S[t-1],self.L[t-1]) / (self.Mu[t-1] * self.S[t-1])
-        #print(cpu)
+        serv_capacity = (self.Mu[t-1] * self.S[t-1])
+        cpu = 0 if serv_capacity <= 0 else min(self.Mu[t-1] * self.S[t-1],self.L[t-1]) / serv_capacity
+        print('Discrete model CPU usage: {0}'.format(cpu))
         if (self.desiredCPU - self.tolerance) < cpu < (self.desiredCPU + self.tolerance):
             self.S.append(self.S[t-1])
         else:
@@ -205,15 +206,15 @@ class Model:
             time = 0
             count = 0
             index= round(index)
-            print(len(self.serve_times))
-            print(max_time)
+            #print(len(self.serve_times))
+            #print(max_time)
             while index < len(self.serve_times) and time < max_time:
                 time+=self.serve_times[index]
                 index+=1
                 count+=1
             if self.S[t] > 0 and count > 0:
                 Mu = count / self.S[t]
-            print('Served: {0},Mu:{1},Count:{2}'.format(index,Mu,count))
+            #print('Served: {0},Mu:{1},Count:{2}'.format(index,Mu,count))
             self.Mu.append(Mu)
 
     def calculate_Waiting_t(self,t):
@@ -284,9 +285,9 @@ class Model:
             self.waiting.insert(0,self.La[t])
 
         #print response and waiting information
-        if visualize:
-            print(mymodel.waitingData)
-            print(mymodel.responseTimesData)
+        #if visualize:
+            #print(this.waitingData)
+            #print(this.responseTimesData)
 
     def write_to_file(self, file_name=None):
         log = {}
@@ -309,7 +310,7 @@ class Model:
         metadata["max_servers"] = self.max_server
         log["metadata"] = metadata
 
-        data["server_count"] = self.S
+        data["server_count"] = self.S[2:]
 
         log["data"] = data
 
