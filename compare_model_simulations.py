@@ -16,7 +16,7 @@ if __name__ == "__main__":
             load_file_name = base_file_name + ".load"
 
             # autoscaling parameters
-            scale_time_frame = 30 # [s]
+            scale_time_frame = 60 # [s]
             desired_cpu = 0.75
             initial_server_cnt = 1
             scaling_tolerance = 0.1
