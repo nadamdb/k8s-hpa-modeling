@@ -1,6 +1,6 @@
 import math
 
-from continuous_model.autoscale_predictor import MMcAnalysisBasedAutoscalePredictor, AutoscalePredictor
+from continuous_model.autoscale_predictor import AdaptiveRateEstimatingMMcBasedAutoscalePredictor
 from discrete_model.mymodel import Model
 import generator.timegenerator as load_gen
 
@@ -34,10 +34,12 @@ if __name__ == "__main__":
                 load_send_times, load_wait_times, serve_times, metadata = load_gen.load_times_from_file(filename)
 
                 # instantiate and run the continuous model
-                continuous_model = MMcAnalysisBasedAutoscalePredictor(initial_server_cnt, arrival_rate, service_rate, scale_time_frame,
-                                                                      desired_cpu, scaling_tolerance,
-                                                                      min_pod_count=min_server, max_pod_count=max_server)
-                continuous_model.write_pod_cnt_to_file(load_send_times, file_name=base_file_name_with_path + ".continuous.out")
+                continuous_model = AdaptiveRateEstimatingMMcBasedAutoscalePredictor(initial_server_cnt, arrival_rate, service_rate,
+                                                                                    scale_time_frame,
+                                                                                    desired_cpu, scaling_tolerance,
+                                                                                    min_pod_count=min_server, max_pod_count=max_server)
+                continuous_model.write_pod_cnt_to_file_adaptive(load_send_times, serve_times,
+                                                                file_name=base_file_name_with_path + ".continuous.out")
 
                 # instantiate and run the discrete model
                 discrete_model = Model(min_server, max_server, initial_server_cnt, T=number_of_time_frames,

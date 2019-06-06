@@ -185,6 +185,59 @@ class MMcAnalysisBasedAutoscalePredictor(AutoscalePredictor):
         return self.current_pod_count
 
 
+class AdaptiveRateEstimatingMMcBasedAutoscalePredictor(MMcAnalysisBasedAutoscalePredictor):
+
+    def __init__(self, initial_pod_cnt, arrival_rate, pod_service_rate, time_frame, desired_cpu, scaling_tolerance,
+                 min_pod_count=None, max_pod_count=None):
+        """
+        During simulation reactively changes the arrival and pod service rates according to the recent concrete arrival and service times.
+
+        :param initial_pod_cnt:
+        :param arrival_rate: Basically ignored, it is estimated from input in every timeframe
+        :param pod_service_rate: Basically ignored, it is estimated from input in every timeframe
+        :param time_frame:
+        :param desired_cpu:
+        :param scaling_tolerance:
+        :param min_pod_count:
+        :param max_pod_count:
+        """
+        super().__init__(initial_pod_cnt, arrival_rate, pod_service_rate, time_frame, desired_cpu, scaling_tolerance,
+                         min_pod_count, max_pod_count)
+        self.mmc_analyzer = self.instantiate_mmc_analyzer()
+
+    def write_pod_cnt_to_file_adaptive(self, arrival_time_stamps, service_times, file_name):
+        """
+
+        :param arrival_time_stamps:
+        :param service_times:
+        :param file_name:
+        :return:
+        """
+        sum_of_inter_arrival_times = 0.0
+        arrival_count = 0
+        sum_of_service_times = 0.0
+        pod_count_predictions = {"time": [], "data": []}
+        previous_current_time = self.current_time
+
+        for current_time, service_time in zip(arrival_time_stamps, service_times):
+            if current_time > self.current_time + self.time_frame \
+                    and sum_of_service_times > 0 and sum_of_inter_arrival_times > 0:
+                # estimated arrival rate is the reciprocal of the expected value
+                self.arrival_rate = arrival_count / sum_of_inter_arrival_times
+                self.pod_service_rate = arrival_count / sum_of_service_times
+                self.instantiate_mmc_analyzer()
+            self.get_current_pod_count_set_cpu_pred(current_time)
+            sum_of_inter_arrival_times += self.current_time - previous_current_time
+            sum_of_service_times += service_time
+            arrival_count += 1
+            previous_current_time = self.current_time
+            pod_count_predictions["data"].append(self.current_pod_count)
+            pod_count_predictions["time"].append(current_time)
+
+        with open(file_name, "w") as file:
+            json.dump(pod_count_predictions, file)
+
+
 if __name__ == '__main__':
 
     test = MMcAnalysisBasedAutoscalePredictor(5, 10, 1.0, time_frame=15.0, desired_cpu=0.75, scaling_tolerance=0.01)
