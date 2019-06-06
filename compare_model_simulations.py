@@ -22,6 +22,9 @@ if __name__ == "__main__":
                 min_server = 1
                 max_server = 20
 
+                # TO BE ALIGNED PARAMS:
+                downscale_stabilization_time = 75 # [s]
+
                 # the number of scaling events
                 number_of_time_frames = math.ceil(simulation_length_minutes * 60 / scale_time_frame)
                 cont_start = 0
@@ -37,7 +40,8 @@ if __name__ == "__main__":
                 continuous_model = AdaptiveRateEstimatingMMcBasedAutoscalePredictor(initial_server_cnt, arrival_rate, service_rate,
                                                                                     scale_time_frame,
                                                                                     desired_cpu, scaling_tolerance,
-                                                                                    min_pod_count=min_server, max_pod_count=max_server)
+                                                                                    min_pod_count=min_server, max_pod_count=max_server,
+                                                                                    downscale_stabilization_time=downscale_stabilization_time)
                 continuous_model.write_pod_cnt_to_file_adaptive(load_send_times, serve_times,
                                                                 file_name=base_file_name_with_path + ".continuous.out")
 

@@ -9,7 +9,7 @@ from .new_single_slope import NewSingleSlopeAnalyzer
 class AutoscalePredictor(object):
 
     def __init__(self, initial_pod_cnt, arrival_rate, pod_service_rate, time_frame, desired_cpu, scaling_tolerance,
-                 min_pod_count=None, max_pod_count=None):
+                 min_pod_count=None, max_pod_count=None, downscale_stabilization_time=0):
         """
         Interface for autoscaling predictors. Provides a basic autoscaling model, which uses the same amount of infromation as the a more
         sophisticated model but using only the "load paramter" (= self.arrival_rate / self.pod_service_rate / self.current_pod_count) of
@@ -28,10 +28,12 @@ class AutoscalePredictor(object):
         self.scaling_tolerance = scaling_tolerance
         self.time_frame = time_frame
         self.current_time = 0.0
+        self.last_downscale_time = 0.0
         self.current_pod_count = self.prev_pod_count = initial_pod_cnt
         self.arrival_rate = arrival_rate
         self.pod_service_rate = pod_service_rate
         self.current_cpu_prediction = 0.0
+        self.downscale_stabilization_time = downscale_stabilization_time
         if min_pod_count is None:
             self.min_pod_count = 1
         else:
@@ -53,9 +55,16 @@ class AutoscalePredictor(object):
         if self.current_cpu_prediction > self.desired_cpu + self.scaling_tolerance or \
                 self.current_cpu_prediction < self.desired_cpu - self.scaling_tolerance:
             # scaling needs to be done, BUT not above max pod_count
-            self.current_pod_count = max(self.min_pod_count,
+            tmp_current_pod_count = max(self.min_pod_count,
                                          min(math.ceil(self.current_pod_count * self.current_cpu_prediction / self.desired_cpu),
                                              self.max_pod_count))
+            # if we are downscaling, we have to check if we are over the downscale stabilization time
+            if tmp_current_pod_count >= self.prev_pod_count or \
+                    self.last_downscale_time + self.downscale_stabilization_time <= self.current_time:
+                self.current_pod_count = tmp_current_pod_count
+        # If we are scaling down, update the according variable
+        if self.current_pod_count < self.prev_pod_count:
+            self.last_downscale_time = self.current_time
 
     def get_current_pod_count_set_cpu_pred(self, current_time):
         """
@@ -91,7 +100,7 @@ class AutoscalePredictor(object):
 class MMcAnalysisBasedAutoscalePredictor(AutoscalePredictor):
 
     def __init__(self, initial_pod_cnt, arrival_rate, pod_service_rate, time_frame, desired_cpu, scaling_tolerance,
-                 min_pod_count=None, max_pod_count=None):
+                 min_pod_count=None, max_pod_count=None, downscale_stabilization_time=0):
         """
         Predicts the Kubernetes autoscaling in reaction to the incoming load.
 
@@ -104,7 +113,7 @@ class MMcAnalysisBasedAutoscalePredictor(AutoscalePredictor):
         """
         # seemingly only solution_pair_index==0 produces valid results.
         super().__init__(initial_pod_cnt, arrival_rate, pod_service_rate, time_frame, desired_cpu, scaling_tolerance,
-                         min_pod_count, max_pod_count)
+                         min_pod_count, max_pod_count, downscale_stabilization_time)
         self.mmc_analyzer = self.instantiate_mmc_analyzer()
 
     def instantiate_mmc_analyzer(self):
@@ -188,7 +197,7 @@ class MMcAnalysisBasedAutoscalePredictor(AutoscalePredictor):
 class AdaptiveRateEstimatingMMcBasedAutoscalePredictor(MMcAnalysisBasedAutoscalePredictor):
 
     def __init__(self, initial_pod_cnt, arrival_rate, pod_service_rate, time_frame, desired_cpu, scaling_tolerance,
-                 min_pod_count=None, max_pod_count=None):
+                 min_pod_count=None, max_pod_count=None, downscale_stabilization_time=0):
         """
         During simulation reactively changes the arrival and pod service rates according to the recent concrete arrival and service times.
 
@@ -202,7 +211,7 @@ class AdaptiveRateEstimatingMMcBasedAutoscalePredictor(MMcAnalysisBasedAutoscale
         :param max_pod_count:
         """
         super().__init__(initial_pod_cnt, arrival_rate, pod_service_rate, time_frame, desired_cpu, scaling_tolerance,
-                         min_pod_count, max_pod_count)
+                         min_pod_count, max_pod_count, downscale_stabilization_time)
         self.mmc_analyzer = self.instantiate_mmc_analyzer()
 
     def write_pod_cnt_to_file_adaptive(self, arrival_time_stamps, service_times, file_name):
