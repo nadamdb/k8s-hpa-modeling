@@ -12,7 +12,7 @@ if __name__ == "__main__":
                 # Load parameters
                 print("\nSIMULATION ROUND: arrival rate: {}, service rate: {}".format(arrival_rate, service_rate))
                 simulation_length_minutes = 30 # [min]
-                out_put_folder = "working/measurement_2/model_outputs/"
+                out_put_folder = "working/measurement_2_15s/model_outputs/"
 
                 # autoscaling parameters
                 scale_time_frame = 15 # [s]
