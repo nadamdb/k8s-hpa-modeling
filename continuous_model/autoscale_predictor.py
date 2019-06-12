@@ -212,7 +212,7 @@ class AdaptiveRateEstimatingMMcBasedAutoscalePredictor(MMcAnalysisBasedAutoscale
         """
         super().__init__(initial_pod_cnt, arrival_rate, pod_service_rate, time_frame, desired_cpu, scaling_tolerance,
                          min_pod_count, max_pod_count, downscale_stabilization_time)
-        self.mmc_analyzer = self.instantiate_mmc_analyzer()
+        # calling self.instantiate_mmc_analyzer() is not needed, called in the base constructor
 
     def write_pod_cnt_to_file_adaptive(self, arrival_time_stamps, service_times, file_name):
         """
@@ -230,16 +230,20 @@ class AdaptiveRateEstimatingMMcBasedAutoscalePredictor(MMcAnalysisBasedAutoscale
 
         for current_time, service_time in zip(arrival_time_stamps, service_times):
             if current_time > self.current_time + self.time_frame \
-                    and sum_of_service_times > 0 and sum_of_inter_arrival_times > 0:
+                    and sum_of_service_times > 0 and sum_of_inter_arrival_times > 0 and arrival_count > 0:
                 # estimated arrival rate is the reciprocal of the expected value
                 self.arrival_rate = arrival_count / sum_of_inter_arrival_times
                 self.pod_service_rate = arrival_count / sum_of_service_times
                 self.instantiate_mmc_analyzer()
+                # in every scaling period, reset the empirical rates
+                sum_of_inter_arrival_times = 0.0
+                arrival_count = 0
+                sum_of_service_times = 0.0
             self.get_current_pod_count_set_cpu_pred(current_time)
-            sum_of_inter_arrival_times += self.current_time - previous_current_time
+            sum_of_inter_arrival_times += current_time - previous_current_time
             sum_of_service_times += service_time
             arrival_count += 1
-            previous_current_time = self.current_time
+            previous_current_time = current_time
             pod_count_predictions["data"].append(self.current_pod_count)
             pod_count_predictions["time"].append(current_time)
 

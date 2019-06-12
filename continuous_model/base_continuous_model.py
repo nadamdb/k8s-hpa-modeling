@@ -14,9 +14,9 @@ class MMcAnalyzer(object):
         """
         self.solution_pair_index = solution_pair_index
         # Important if get_derivate_of_products is used too!
-        # if c < 2:
-        #     raise ValueError("c must be at least 2")
-        print("WARNING: c must be at least 2, might not cause problem if only expected value is calculated!")
+        if c < 2:
+            #  raise ValueError("c must be at least 2")
+            print("WARNING: c must be at least 2, might not cause problem if only expected value is calculated!")
         self.c = c
         self.mu_ = float(mu_)
         self.lambda_ = float(lambda_)
