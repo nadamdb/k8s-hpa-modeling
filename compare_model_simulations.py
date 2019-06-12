@@ -1,4 +1,5 @@
 import math
+import os
 
 from continuous_model.autoscale_predictor import AdaptiveRateEstimatingMMcBasedAutoscalePredictor
 from discrete_model.mymodel import Model
@@ -12,23 +13,26 @@ if __name__ == "__main__":
                 # Load parameters
                 print("\nSIMULATION ROUND: arrival rate: {}, service rate: {}".format(arrival_rate, service_rate))
                 simulation_length_minutes = 30 # [min]
-                out_put_folder = "working/measurement_2/model_outputs/"
 
                 # autoscaling parameters
-                scale_time_frame = 15 # [s]
+                scale_time_frame = 90 # [s]
                 desired_cpu = 0.75
                 initial_server_cnt = 1
                 scaling_tolerance = 0.1
                 min_server = 1
                 max_server = 20
+                out_put_folder = "working/measurement_2_{}s/model_outputs/".format(scale_time_frame)
 
                 # TO BE ALIGNED PARAMS:
-                downscale_stabilization_time = 75 # [s]
+                # in our measurements downscale stabilization was always the same as the scale time frame
+                downscale_stabilization_time = scale_time_frame # [s]
 
                 # the number of scaling events
                 number_of_time_frames = math.ceil(simulation_length_minutes * 60 / scale_time_frame)
                 cont_start = 0
 
+                # create output folder
+                os.system("mkdir -p {}".format(out_put_folder))
                 # generate load, write to file and read it back to give it to the models
                 ptg = load_gen.PoissonTimeGenerator(simulation_length_minutes, arrival_rate, service_rate, random_seed=seed)
                 # The load generator creates a file name
