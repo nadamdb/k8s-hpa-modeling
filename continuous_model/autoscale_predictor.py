@@ -30,6 +30,8 @@ class AutoscalePredictor(object):
         self.current_time = 0.0
         self.last_downscale_time = 0.0
         self.current_pod_count = self.prev_pod_count = initial_pod_cnt
+        # variable to store the number of pods, which will be ready only later.
+        self.next_pod_count = None
         self.arrival_rate = arrival_rate
         self.pod_service_rate = pod_service_rate
         self.current_cpu_prediction = 0.0
@@ -54,14 +56,17 @@ class AutoscalePredictor(object):
         self.prev_pod_count = self.current_pod_count
         if self.current_cpu_prediction > self.desired_cpu + self.scaling_tolerance or \
                 self.current_cpu_prediction < self.desired_cpu - self.scaling_tolerance:
+            # with this method we assume it takes exactly one scaling time frame for the pods to get ready
+            if self.next_pod_count is not None:
+                self.current_pod_count = self.next_pod_count
             # scaling needs to be done, BUT not above max pod_count
-            tmp_current_pod_count = max(self.min_pod_count,
+            tmp_next_pod_count = max(self.min_pod_count,
                                          min(math.ceil(self.current_pod_count * self.current_cpu_prediction / self.desired_cpu),
                                              self.max_pod_count))
             # if we are downscaling, we have to check if we are over the downscale stabilization time
-            if tmp_current_pod_count >= self.prev_pod_count or \
+            if tmp_next_pod_count >= self.prev_pod_count or \
                     self.last_downscale_time + self.downscale_stabilization_time <= self.current_time:
-                self.current_pod_count = tmp_current_pod_count
+                self.next_pod_count = tmp_next_pod_count
         # If we are scaling down, update the according variable
         if self.current_pod_count < self.prev_pod_count:
             self.last_downscale_time = self.current_time
