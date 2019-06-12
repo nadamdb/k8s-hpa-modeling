@@ -114,9 +114,10 @@ class MMcAnalysisBasedAutoscalePredictor(AutoscalePredictor):
         # seemingly only solution_pair_index==0 produces valid results.
         super().__init__(initial_pod_cnt, arrival_rate, pod_service_rate, time_frame, desired_cpu, scaling_tolerance,
                          min_pod_count, max_pod_count, downscale_stabilization_time)
-        self.mmc_analyzer = self.instantiate_mmc_analyzer()
+        self.mmc_analyzer = self.get_mmc_analyzer_instance()
+        self.queue_length_cpu_pred_compensation = 0.0
 
-    def instantiate_mmc_analyzer(self):
+    def get_mmc_analyzer_instance(self):
         """
         Creates the single slope M/M/c analyzer, respecting the current values of the model: arrival_rate, pod_service_rate AND most
         importantly current_pod_count.
@@ -145,10 +146,10 @@ class MMcAnalysisBasedAutoscalePredictor(AutoscalePredictor):
             # count
             # NOTE: in case of a BIG upscale jump, we assume even all of the new pods can be immediately at work.
             # We don't allow having 0 initial active pods
-            # initial_active_pod = max(self.min_pod_count,
-            #                          min(math.ceil(self.current_cpu_prediction * self.prev_pod_count),
-            #                              self.current_pod_count))
-            initial_active_pod = random.choice(range(self.min_pod_count, self.current_pod_count + 1))
+            initial_active_pod = max(self.min_pod_count,
+                                     min(math.ceil(self.current_cpu_prediction * self.prev_pod_count),
+                                         self.current_pod_count))
+            # initial_active_pod = random.choice(range(self.min_pod_count, self.current_pod_count + 1))
         if self.mmc_analyzer is None:
             # in our analytical approach in case of unstable M/M/c, the cpu usage converges to 1.0
             # It is also possible to use the load parameter to better estimate the next pod count
@@ -156,7 +157,12 @@ class MMcAnalysisBasedAutoscalePredictor(AutoscalePredictor):
             # prediction = self.arrival_rate / self.pod_service_rate / self.current_pod_count       # mmcload
             prediction = 1.0              # 1
             # prediction = self.arrival_rate / self.pod_service_rate    # Lambdapermu
-            print("Unstable M/M/c CPU usage estimation was used")
+
+            # remember the compensation of CPU utilization of queued requests
+            self.queue_length_cpu_pred_compensation = (self.arrival_rate - self.current_pod_count * self.pod_service_rate) / \
+                                                       self.pod_service_rate
+            print("Unstable M/M/c CPU usage estimation was used, total CPU usage compensation: {}".
+                  format(self.queue_length_cpu_pred_compensation))
         else:
             sum_func_etha_0 = self.mmc_analyzer.get_sum_of_first_derivates(self.mmc_analyzer.func_etha, initial_active_pod, 0)
             sum_func_delta_c_0 = self.mmc_analyzer.get_sum_of_first_derivates(self.mmc_analyzer.func_delta_c, initial_active_pod, 0)
@@ -167,6 +173,12 @@ class MMcAnalysisBasedAutoscalePredictor(AutoscalePredictor):
 
             prediction = expected_sum_weighted_busy_time / expected_sum_T0 / self.current_pod_count
             print("Clever M/M/c based CPU usage prediction was used: {}".format(prediction))
+            # compensate the utilization with the utilization of the queued requests
+            cpu_usage_room_left = 1.0 - prediction
+            prediction += min(cpu_usage_room_left, self.queue_length_cpu_pred_compensation)
+            # either we used all compensation, or there is some left for the next scaling event
+            self.queue_length_cpu_pred_compensation = max(0.0, self.queue_length_cpu_pred_compensation - cpu_usage_room_left)
+            print("Queue length compensated CPU usage prediction: {}".format(prediction))
         self.current_cpu_prediction = prediction
         return prediction
 
@@ -178,7 +190,7 @@ class MMcAnalysisBasedAutoscalePredictor(AutoscalePredictor):
         """
         super().set_new_current_pod_count()
         if self.current_pod_count != self.prev_pod_count:
-            self.mmc_analyzer = self.instantiate_mmc_analyzer()
+            self.mmc_analyzer = self.get_mmc_analyzer_instance()
 
     def get_current_pod_count_set_cpu_pred(self, current_time):
         """
@@ -212,7 +224,7 @@ class AdaptiveRateEstimatingMMcBasedAutoscalePredictor(MMcAnalysisBasedAutoscale
         """
         super().__init__(initial_pod_cnt, arrival_rate, pod_service_rate, time_frame, desired_cpu, scaling_tolerance,
                          min_pod_count, max_pod_count, downscale_stabilization_time)
-        # calling self.instantiate_mmc_analyzer() is not needed, called in the base constructor
+        # calling self.get_mmc_analyzer_instance() is not needed, called in the base constructor
 
     def write_pod_cnt_to_file_adaptive(self, arrival_time_stamps, service_times, file_name):
         """
@@ -234,7 +246,7 @@ class AdaptiveRateEstimatingMMcBasedAutoscalePredictor(MMcAnalysisBasedAutoscale
                 # estimated arrival rate is the reciprocal of the expected value
                 self.arrival_rate = arrival_count / sum_of_inter_arrival_times
                 self.pod_service_rate = arrival_count / sum_of_service_times
-                self.instantiate_mmc_analyzer()
+                self.mmc_analyzer = self.get_mmc_analyzer_instance()
                 # in every scaling period, reset the empirical rates
                 sum_of_inter_arrival_times = 0.0
                 arrival_count = 0
