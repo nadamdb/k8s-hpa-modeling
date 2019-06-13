@@ -59,11 +59,18 @@ class AutoscalePredictor(object):
                                          min(math.ceil(self.current_pod_count * scaling_ratio),
                                              self.max_pod_count))
             # if we are downscaling, we have to check if we are over the downscale stabilization time
+            # (bool algebra: A => B 'is same as' notA or B)
             if tmp_current_pod_count >= self.prev_pod_count or \
                     self.last_downscale_time + self.downscale_stabilization_time <= self.current_time:
                 self.current_pod_count = tmp_current_pod_count
-        # If we are scaling down, update the according variable
+        # If we are scaling down, update the according temporal variable
         if self.current_pod_count < self.prev_pod_count:
+            # if we are downscaling set the highest pod count to a value where we can still use the model for prediction:
+            lowest_stable_pod_cnt = math.ceil(self.arrival_rate / self.pod_service_rate)
+            if self.current_pod_count < lowest_stable_pod_cnt:
+                print("Stopping model from scaling back to unstable {} pod count, allowed lowest value: {}".format(
+                    self.current_pod_count, lowest_stable_pod_cnt))
+                self.current_pod_count = lowest_stable_pod_cnt
             self.last_downscale_time = self.current_time
 
     def get_current_pod_count_set_cpu_pred(self, current_time):
