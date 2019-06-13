@@ -52,11 +52,11 @@ class AutoscalePredictor(object):
         :return:
         """
         self.prev_pod_count = self.current_pod_count
-        if self.current_cpu_prediction > self.desired_cpu + self.scaling_tolerance or \
-                self.current_cpu_prediction < self.desired_cpu - self.scaling_tolerance:
+        scaling_ratio = self.current_cpu_prediction / self.desired_cpu
+        if math.fabs(scaling_ratio - 1.0) > self.scaling_tolerance:
             # scaling needs to be done, BUT not above max pod_count
             tmp_current_pod_count = max(self.min_pod_count,
-                                         min(math.ceil(self.current_pod_count * self.current_cpu_prediction / self.desired_cpu),
+                                         min(math.ceil(self.current_pod_count * scaling_ratio),
                                              self.max_pod_count))
             # if we are downscaling, we have to check if we are over the downscale stabilization time
             if tmp_current_pod_count >= self.prev_pod_count or \
