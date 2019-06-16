@@ -16,6 +16,8 @@ class PrometheusCollector:
         self.log["data"]["hpa_current"] = self.get_json_values("kube_hpa_status_current_replicas")
         self.log["data"]["hpa_desired"] = self.get_json_values("kube_hpa_status_desired_replicas")
         self.log["data"]["pod_count"] = self.get_json_values("count(kube_pod_info{namespace=\"default\"})")
+        self.log["data"]["cpu_percentage"] = self.get_json_values("(sum(rate(container_cpu_usage_seconds_total{namespace=\"default\"}[1m])) / count(kube_pod_info{namespace=\"default\"}) * 1000)")
+        self.log["data"]["cpu_hpa"] = self.get_json_values("sum(rate(container_cpu_usage_seconds_total{namespace=\"default\"}[1m]))")
         return self.log
 
     def get_json_values(self, metric):
@@ -25,7 +27,7 @@ class PrometheusCollector:
 
 
 if __name__ == "__main__":
-    log = {"metadata": {"timestamp": "2019-05-04_11-04-58.496242", "load_rate": 2, "length": 60, "wait": 0, "start_time": 1556967898.4962304, "requests_sent_time": 1556967898.4962623, "end_time": 1556967908.4963417}}
+    log = {"metadata": {"timestamp": "2019-05-04_11-04-58.496242", "load_rate": 2, "length": 60, "wait": 0, "start_time": 1560466800, "requests_sent_time": 1556967898.4962623, "end_time": 1560467000}}
     pc = PrometheusCollector(log)
     print(json.dumps(pc.collect_logs()))
 
