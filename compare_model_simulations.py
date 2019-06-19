@@ -7,12 +7,12 @@ import generator.timegenerator as load_gen
 
 
 if __name__ == "__main__":
-    for arrival_rate in [10, 15, 20, 30]:
-        for service_rate in [1, 2]:
+    for arrival_rate in [8, 10, 20, 30]:
+        for service_rate in [1, 2, 4, 8]:
             for seed in [0,1,2]:
                 # Load parameters
                 print("\nSIMULATION ROUND: arrival rate: {}, service rate: {}".format(arrival_rate, service_rate))
-                simulation_length_minutes = 30 # [min]
+                simulation_length_minutes = 60 # [min]
 
                 # autoscaling parameters
                 scale_time_frame = 90 # [s]
@@ -21,7 +21,7 @@ if __name__ == "__main__":
                 scaling_tolerance = 0.1
                 min_server = 1
                 max_server = 20
-                out_put_folder = "working/measurement_2_{}s/model_outputs/".format(scale_time_frame)
+                out_put_folder = "working/measurement_3_{}s/model_outputs/".format(scale_time_frame)
 
                 # TO BE ALIGNED PARAMS:
                 # in our measurements downscale stabilization was always the same as the scale time frame
