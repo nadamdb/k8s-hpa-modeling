@@ -30,6 +30,8 @@ def convert_model_data(data, timeframe):
 
 def plot_data(k8s_log=None, model_log=None, cont_model_pod_count=None, base_model_pod_count=None, to_file_name=None):
     fig, ax = plt.subplots()
+    fig = plt.gcf()
+    fig.set_size_inches(18.5, 10.5)
     if model_log is not None:
         model_pod_count = convert_model_data(model_log["data"]["server_count"], model_log["metadata"]["timeframe_length"])
         model_mean = sum(model_pod_count["data"]) / len(model_pod_count["data"])

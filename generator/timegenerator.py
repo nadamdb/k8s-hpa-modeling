@@ -157,6 +157,7 @@ class MMPPTimeGenerator(TimeGenerator):
     def write_times_to_file(self, filename=None, file_extension=".json"):
         metadata = {}
         metadata["load_rate"] = self.load_rate_list_string
+        metadata["load_rate_list"] = self.load_rate_list
         metadata["transition_matrix"] = self.transition_matrix
         metadata["serve_rate"] = self.serve_rate
         metadata["type"] = "mmpp"
