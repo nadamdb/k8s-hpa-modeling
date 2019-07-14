@@ -35,17 +35,20 @@ else:
 
     metadata = {"measurement_length": args.length, "load_rate": args.load_rate, "serve_rate": args.serve_rate}
 
-to_file = "k8s_measurement_length_" + str(metadata["measurement_length"]) + \
+if metadata.get("type",0) == "real":
+    to_file = "k8s_real_measurementh_length_60min_serve_rate_{}_random_seed_{}".format(metadata["serve_rate"], metadata["random_seed"])
+else:
+    to_file = "k8s_measurement_length_" + str(metadata["measurement_length"]) + \
                     "min_load_rate_" + str(metadata["load_rate"]) + \
                     "_serve_rate_" + str(metadata["serve_rate"])
-if args.config is not None:
-    to_file += "_random_seed_" + str(metadata["random_seed"])
+    if args.config is not None:
+        to_file += "_random_seed_" + str(metadata["random_seed"])
 
 # rate = req/sec
-load_rate = metadata["load_rate"]
+#load_rate = metadata["load_rate"]
 
 # [measurement_length] = sec
-measurement_length = metadata["measurement_length"] * 60
+#measurement_length = metadata["measurement_length"] * 60
 
 wait_time = args.wait_time * 60
 

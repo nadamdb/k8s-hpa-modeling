@@ -8,3 +8,9 @@ venv/
 model_comp_results/plots/
 *.out
 *.png
+generator/real_data/times_per_top_hourly/
+generator/real_data/times_per_file/
+generator/real_data/times_per_top/
+generator/real_data/ip_dst_frequencies/
+generator/real_data/ip_dst_frequencies_anonym/
+generator/real_data/logs_to_run_measurements/

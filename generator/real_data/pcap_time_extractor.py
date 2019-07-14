@@ -17,16 +17,16 @@ os.system("tshark -r {} -T fields -e frame.number -e frame.time_epoch -e ip.src 
 df = pd.read_csv("tmp.csv", header=0, names=["num", "time", "ip_src", "ip_dst"])
 #df = pd.read_csv(args.file, header=0, names=["num", "time", "ip_src", "ip_dst"])
 
-top_ips = {"top1" : "152.66.89.44",
-           "top2" : "10.4.4.17",
-           "top3" : "10.4.4.20",
-           "top4" : "10.4.4.19",
-           "top5" : "152.66.150.170",
-           "top6" : "152.66.57.222",
-           "top7" : "152.66.26.201",
-           "top8" : "152.66.79.165",
-           "top9" : "152.66.130.255",
-           "top10" : "152.66.57.178"}
+top_ips = {"top1" : "152.66.120.132",
+           "top2" : "152.66.189.137",
+           "top3" : "176.63.62.78",
+           "top4" : "172.217.18.74",
+           "top5" : "152.66.252.1",
+           "top6" : "152.66.241.246",
+           "top7" : "83.97.89.96",
+           "top8" : "152.66.249.132",
+           "top9" : "152.66.252.20",
+           "top10" : "31.46.242.134"}
 
 data = {}
 
