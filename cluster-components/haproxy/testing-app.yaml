@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-deployment
+  labels:
+    app: test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test
+  template:
+    metadata:
+      labels:
+        app: test
+    spec:
+      containers:
+      - name: test-server
+        image: balazska/test-server:fixed-serving
+        resources:
+          limits:
+            cpu: "300m"
+          requests:
+            cpu: "300m"
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - mountPath: /media
+          name: log
+      volumes:
+      - name: log
+        hostPath:
+          path: /media
+          type: Directory
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: test-service
+  labels:
+    app: test
+  annotations:
+    haproxy.org/check: "enabled"
+    haproxy.org/forwarded-for: "enabled"
+    haproxy.org/load-balance: "roundrobin"
+spec:
+  selector:
+    app: test
+  ports:
+  - protocol: TCP
+    port: 8080
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: test-ingress
+  namespace: default
+spec:
+  rules:
+  - host: testserver
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: test-service
+          servicePort: 8080
