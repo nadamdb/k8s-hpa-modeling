@@ -1,6 +1,6 @@
 #!/bin/bash
 
-python3 -u mlhpacomponent/run.py --model ar > ar_prediction_facebook_de.log &
+python3 -u mlhpacomponent/run.py --model ar > ar_prediction_all_de.log &
 MLHPA_PID=$!
 echo "Waiting..."
 sleep 20
@@ -8,7 +8,7 @@ kubectl apply -f nodejs_mlhpa.yaml
 echo "Waiting..."
 sleep 20
 echo "Measurement start."
-python3 measurement_ml.py --type ar --wait-time 15 --load ../generator/real_data/dobreff/Facebook_dest_de.json
+python3 measurement_ml.py --type ar --wait-time 15 --load ../generator/real_data/dobreff/tcp5tuple_http_de.json
 kill $MLHPA_PID
 kubectl delete -f nodejs_mlhpa.yaml
 echo "Waiting..."

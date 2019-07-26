@@ -8,7 +8,7 @@ kubectl apply -f nodejs_mlhpa.yaml
 echo "Waiting..."
 sleep 20
 echo "Measurement start."
-python3 measurement.py --type lstm --wait-time 1 --load ../generator/real_data/dobreff/Facebook_dest_de.json
+python3 measurement_ml.py --type lstm --wait-time 15 --load ../generator/real_data/dobreff/Facebook_dest_de.json
 kill $MLHPA_PID
 kubectl delete -f nodejs_mlhpa.yaml
 echo "Waiting..."
