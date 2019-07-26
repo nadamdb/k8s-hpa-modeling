@@ -51,8 +51,8 @@ for i in range(0, len(load_wait_times) + 1):
     os.system(command + ' &')
     print("SENT_" + str(i))
 ######
-    if i == 1000:
-        break
+#    if i == 1000:
+#        break
 ######
     if i < len(load_wait_times):
         time.sleep(load_wait_times[i])
