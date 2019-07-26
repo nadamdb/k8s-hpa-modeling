@@ -1,0 +1,2 @@
+kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta2/namespaces/default/services/*/test-metric" | jq
+curl -XPOST -H 'Content-Type: application/json' 10.97.177.199:80/write-metrics/namespaces/default/services/kubernetes/test-metric --data-raw '"2200m"'
