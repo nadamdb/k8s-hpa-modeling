@@ -8,3 +8,5 @@ venv/
 model_comp_results/plots/
 *.out
 *.png
+generator/real_data/dobreff/tcp5tuple_http_de.json
+generator/real_data/dobreff/tcp5tuple_http_du.json
