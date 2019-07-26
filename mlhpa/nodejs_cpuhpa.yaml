@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nodejs-mlhpa
+  name: nodejs-cpu-deployment
   labels:
-    app: nodejs
+    app: nodejs-cpu
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nodejs
+      app: nodejs-cpu
   template:
     metadata:
       labels:
-        app: nodejs
+        app: nodejs-cpu
     spec:
       containers:
-      - name: nodejs-app
+      - name: nodejs-app-cpu
         image: balazska/nodejs_app:v1
         resources:
           limits:
@@ -28,9 +28,9 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: nodejs-service
+  name: nodejs-cpu-service
   labels:
-    app: nodejs
+    app: nodejs-cpu
     tradeoff: "42"
   annotations:
     haproxy.org/check: "enabled"
@@ -38,7 +38,7 @@ metadata:
     haproxy.org/load-balance: "roundrobin"
 spec:
   selector:
-    app: nodejs
+    app: nodejs-cpu
   ports:
   - protocol: TCP
     port: 3000
@@ -46,22 +46,22 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: nodejs-ingress
+  name: nodejs-cpu-ingress
   namespace: default
 spec:
   rules:
-  - host: nodejsapp
+  - host: nodejs-cpu-app
     http:
       paths:
       - path: /
         backend:
-          serviceName: nodejs-service
+          serviceName: nodejs-cpu-service
           servicePort: 3000
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: nodejs-mlhpa
+  name: nodejs-cpu-hpa
   namespace: default
 spec:
   maxReplicas: 80
@@ -69,5 +69,5 @@ spec:
   scaleTargetRef:
     apiVersion: extensions/v1beta1
     kind: Deployment
-    name: nodejs-mlhpa
+    name: nodejs-cpu-deployment
   targetCPUUtilizationPercentage: 90

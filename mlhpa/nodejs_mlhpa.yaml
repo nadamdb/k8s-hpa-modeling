@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nodejs-mlhpa
+  name: nodejs-ml-deployment
   labels:
-    app: nodejs
+    app: nodejs-ml
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nodejs
+      app: nodejs-ml
   template:
     metadata:
       labels:
-        app: nodejs
+        app: nodejs-ml
     spec:
       containers:
-      - name: nodejs-app
+      - name: nodejs-app-ml
         image: balazska/nodejs_app:v1
         resources:
           limits:
@@ -28,9 +28,9 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: nodejs-service
+  name: nodejs-ml-service
   labels:
-    app: nodejs
+    app: nodejs-ml
     tradeoff: "42"
   annotations:
     haproxy.org/check: "enabled"
@@ -38,7 +38,7 @@ metadata:
     haproxy.org/load-balance: "roundrobin"
 spec:
   selector:
-    app: nodejs
+    app: nodejs-ml
   ports:
   - protocol: TCP
     port: 3000
@@ -46,22 +46,22 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: nodejs-ingress
+  name: nodejs-ml-ingress
   namespace: default
 spec:
   rules:
-  - host: nodejsapp
+  - host: nodejs-ml-app
     http:
       paths:
       - path: /
         backend:
-          serviceName: nodejs-service
+          serviceName: nodejs-ml-service
           servicePort: 3000
 ---
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: nodejs-mlhpa
+  name: nodejs-ml-hpa
   namespace: default
 spec:
   maxReplicas: 80
@@ -69,7 +69,7 @@ spec:
   scaleTargetRef:
     apiVersion: extensions/v1beta1
     kind: Deployment
-    name: nodejs-mlhpa
+    name: nodejs-ml-deployment
   metrics:
   - type: Object
     object:
@@ -77,13 +77,17 @@ spec:
         name: qps
       describedObject:
         kind: Service
-        name: nodejs-service
+        name: nodejs-ml-service
       target:
         type: AverageValue
-        value: 60
-  - type: Resource
-    resource:
-      name: cpu
+        value: 90
+  - type: Object
+    object:
+      metric:
+        name: cpu
+      describedObject:
+        kind: Service
+        name: nodejs-ml-service
       target:
-        type: Utilization
-        averageUtilization: 90
+        type: AverageValue
+        value: 90

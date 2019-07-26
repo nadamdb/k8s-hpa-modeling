@@ -121,9 +121,10 @@ class Service(object):
 
 class Connector(object):
 
-    def __init__(self, model):
+    def __init__(self, model, logfile):
         self.service = None
         self.model = model
+        self.logfile = logfile
 
     def create_service(self, label_value):
         service = Service(SERVICE_NAME, self.model, label_value)
@@ -182,6 +183,8 @@ class Connector(object):
             return '[]'
 
     def run(self):
+        pred_log_file = open("qps_pred_" + self.logfile, "a+")
+        cpu_log_file = open("cpu_" + self.logfile, "a+")
         push_time = 1
         waiting_time = WAITING_TIME_AFTER_CREATION_SEC
         # While there is no service object we just poll the prometheus for service name in every second
@@ -199,7 +202,9 @@ class Connector(object):
 
         while waiting_time > 0:
             self.push(0)
-            self.push_cpu_metric()
+            pred_log_file.write("{0};{1}\n".format(time.time(),0))
+            print("{0};{1}\n".format(time.time(),0))
+            self.push_cpu_metric(cpu_log_file)
             waiting_time -= 1
             time.sleep(1)
         data = self.get_session_num()
@@ -211,7 +216,8 @@ class Connector(object):
             forecast_happened = False
             if not self.service.forecast_enabled:
                 self.push(0)
-                self.push_cpu_metric()
+                pred_log_file.write("{0};{1}\n".format(time.time(),0))
+                self.push_cpu_metric(cpu_log_file)
             else:
                 if push_time == 0:
                     forecast_time, forecasted_value = self.service.forecast()
@@ -227,10 +233,13 @@ class Connector(object):
                             raw_data = self.query_prometheus(query)
                         pod_num = int(raw_data[0]['value'][1])
                         self.push(forecasted_value/pod_num*self.service.tradeoff)
+                        pred_log_file.write("{0};{1}\n".format(time.time(),forecasted_value/pod_num*self.service.tradeoff))
                         self.push(0.0, metric=CPU_METRIC_NAME)
+                        cpu_log_file.write("{0};{1}\n".format(time.time(),0.0))
                     else:
                         self.push(0)
-                        self.push_cpu_metric()
+                        pred_log_file.write("{0};{1}\n".format(time.time(),0))
+                        self.push_cpu_metric(cpu_log_file)
                     push_time = 1
                     forecast_happened = True
                 else:
@@ -243,24 +252,26 @@ class Connector(object):
             if forecast_happened:
                 self.service.grade_service()
 
-    def push_cpu_metric(self):
+    def push_cpu_metric(self,cpulf):
         raw_data = '[]'
         while raw_data == '[]' or (type(raw_data) == list and len(raw_data) == 0):
-            query = 'sum(rate(container_cpu_usage_seconds_total{pod_name=~"'+DEPLOYMENT_NAME+'.*",container_name!="POD"}[1m]))'
+            query = '(sum(rate(container_cpu_usage_seconds_total{pod_name=~"'+DEPLOYMENT_NAME+'.*",container_name!="POD"}[1m])) / count(kube_pod_info{pod=~"'+DEPLOYMENT_NAME+'.*"})) * 1000'
             raw_data = self.query_prometheus(query)
         data = float(raw_data[0]['value'][1])
         print('{0}  Received CPU value: {1}'.format(str(int(time.time())), str(data)))
+        cpulf.write("{0};{1}\n".format(time.time(),data))
+        print("{0};{1}\n".format(time.time(),data))
         self.push(data, metric=CPU_METRIC_NAME)
 
 
-def main(model):
-    connector = Connector(model)
+def main(model, logfile):
+    connector = Connector(model, logfile)
     connector.run()
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Scaling predictor')
-    parser.add_argument('--model', '-m', type=str, default='lstm',
-                        help='Set the machine learning model. It can be: lstm, ar')
+    parser.add_argument('--model', '-m', type=str, default='lstm', help='Set the machine learning model. It can be: lstm, ar')
+    parser.add_argument('--logfile', type=str, help='Name of the logfile')
     args = parser.parse_args()
-    main(args.model)
+    main(args.model, args.logfile)

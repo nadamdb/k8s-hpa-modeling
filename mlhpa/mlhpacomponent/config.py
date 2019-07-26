@@ -10,12 +10,12 @@ WEBSERVER_PORT = '8888'
 HAPROXY_IP = '10.97.177.199'
 HAPROX_PORT = '80'
 
-SERVICE_NAME = 'test-service'
-METRIC_NAME = 'test-metric'
-CPU_METRIC_NAME = 'cpu-metric'
+SERVICE_NAME = 'nodejs-ml-service'
+METRIC_NAME = 'qps'
+CPU_METRIC_NAME = 'cpu'
 NAMESPACE = 'default'
-LABEL_NAME = 'test'
-DEPLOYMENT_NAME = 'test-deployment'
+LABEL_NAME = 'tradeoff'
+DEPLOYMENT_NAME = 'nodejs-ml-deployment'
 
 # Relative error is between -2 and 2; 0 is the best
 GRADE_THRESHOLD = 0.4
