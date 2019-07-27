@@ -11,12 +11,12 @@ WEBSERVER_PORT = '8888'
 HAPROXY_IP = '10.97.177.199'
 HAPROX_PORT = '80'
 
-SERVICE_NAME = 'nodejs-ml-service'
+SERVICE_NAME = 'nodejs-arml-service'
 METRIC_NAME = 'qps'
 CPU_METRIC_NAME = 'cpu'
 NAMESPACE = 'default'
 LABEL_NAME = 'tradeoff'
-DEPLOYMENT_NAME = 'nodejs-ml-deployment'
+DEPLOYMENT_NAME = 'nodejs-arml-deployment'
 
 # Relative error is between -2 and 2; 0 is the best
 GRADE_THRESHOLD = 1.1

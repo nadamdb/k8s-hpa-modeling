@@ -31,7 +31,7 @@ metadata:
   name: nodejs-ml-service
   labels:
     app: nodejs-ml
-    tradeoff: "42"
+    tradeoff: "10"
   annotations:
     haproxy.org/check: "enabled"
     haproxy.org/forwarded-for: "enabled"

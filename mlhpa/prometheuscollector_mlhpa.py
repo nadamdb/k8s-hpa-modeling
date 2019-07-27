@@ -26,7 +26,7 @@ class PrometheusCollector:
 
     def get_json_values(self, metric):
         full_query = up.quote(metric + "[" + str(self.duration) + "s:1s]")
-        full_url = "http://10.106.36.184:9090/api/v1/query?query=" + full_query + "&time=" + str(self.time)
+        full_url = "http://10.42.0.9:9090/api/v1/query?query=" + full_query + "&time=" + str(self.time)
         full_json = requests.get(url = full_url).json()
         return full_json["data"]["result"][0]["values"]
 

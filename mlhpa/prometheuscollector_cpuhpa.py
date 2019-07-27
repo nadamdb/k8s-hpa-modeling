@@ -3,6 +3,7 @@
 import requests
 import json
 import urllib.parse as up
+import time
 # curl -g 'http://10.106.36.184:9090/api/v1/query?query=count(kube_pod_info{namespace="default"})[60s:1s]&time=1556960632' | python3 -m json.tool
 
 
@@ -26,13 +27,15 @@ class PrometheusCollector:
 
     def get_json_values(self, metric):
         full_query = up.quote(metric + "[" + str(self.duration) + "s:1s]")
-        full_url = "http://10.106.36.184:9090/api/v1/query?query=" + full_query + "&time=" + str(self.time)
+        full_url = "http://10.42.0.9:9090/api/v1/query?query=" + full_query + "&time=" + str(self.time)
         full_json = requests.get(url = full_url).json()
         return full_json["data"]["result"][0]["values"]
 
 
 if __name__ == "__main__":
-    log = {"metadata": {"timestamp": "2019-05-04_11-04-58.496242", "load_rate": 2, "length": 60, "wait": 0, "start_time": 1564139394.5299125, "requests_sent_time": 1556967898.4962623, "end_time": 1564139454.5299125}}
+    e = time.time()
+    s = e - 60
+    log = {"metadata": {"timestamp": "2019-05-04_11-04-58.496242", "load_rate": 2, "length": 60, "wait": 0, "start_time": s, "requests_sent_time": 1556967898.4962623, "end_time": e}}
     pc = PrometheusCollector(log)
     print(json.dumps(pc.collect_logs()))
 

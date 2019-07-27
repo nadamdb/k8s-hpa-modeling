@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nodejs-cpu-deployment
+  name: nodejs-arml-deployment
   labels:
-    app: nodejs-cpu
+    app: nodejs-arml
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nodejs-cpu
+      app: nodejs-arml
   template:
     metadata:
       labels:
-        app: nodejs-cpu
+        app: nodejs-arml
     spec:
       containers:
-      - name: nodejs-app-cpu
+      - name: nodejs-app-arml
         image: balazska/nodejs_app:v1
         resources:
           limits:
@@ -28,17 +28,17 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: nodejs-cpu-service
+  name: nodejs-arml-service
   labels:
-    app: nodejs-cpu
-    tradeoff: "42"
+    app: nodejs-arml
+    tradeoff: "10"
   annotations:
     haproxy.org/check: "enabled"
     haproxy.org/forwarded-for: "enabled"
     haproxy.org/load-balance: "roundrobin"
 spec:
   selector:
-    app: nodejs-cpu
+    app: nodejs-arml
   ports:
   - protocol: TCP
     port: 3000
@@ -46,35 +46,22 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: nodejs-cpu-ingress
+  name: nodejs-arml-ingress
   namespace: default
 spec:
   rules:
-  - host: nodejs-cpu-app
+  - host: nodejs-arml-app
     http:
       paths:
       - path: /
         backend:
-          serviceName: nodejs-cpu-service
+          serviceName: nodejs-arml-service
           servicePort: 3000
 ---
-#apiVersion: autoscaling/v1
-#kind: HorizontalPodAutoscaler
-#metadata:
-#  name: nodejs-cpu-hpa
-#  namespace: default
-#spec:
-#  maxReplicas: 80
-#  minReplicas: 1
-#  scaleTargetRef:
-#    apiVersion: extensions/v1beta1
-#    kind: Deployment
-#    name: nodejs-cpu-deployment
-#  targetCPUUtilizationPercentage: 90
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: nodejs-cpu-hpa
+  name: nodejs-arml-hpa
   namespace: default
 spec:
   maxReplicas: 80
@@ -82,11 +69,25 @@ spec:
   scaleTargetRef:
     apiVersion: extensions/v1beta1
     kind: Deployment
-    name: nodejs-cpu-deployment
+    name: nodejs-arml-deployment
   metrics:
-  - type: Resource
-    resource:
-      name: cpu
+  - type: Object
+    object:
+      metric:
+        name: qps
+      describedObject:
+        kind: Service
+        name: nodejs-arml-service
       target:
-        type: Utilization
-        averageUtilization: 90
+        type: AverageValue
+        value: 90
+  - type: Object
+    object:
+      metric:
+        name: cpu
+      describedObject:
+        kind: Service
+        name: nodejs-arml-service
+      target:
+        type: AverageValue
+        value: 90000000000
