@@ -1,0 +1,69 @@
+apiVersion: extensions/v1beta1
+kind: ReplicaSet
+metadata:
+  annotations:
+    deployment.kubernetes.io/desired-replicas: "1"
+    deployment.kubernetes.io/max-replicas: "2"
+    deployment.kubernetes.io/revision: "1"
+  creationTimestamp: null
+  generation: 1
+  labels:
+    app: custom-metrics-apiserver
+    pod-template-hash: 56bbb6cbd8
+  name: custom-metrics-apiserver-56bbb6cbd8
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Deployment
+    name: custom-metrics-apiserver
+    uid: 9cec359e-ac84-11e9-858a-fa163eb7a9f3
+  selfLink: /apis/extensions/v1beta1/namespaces/custom-metrics/replicasets/custom-metrics-apiserver-56bbb6cbd8
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: custom-metrics-apiserver
+      pod-template-hash: 56bbb6cbd8
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: custom-metrics-apiserver
+        pod-template-hash: 56bbb6cbd8
+      name: custom-metrics-apiserver
+    spec:
+      containers:
+      - args:
+        - /adapter
+        - --secure-port=6443
+        - --logtostderr=true
+        - --v=10
+        image: nadamdb/test-custom-metrics-adapter:latest
+        imagePullPolicy: IfNotPresent
+        name: custom-metrics-apiserver
+        ports:
+        - containerPort: 6443
+          name: https
+          protocol: TCP
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /tmp
+          name: temp-vol
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: custom-metrics-apiserver
+      serviceAccountName: custom-metrics-apiserver
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - emptyDir: {}
+        name: temp-vol
+status:
+  replicas: 0

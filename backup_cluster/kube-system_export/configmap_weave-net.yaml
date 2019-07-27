@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  annotations:
+    kube-peers.weave.works/peers: '{"Peers":[{"PeerName":"fe:88:3b:34:bd:e6","NodeName":"master"},{"PeerName":"5e:c5:d7:d0:ca:24","NodeName":"worker-1"},{"PeerName":"9a:ea:54:ab:c5:ad","NodeName":"worker-2"},{"PeerName":"8a:ad:44:31:3b:05","NodeName":"worker-3"}]}'
+  creationTimestamp: null
+  name: weave-net
+  selfLink: /api/v1/namespaces/kube-system/configmaps/weave-net

@@ -1,0 +1,31 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  annotations:
+    autoscaling.alpha.kubernetes.io/conditions: '[{"type":"AbleToScale","status":"True","lastTransitionTime":"2019-07-27T12:17:08Z","reason":"SucceededGetScale","message":"the
+      HPA controller was able to get the target''s current scale"},{"type":"ScalingActive","status":"False","lastTransitionTime":"2019-07-27T19:02:55Z","reason":"FailedGetResourceMetric","message":"the
+      HPA was unable to compute the replica count: unable to get metrics for resource
+      cpu: no metrics returned from resource metrics API"},{"type":"ScalingLimited","status":"False","lastTransitionTime":"2019-07-27T12:17:08Z","reason":"DesiredWithinRange","message":"the
+      desired count is within the acceptable range"}]'
+    autoscaling.alpha.kubernetes.io/current-metrics: '[{"type":"Resource","resource":{"name":"cpu","currentAverageUtilization":75,"currentAverageValue":"75m"}}]'
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"autoscaling/v2beta2","kind":"HorizontalPodAutoscaler","metadata":{"annotations":{},"name":"nodejs-cpu-hpa","namespace":"default"},"spec":{"maxReplicas":80,"metrics":[{"resource":{"name":"cpu","target":{"averageUtilization":90,"type":"Utilization"}},"type":"Resource"}],"minReplicas":1,"scaleTargetRef":{"apiVersion":"extensions/v1beta1","kind":"Deployment","name":"nodejs-cpu-deployment"}}}
+  creationTimestamp: "2019-07-27T12:16:08Z"
+  name: nodejs-cpu-hpa
+  namespace: default
+  resourceVersion: "17018291"
+  selfLink: /apis/autoscaling/v1/namespaces/default/horizontalpodautoscalers/nodejs-cpu-hpa
+  uid: 506f5d36-b068-11e9-858a-fa163eb7a9f3
+spec:
+  maxReplicas: 80
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: nodejs-cpu-deployment
+  targetCPUUtilizationPercentage: 90
+status:
+  currentCPUUtilizationPercentage: 75
+  currentReplicas: 1
+  desiredReplicas: 1
+  lastScaleTime: "2019-07-27T18:59:51Z"

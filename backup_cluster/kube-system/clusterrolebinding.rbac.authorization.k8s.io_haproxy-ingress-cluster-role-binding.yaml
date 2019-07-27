@@ -1,0 +1,19 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"rbac.authorization.k8s.io/v1","kind":"ClusterRoleBinding","metadata":{"annotations":{},"name":"haproxy-ingress-cluster-role-binding"},"roleRef":{"apiGroup":"rbac.authorization.k8s.io","kind":"ClusterRole","name":"haproxy-ingress-cluster-role"},"subjects":[{"kind":"ServiceAccount","name":"haproxy-ingress-service-account","namespace":"haproxy-controller"}]}
+  creationTimestamp: "2019-07-18T13:21:32Z"
+  name: haproxy-ingress-cluster-role-binding
+  resourceVersion: "15788027"
+  selfLink: /apis/rbac.authorization.k8s.io/v1/clusterrolebindings/haproxy-ingress-cluster-role-binding
+  uid: f5c65287-a95e-11e9-858a-fa163eb7a9f3
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: haproxy-ingress-cluster-role
+subjects:
+- kind: ServiceAccount
+  name: haproxy-ingress-service-account
+  namespace: haproxy-controller

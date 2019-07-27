@@ -1,0 +1,25 @@
+apiVersion: v1
+count: 718
+eventTime: null
+firstTimestamp: "2019-07-26T12:55:12Z"
+involvedObject:
+  apiVersion: autoscaling/v2beta2
+  kind: HorizontalPodAutoscaler
+  name: test-deployment
+  namespace: default
+  resourceVersion: "17015960"
+  uid: 028b4ceb-aedc-11e9-858a-fa163eb7a9f3
+kind: Event
+lastTimestamp: "2019-07-27T20:18:34Z"
+message: 'unable to get metrics for resource cpu: no metrics returned from resource
+  metrics API'
+metadata:
+  creationTimestamp: null
+  name: test-deployment.15b4f63d0a8abfbb
+  selfLink: /api/v1/namespaces/default/events/test-deployment.15b4f63d0a8abfbb
+reason: FailedGetResourceMetric
+reportingComponent: ""
+reportingInstance: ""
+source:
+  component: horizontal-pod-autoscaler
+type: Warning

@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"k8s-app":"kube-state-metrics"},"name":"kube-state-metrics","namespace":"monitoring"},"spec":{"clusterIP":"None","ports":[{"name":"https-main","port":8443,"targetPort":"https-main"},{"name":"https-self","port":9443,"targetPort":"https-self"}],"selector":{"app":"kube-state-metrics"}}}
+  creationTimestamp: "2019-03-20T15:49:09Z"
+  labels:
+    k8s-app: kube-state-metrics
+  name: kube-state-metrics
+  namespace: monitoring
+  resourceVersion: "1538"
+  selfLink: /api/v1/namespaces/monitoring/services/kube-state-metrics
+  uid: b3214a89-4b27-11e9-8f3b-fa163eb7a9f3
+spec:
+  clusterIP: None
+  ports:
+  - name: https-main
+    port: 8443
+    protocol: TCP
+    targetPort: https-main
+  - name: https-self
+    port: 9443
+    protocol: TCP
+    targetPort: https-self
+  selector:
+    app: kube-state-metrics
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}

@@ -1,0 +1,28 @@
+apiVersion: v1
+count: 657
+eventTime: null
+firstTimestamp: "2019-07-26T12:55:12Z"
+involvedObject:
+  apiVersion: autoscaling/v2beta2
+  kind: HorizontalPodAutoscaler
+  name: test-deployment
+  namespace: default
+  resourceVersion: "17015960"
+  uid: 028b4ceb-aedc-11e9-858a-fa163eb7a9f3
+kind: Event
+lastTimestamp: "2019-07-27T19:14:55Z"
+message: 'failed to get cpu utilization: unable to get metrics for resource cpu: no
+  metrics returned from resource metrics API'
+metadata:
+  creationTimestamp: "2019-07-27T19:02:46Z"
+  name: test-deployment.15b4f63d0ae6c6f7
+  namespace: default
+  resourceVersion: "17019514"
+  selfLink: /api/v1/namespaces/default/events/test-deployment.15b4f63d0ae6c6f7
+  uid: 1efb7012-b0a1-11e9-858a-fa163eb7a9f3
+reason: FailedComputeMetricsReplicas
+reportingComponent: ""
+reportingInstance: ""
+source:
+  component: horizontal-pod-autoscaler
+type: Warning

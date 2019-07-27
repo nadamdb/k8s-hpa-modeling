@@ -1,0 +1,29 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  annotations:
+    autoscaling.alpha.kubernetes.io/conditions: '[{"type":"AbleToScale","status":"True","lastTransitionTime":"2019-06-04T20:38:38Z","reason":"SucceededGetScale","message":"the
+      HPA controller was able to get the target''s current scale"},{"type":"ScalingActive","status":"False","lastTransitionTime":"2019-07-27T19:02:58Z","reason":"FailedGetResourceMetric","message":"the
+      HPA was unable to compute the replica count: unable to get metrics for resource
+      cpu: no metrics returned from resource metrics API"},{"type":"ScalingLimited","status":"True","lastTransitionTime":"2019-07-25T22:44:50Z","reason":"TooFewReplicas","message":"the
+      desired replica count is increasing faster than the maximum scale rate"}]'
+    autoscaling.alpha.kubernetes.io/current-metrics: '[{"type":"Resource","resource":{"name":"cpu","currentAverageUtilization":0,"currentAverageValue":"0"}}]'
+  creationTimestamp: "2019-03-26T23:26:52Z"
+  name: model-deployment
+  namespace: default
+  resourceVersion: "17018299"
+  selfLink: /apis/autoscaling/v1/namespaces/default/horizontalpodautoscalers/model-deployment
+  uid: a2ee29a0-501e-11e9-8f3b-fa163eb7a9f3
+spec:
+  maxReplicas: 20
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: model-deployment
+  targetCPUUtilizationPercentage: 75
+status:
+  currentCPUUtilizationPercentage: 0
+  currentReplicas: 1
+  desiredReplicas: 1
+  lastScaleTime: "2019-07-15T15:35:53Z"

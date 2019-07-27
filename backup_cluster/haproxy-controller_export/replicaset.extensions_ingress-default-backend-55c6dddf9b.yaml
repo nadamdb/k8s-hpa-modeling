@@ -1,0 +1,51 @@
+apiVersion: extensions/v1beta1
+kind: ReplicaSet
+metadata:
+  annotations:
+    deployment.kubernetes.io/desired-replicas: "1"
+    deployment.kubernetes.io/max-replicas: "2"
+    deployment.kubernetes.io/revision: "1"
+  creationTimestamp: null
+  generation: 1
+  labels:
+    pod-template-hash: 55c6dddf9b
+    run: ingress-default-backend
+  name: ingress-default-backend-55c6dddf9b
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Deployment
+    name: ingress-default-backend
+    uid: f5cb878a-a95e-11e9-858a-fa163eb7a9f3
+  selfLink: /apis/extensions/v1beta1/namespaces/haproxy-controller/replicasets/ingress-default-backend-55c6dddf9b
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      pod-template-hash: 55c6dddf9b
+      run: ingress-default-backend
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        pod-template-hash: 55c6dddf9b
+        run: ingress-default-backend
+    spec:
+      containers:
+      - image: gcr.io/google_containers/defaultbackend:1.0
+        imagePullPolicy: IfNotPresent
+        name: ingress-default-backend
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+  replicas: 0

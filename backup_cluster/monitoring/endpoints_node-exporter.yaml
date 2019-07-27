@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: "2019-03-20T15:49:09Z"
+  labels:
+    k8s-app: node-exporter
+  name: node-exporter
+  namespace: monitoring
+  resourceVersion: "16844804"
+  selfLink: /api/v1/namespaces/monitoring/endpoints/node-exporter
+  uid: b3293d72-4b27-11e9-8f3b-fa163eb7a9f3
+subsets:
+- addresses:
+  - ip: 172.16.0.13
+    nodeName: worker-1
+    targetRef:
+      kind: Pod
+      name: node-exporter-m8hzf
+      namespace: monitoring
+      resourceVersion: "16844803"
+      uid: b32d7d23-4b27-11e9-8f3b-fa163eb7a9f3
+  - ip: 172.16.0.19
+    nodeName: worker-2
+    targetRef:
+      kind: Pod
+      name: node-exporter-6w2rm
+      namespace: monitoring
+      resourceVersion: "1707"
+      uid: b32d4edc-4b27-11e9-8f3b-fa163eb7a9f3
+  - ip: 172.16.0.27
+    nodeName: master
+    targetRef:
+      kind: Pod
+      name: node-exporter-z59lq
+      namespace: monitoring
+      resourceVersion: "15117256"
+      uid: b32c843e-4b27-11e9-8f3b-fa163eb7a9f3
+  - ip: 172.16.0.7
+    nodeName: worker-3
+    targetRef:
+      kind: Pod
+      name: node-exporter-5568h
+      namespace: monitoring
+      resourceVersion: "16193270"
+      uid: 772c3caf-a94f-11e9-858a-fa163eb7a9f3
+  ports:
+  - name: https
+    port: 9100
+    protocol: TCP

@@ -1,0 +1,27 @@
+action: ""
+apiVersion: events.k8s.io/v1beta1
+deprecatedCount: 11
+deprecatedFirstTimestamp: "2019-07-27T12:19:56Z"
+deprecatedLastTimestamp: "2019-07-27T19:53:31Z"
+deprecatedSource:
+  component: horizontal-pod-autoscaler
+eventTime: null
+kind: Event
+metadata:
+  creationTimestamp: "2019-07-27T18:28:57Z"
+  name: nodejs-ml-hpa.15b542e4d28efacf
+  namespace: default
+  resourceVersion: "17023074"
+  selfLink: /apis/events.k8s.io/v1beta1/namespaces/default/events/nodejs-ml-hpa.15b542e4d28efacf
+  uid: 65ba0ee3-b09c-11e9-858a-fa163eb7a9f3
+note: 'New size: 2; reason: Service metric qps above target'
+reason: SuccessfulRescale
+regarding:
+  apiVersion: autoscaling/v2beta2
+  kind: HorizontalPodAutoscaler
+  name: nodejs-ml-hpa
+  namespace: default
+  resourceVersion: "17014782"
+  uid: 9092cb05-b068-11e9-858a-fa163eb7a9f3
+reportingInstance: ""
+type: Normal

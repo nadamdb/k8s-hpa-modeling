@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: "2019-07-18T13:21:32Z"
+  labels:
+    run: ingress-default-backend
+  name: ingress-default-backend
+  namespace: haproxy-controller
+  resourceVersion: "16192619"
+  selfLink: /api/v1/namespaces/haproxy-controller/endpoints/ingress-default-backend
+  uid: f5d5036b-a95e-11e9-858a-fa163eb7a9f3
+subsets:
+- addresses:
+  - ip: 10.36.0.7
+    nodeName: worker-2
+    targetRef:
+      kind: Pod
+      name: ingress-default-backend-55c6dddf9b-mksrv
+      namespace: haproxy-controller
+      resourceVersion: "16192618"
+      uid: 944023af-abcc-11e9-858a-fa163eb7a9f3
+  ports:
+  - name: port-1
+    port: 8080
+    protocol: TCP

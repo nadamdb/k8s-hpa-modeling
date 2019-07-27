@@ -1,0 +1,25 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: "2019-03-20T15:39:58Z"
+  name: system:coredns
+  resourceVersion: "226"
+  selfLink: /apis/rbac.authorization.k8s.io/v1/clusterroles/system%3Acoredns
+  uid: 6b15093b-4b26-11e9-8f3b-fa163eb7a9f3
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - endpoints
+  - services
+  - pods
+  - namespaces
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  verbs:
+  - get

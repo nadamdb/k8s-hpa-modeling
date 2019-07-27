@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"monitoring.coreos.com/v1","kind":"ServiceMonitor","metadata":{"annotations":{},"name":"grafana","namespace":"monitoring"},"spec":{"endpoints":[{"interval":"15s","port":"http"}],"selector":{"matchLabels":{"app":"grafana"}}}}
+  generation: 1
+  name: grafana
+  selfLink: /apis/monitoring.coreos.com/v1/namespaces/monitoring/servicemonitors/grafana
+spec:
+  endpoints:
+  - interval: 15s
+    port: http
+  selector:
+    matchLabels:
+      app: grafana

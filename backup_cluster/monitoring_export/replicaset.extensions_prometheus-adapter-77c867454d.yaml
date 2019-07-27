@@ -1,0 +1,79 @@
+apiVersion: extensions/v1beta1
+kind: ReplicaSet
+metadata:
+  annotations:
+    deployment.kubernetes.io/desired-replicas: "1"
+    deployment.kubernetes.io/max-replicas: "2"
+    deployment.kubernetes.io/revision: "4"
+    deployment.kubernetes.io/revision-history: "2"
+  creationTimestamp: null
+  generation: 1
+  labels:
+    name: prometheus-adapter
+    pod-template-hash: 77c867454d
+  name: prometheus-adapter-77c867454d
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Deployment
+    name: prometheus-adapter
+    uid: b33896d5-4b27-11e9-8f3b-fa163eb7a9f3
+  selfLink: /apis/extensions/v1beta1/namespaces/monitoring/replicasets/prometheus-adapter-77c867454d
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: prometheus-adapter
+      pod-template-hash: 77c867454d
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        name: prometheus-adapter
+        pod-template-hash: 77c867454d
+    spec:
+      containers:
+      - args:
+        - --cert-dir=/var/run/serving-cert
+        - --config=/etc/adapter/config.yaml
+        - --logtostderr=true
+        - --metrics-relist-interval=10s
+        - --prometheus-url=http://prometheus-k8s.monitoring.svc:9090/
+        - --secure-port=6443
+        image: quay.io/coreos/k8s-prometheus-adapter-amd64:v0.4.1
+        imagePullPolicy: IfNotPresent
+        name: prometheus-adapter
+        ports:
+        - containerPort: 6443
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmpfs
+        - mountPath: /var/run/serving-cert
+          name: volume-serving-cert
+        - mountPath: /etc/adapter
+          name: config
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: prometheus-adapter
+      serviceAccountName: prometheus-adapter
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - emptyDir: {}
+        name: tmpfs
+      - emptyDir: {}
+        name: volume-serving-cert
+      - configMap:
+          defaultMode: 420
+          name: adapter-config
+        name: config
+status:
+  replicas: 0

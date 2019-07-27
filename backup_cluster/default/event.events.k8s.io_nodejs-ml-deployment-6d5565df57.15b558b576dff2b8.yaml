@@ -1,0 +1,27 @@
+action: ""
+apiVersion: events.k8s.io/v1beta1
+deprecatedCount: 1
+deprecatedFirstTimestamp: "2019-07-27T18:59:41Z"
+deprecatedLastTimestamp: "2019-07-27T18:59:41Z"
+deprecatedSource:
+  component: replicaset-controller
+eventTime: null
+kind: Event
+metadata:
+  creationTimestamp: "2019-07-27T18:59:41Z"
+  name: nodejs-ml-deployment-6d5565df57.15b558b576dff2b8
+  namespace: default
+  resourceVersion: "17017939"
+  selfLink: /apis/events.k8s.io/v1beta1/namespaces/default/events/nodejs-ml-deployment-6d5565df57.15b558b576dff2b8
+  uid: b0dae1d2-b0a0-11e9-858a-fa163eb7a9f3
+note: 'Deleted pod: nodejs-ml-deployment-6d5565df57-78s4m'
+reason: SuccessfulDelete
+regarding:
+  apiVersion: apps/v1
+  kind: ReplicaSet
+  name: nodejs-ml-deployment-6d5565df57
+  namespace: default
+  resourceVersion: "17017934"
+  uid: 908511a8-b068-11e9-858a-fa163eb7a9f3
+reportingInstance: ""
+type: Normal

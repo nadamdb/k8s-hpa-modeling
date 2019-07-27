@@ -1,0 +1,124 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    kubernetes.io/config.hash: 00d36bda6df6ca486c0dcbe25c08be54
+    kubernetes.io/config.mirror: 00d36bda6df6ca486c0dcbe25c08be54
+    kubernetes.io/config.seen: "2019-03-20T15:39:42.695638797Z"
+    kubernetes.io/config.source: file
+    scheduler.alpha.kubernetes.io/critical-pod: ""
+  creationTimestamp: "2019-03-20T15:41:04Z"
+  labels:
+    component: etcd
+    tier: control-plane
+  name: etcd-master
+  namespace: kube-system
+  resourceVersion: "15117283"
+  selfLink: /api/v1/namespaces/kube-system/pods/etcd-master
+  uid: 925810bb-4b26-11e9-8f3b-fa163eb7a9f3
+spec:
+  containers:
+  - command:
+    - etcd
+    - --advertise-client-urls=https://172.16.0.27:2379
+    - --cert-file=/etc/kubernetes/pki/etcd/server.crt
+    - --client-cert-auth=true
+    - --data-dir=/var/lib/etcd
+    - --initial-advertise-peer-urls=https://172.16.0.27:2380
+    - --initial-cluster=master=https://172.16.0.27:2380
+    - --key-file=/etc/kubernetes/pki/etcd/server.key
+    - --listen-client-urls=https://127.0.0.1:2379,https://172.16.0.27:2379
+    - --listen-peer-urls=https://172.16.0.27:2380
+    - --name=master
+    - --peer-cert-file=/etc/kubernetes/pki/etcd/peer.crt
+    - --peer-client-cert-auth=true
+    - --peer-key-file=/etc/kubernetes/pki/etcd/peer.key
+    - --peer-trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt
+    - --snapshot-count=10000
+    - --trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt
+    image: k8s.gcr.io/etcd:3.2.24
+    imagePullPolicy: IfNotPresent
+    livenessProbe:
+      exec:
+        command:
+        - /bin/sh
+        - -ec
+        - ETCDCTL_API=3 etcdctl --endpoints=https://[127.0.0.1]:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt
+          --cert=/etc/kubernetes/pki/etcd/healthcheck-client.crt --key=/etc/kubernetes/pki/etcd/healthcheck-client.key
+          get foo
+      failureThreshold: 8
+      initialDelaySeconds: 15
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 15
+    name: etcd
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/lib/etcd
+      name: etcd-data
+    - mountPath: /etc/kubernetes/pki/etcd
+      name: etcd-certs
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  hostNetwork: true
+  nodeName: master
+  priority: 2000000000
+  priorityClassName: system-cluster-critical
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    operator: Exists
+  volumes:
+  - hostPath:
+      path: /etc/kubernetes/pki/etcd
+      type: DirectoryOrCreate
+    name: etcd-certs
+  - hostPath:
+      path: /var/lib/etcd
+      type: DirectoryOrCreate
+    name: etcd-data
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2019-03-20T15:39:43Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2019-07-13T13:31:47Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2019-07-13T13:31:47Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2019-03-20T15:39:43Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: docker://b5c263338c457a9e08dbaadc1c55b2436f2ba3eaa4cb574f21e8bbad424ae688
+    image: k8s.gcr.io/etcd:3.2.24
+    imageID: docker-pullable://k8s.gcr.io/etcd@sha256:905d7ca17fd02bc24c0eba9a062753aba15db3e31422390bc3238eb762339b20
+    lastState:
+      terminated:
+        containerID: docker://f5497dca6c6d2d8a2547633954e0b875462c3ccf4c7df5c51c9eab11c2cdb3a2
+        exitCode: 137
+        finishedAt: "2019-07-13T13:31:38Z"
+        reason: Error
+        startedAt: "2019-03-20T15:39:44Z"
+    name: etcd
+    ready: true
+    restartCount: 1
+    state:
+      running:
+        startedAt: "2019-07-13T13:31:44Z"
+  hostIP: 172.16.0.27
+  phase: Running
+  podIP: 172.16.0.27
+  qosClass: BestEffort
+  startTime: "2019-03-20T15:39:43Z"

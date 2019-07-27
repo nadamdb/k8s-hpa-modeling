@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: "2019-03-20T15:49:09Z"
+  labels:
+    name: prometheus-adapter
+  name: prometheus-adapter
+  namespace: monitoring
+  resourceVersion: "16905875"
+  selfLink: /api/v1/namespaces/monitoring/endpoints/prometheus-adapter
+  uid: b34615c3-4b27-11e9-8f3b-fa163eb7a9f3
+subsets:
+- addresses:
+  - ip: 10.42.0.3
+    nodeName: worker-3
+    targetRef:
+      kind: Pod
+      name: prometheus-adapter-77c867454d-q66gv
+      namespace: monitoring
+      resourceVersion: "16905868"
+      uid: 9e57b06b-b005-11e9-858a-fa163eb7a9f3
+  ports:
+  - name: https
+    port: 6443
+    protocol: TCP

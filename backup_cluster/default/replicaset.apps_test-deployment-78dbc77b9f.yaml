@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  annotations:
+    deployment.kubernetes.io/desired-replicas: "1"
+    deployment.kubernetes.io/max-replicas: "2"
+    deployment.kubernetes.io/revision: "2"
+  creationTimestamp: "2019-07-20T09:59:22Z"
+  generation: 25
+  labels:
+    app: test
+    pod-template-hash: 78dbc77b9f
+  name: test-deployment-78dbc77b9f
+  namespace: default
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Deployment
+    name: test-deployment
+    uid: 0cfb95f2-a96a-11e9-858a-fa163eb7a9f3
+  resourceVersion: "16842484"
+  selfLink: /apis/apps/v1/namespaces/default/replicasets/test-deployment-78dbc77b9f
+  uid: 0c46c698-aad5-11e9-858a-fa163eb7a9f3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test
+      pod-template-hash: 78dbc77b9f
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: test
+        pod-template-hash: 78dbc77b9f
+    spec:
+      containers:
+      - image: balazska/test-server:fixed-serving-v2
+        imagePullPolicy: IfNotPresent
+        name: test-server
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 300m
+          requests:
+            cpu: 300m
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /media
+          name: log
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - hostPath:
+          path: /media
+          type: Directory
+        name: log
+status:
+  availableReplicas: 1
+  fullyLabeledReplicas: 1
+  observedGeneration: 25
+  readyReplicas: 1
+  replicas: 1

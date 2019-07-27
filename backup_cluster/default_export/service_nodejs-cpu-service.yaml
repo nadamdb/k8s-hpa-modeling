@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    haproxy.org/check: enabled
+    haproxy.org/forwarded-for: enabled
+    haproxy.org/load-balance: roundrobin
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{"haproxy.org/check":"enabled","haproxy.org/forwarded-for":"enabled","haproxy.org/load-balance":"roundrobin"},"labels":{"app":"nodejs-cpu","tradeoff":"42"},"name":"nodejs-cpu-service","namespace":"default"},"spec":{"ports":[{"port":3000,"protocol":"TCP"}],"selector":{"app":"nodejs-cpu"}}}
+  creationTimestamp: null
+  labels:
+    app: nodejs-cpu
+    tradeoff: "42"
+  name: nodejs-cpu-service
+  selfLink: /api/v1/namespaces/default/services/nodejs-cpu-service
+spec:
+  ports:
+  - port: 3000
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    app: nodejs-cpu
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}

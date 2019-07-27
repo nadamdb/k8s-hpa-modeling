@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: null
+  labels:
+    app: nodejs-ml
+    tradeoff: "10"
+  name: nodejs-ml-service
+  selfLink: /api/v1/namespaces/default/endpoints/nodejs-ml-service
+subsets:
+- addresses:
+  - ip: 10.42.0.10
+    nodeName: worker-3
+    targetRef:
+      kind: Pod
+      name: nodejs-ml-deployment-6d5565df57-sd9hp
+      namespace: default
+      resourceVersion: "16978242"
+      uid: 9088f798-b068-11e9-858a-fa163eb7a9f3
+  ports:
+  - port: 3000
+    protocol: TCP

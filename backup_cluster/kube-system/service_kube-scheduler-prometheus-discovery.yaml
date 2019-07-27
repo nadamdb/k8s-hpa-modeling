@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"k8s-app":"kube-scheduler"},"name":"kube-scheduler-prometheus-discovery","namespace":"kube-system"},"spec":{"clusterIP":"None","ports":[{"name":"http-metrics","port":10251,"targetPort":10251}],"selector":{"component":"kube-scheduler"}}}
+  creationTimestamp: "2019-03-20T15:49:09Z"
+  labels:
+    k8s-app: kube-scheduler
+  name: kube-scheduler-prometheus-discovery
+  namespace: kube-system
+  resourceVersion: "1613"
+  selfLink: /api/v1/namespaces/kube-system/services/kube-scheduler-prometheus-discovery
+  uid: b3503b53-4b27-11e9-8f3b-fa163eb7a9f3
+spec:
+  clusterIP: None
+  ports:
+  - name: http-metrics
+    port: 10251
+    protocol: TCP
+    targetPort: 10251
+  selector:
+    component: kube-scheduler
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}

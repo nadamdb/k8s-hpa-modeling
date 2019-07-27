@@ -1,0 +1,140 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"monitoring.coreos.com/v1","kind":"Alertmanager","metadata":{"annotations":{},"labels":{"alertmanager":"main"},"name":"main","namespace":"monitoring"},"spec":{"baseImage":"quay.io/prometheus/alertmanager","nodeSelector":{"beta.kubernetes.io/os":"linux"},"replicas":3,"securityContext":{"fsGroup":2000,"runAsNonRoot":true,"runAsUser":1000},"serviceAccountName":"alertmanager-main","version":"v0.16.1"}}
+  creationTimestamp: "2019-03-20T15:49:20Z"
+  generation: 1
+  labels:
+    alertmanager: main
+  name: alertmanager-main
+  namespace: monitoring
+  ownerReferences:
+  - apiVersion: monitoring.coreos.com/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Alertmanager
+    name: main
+    uid: b2dce8fb-4b27-11e9-8f3b-fa163eb7a9f3
+  resourceVersion: "16842573"
+  selfLink: /apis/apps/v1/namespaces/monitoring/statefulsets/alertmanager-main
+  uid: b9f12789-4b27-11e9-8f3b-fa163eb7a9f3
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 3
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      alertmanager: main
+      app: alertmanager
+  serviceName: alertmanager-operated
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        alertmanager: main
+        app: alertmanager
+    spec:
+      containers:
+      - args:
+        - --config.file=/etc/alertmanager/config/alertmanager.yaml
+        - --cluster.listen-address=[$(POD_IP)]:6783
+        - --storage.path=/alertmanager
+        - --data.retention=120h
+        - --web.listen-address=:9093
+        - --web.route-prefix=/
+        - --cluster.peer=alertmanager-main-0.alertmanager-operated.monitoring.svc:6783
+        - --cluster.peer=alertmanager-main-1.alertmanager-operated.monitoring.svc:6783
+        - --cluster.peer=alertmanager-main-2.alertmanager-operated.monitoring.svc:6783
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        image: quay.io/prometheus/alertmanager:v0.16.1
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 10
+          httpGet:
+            path: /api/v1/status
+            port: web
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 3
+        name: alertmanager
+        ports:
+        - containerPort: 9093
+          name: web
+          protocol: TCP
+        - containerPort: 6783
+          name: mesh
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 10
+          httpGet:
+            path: /api/v1/status
+            port: web
+            scheme: HTTP
+          initialDelaySeconds: 3
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 3
+        resources:
+          requests:
+            memory: 200Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/alertmanager/config
+          name: config-volume
+        - mountPath: /alertmanager
+          name: alertmanager-main-db
+      - args:
+        - -webhook-url=http://localhost:9093/-/reload
+        - -volume-dir=/etc/alertmanager/config
+        image: quay.io/coreos/configmap-reload:v0.0.1
+        imagePullPolicy: IfNotPresent
+        name: config-reloader
+        resources:
+          limits:
+            cpu: 100m
+            memory: 25Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/alertmanager/config
+          name: config-volume
+          readOnly: true
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 2000
+        runAsNonRoot: true
+        runAsUser: 1000
+      serviceAccount: alertmanager-main
+      serviceAccountName: alertmanager-main
+      terminationGracePeriodSeconds: 0
+      volumes:
+      - name: config-volume
+        secret:
+          defaultMode: 420
+          secretName: alertmanager-main
+      - emptyDir: {}
+        name: alertmanager-main-db
+  updateStrategy:
+    type: RollingUpdate
+status:
+  collisionCount: 0
+  currentReplicas: 3
+  currentRevision: alertmanager-main-75496767f7
+  observedGeneration: 1
+  readyReplicas: 3
+  replicas: 3
+  updateRevision: alertmanager-main-75496767f7
+  updatedReplicas: 3

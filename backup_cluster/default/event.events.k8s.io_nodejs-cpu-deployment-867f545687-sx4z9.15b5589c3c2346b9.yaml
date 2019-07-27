@@ -1,0 +1,29 @@
+action: ""
+apiVersion: events.k8s.io/v1beta1
+deprecatedCount: 1
+deprecatedFirstTimestamp: "2019-07-27T18:57:53Z"
+deprecatedLastTimestamp: "2019-07-27T18:57:53Z"
+deprecatedSource:
+  component: kubelet
+  host: worker-1
+eventTime: null
+kind: Event
+metadata:
+  creationTimestamp: "2019-07-27T18:57:53Z"
+  name: nodejs-cpu-deployment-867f545687-sx4z9.15b5589c3c2346b9
+  namespace: default
+  resourceVersion: "17017761"
+  selfLink: /apis/events.k8s.io/v1beta1/namespaces/default/events/nodejs-cpu-deployment-867f545687-sx4z9.15b5589c3c2346b9
+  uid: 70445886-b0a0-11e9-858a-fa163eb7a9f3
+note: Started container
+reason: Started
+regarding:
+  apiVersion: v1
+  fieldPath: spec.containers{nodejs-app-cpu}
+  kind: Pod
+  name: nodejs-cpu-deployment-867f545687-sx4z9
+  namespace: default
+  resourceVersion: "17017748"
+  uid: 6f1f7456-b0a0-11e9-858a-fa163eb7a9f3
+reportingInstance: ""
+type: Normal

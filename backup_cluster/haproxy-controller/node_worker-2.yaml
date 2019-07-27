@@ -1,0 +1,208 @@
+apiVersion: v1
+kind: Node
+metadata:
+  annotations:
+    kubeadm.alpha.kubernetes.io/cri-socket: /var/run/dockershim.sock
+    node.alpha.kubernetes.io/ttl: "0"
+    volumes.kubernetes.io/controller-managed-attach-detach: "true"
+  creationTimestamp: "2019-03-20T15:47:47Z"
+  labels:
+    beta.kubernetes.io/arch: amd64
+    beta.kubernetes.io/os: linux
+    kubernetes.io/hostname: worker-2
+    type: benchmark
+  name: worker-2
+  resourceVersion: "17024151"
+  selfLink: /api/v1/nodes/worker-2
+  uid: 82980c51-4b27-11e9-8f3b-fa163eb7a9f3
+spec: {}
+status:
+  addresses:
+  - address: 172.16.0.19
+    type: InternalIP
+  - address: worker-2
+    type: Hostname
+  allocatable:
+    cpu: "2"
+    ephemeral-storage: "37297826550"
+    hugepages-1Gi: "0"
+    hugepages-2Mi: "0"
+    memory: 8065844Ki
+    pods: "110"
+  capacity:
+    cpu: "2"
+    ephemeral-storage: 40470732Ki
+    hugepages-1Gi: "0"
+    hugepages-2Mi: "0"
+    memory: 8168244Ki
+    pods: "110"
+  conditions:
+  - lastHeartbeatTime: "2019-03-20T15:47:57Z"
+    lastTransitionTime: "2019-03-20T15:47:57Z"
+    message: Weave pod has set this
+    reason: WeaveIsUp
+    status: "False"
+    type: NetworkUnavailable
+  - lastHeartbeatTime: "2019-07-27T20:05:03Z"
+    lastTransitionTime: "2019-03-20T15:47:47Z"
+    message: kubelet has sufficient memory available
+    reason: KubeletHasSufficientMemory
+    status: "False"
+    type: MemoryPressure
+  - lastHeartbeatTime: "2019-07-27T20:05:03Z"
+    lastTransitionTime: "2019-03-20T15:47:47Z"
+    message: kubelet has no disk pressure
+    reason: KubeletHasNoDiskPressure
+    status: "False"
+    type: DiskPressure
+  - lastHeartbeatTime: "2019-07-27T20:05:03Z"
+    lastTransitionTime: "2019-03-20T15:47:47Z"
+    message: kubelet has sufficient PID available
+    reason: KubeletHasSufficientPID
+    status: "False"
+    type: PIDPressure
+  - lastHeartbeatTime: "2019-07-27T20:05:03Z"
+    lastTransitionTime: "2019-03-20T15:47:57Z"
+    message: kubelet is posting ready status. AppArmor enabled
+    reason: KubeletReady
+    status: "True"
+    type: Ready
+  daemonEndpoints:
+    kubeletEndpoint:
+      Port: 10250
+  images:
+  - names:
+    - balazska/test-server@sha256:14ae8d1ed79e5a55cd72d5fb3fb062cbee701a4744f4b88e04852bffca2cc503
+    - balazska/test-server:fixed-serving-v2
+    sizeBytes: 682840251
+  - names:
+    - balazska/test-server@sha256:fc3ab286ae5233200ad22bb63c53cd773700821ea76c94c425869e06a337f7a5
+    - balazska/test-server:exponential-serving
+    sizeBytes: 682839272
+  - names:
+    - quay.io/kubernetes-ingress-controller/nginx-ingress-controller@sha256:d5b2e7731b9df0a5bbda39adf734beef9f323b15cea653ae2f9f22b7518c3fb1
+    - quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.24.0
+    sizeBytes: 630958392
+  - names:
+    - gcr.io/google-containers/conformance@sha256:815fd333be1c626a01c99d2e8726c927d41f89ff2fb797691ce2b947a5101084
+    - gcr.io/google-containers/conformance:v1.13.4
+    sizeBytes: 558799969
+  - names:
+    - grafana/grafana@sha256:418a79afc1939b0bb01ad4341236e09370b89ef37a3490430f42fcb12793fbc4
+    - grafana/grafana:6.0.0-beta1
+    sizeBytes: 241510680
+  - names:
+    - grafana/grafana@sha256:dcfccebd894c3596827ef7ef5e0a69a669a3a761a19e382f896f11531f45b8fb
+    - grafana/grafana:6.0.1
+    sizeBytes: 241025092
+  - names:
+    - weaveworks/weave-kube@sha256:103e37b504631f7c762ef6baa79b3e7d2d2cf718accbf659e7cae933b6ca937c
+    - weaveworks/weave-kube:2.5.1
+    sizeBytes: 148146468
+  - names:
+    - k8s.gcr.io/kubernetes-dashboard-amd64@sha256:0ae6b69432e78069c5ce2bcde0fe409c5c4d6f0f4d9cd50a17974fea38898747
+    - k8s.gcr.io/kubernetes-dashboard-amd64:v1.10.1
+    sizeBytes: 121711221
+  - names:
+    - nginx@sha256:4c4fc7979f74f5bf7c71d6f234dcf7b8da5eff31c0347764792fe41210a6e592
+    - nginx:latest
+    sizeBytes: 109294304
+  - names:
+    - quay.io/prometheus/prometheus@sha256:34c83db074bde134a2c57c440f7b3d74248dddb5e3d6b82a39faa80ee62278c7
+    - quay.io/prometheus/prometheus:v2.7.2
+    sizeBytes: 101144312
+  - names:
+    - balazska/nodejs_app@sha256:e4cb31444ababd3dfb7150f4847531a25fafe80d8642d09b56590dfb2007fd6f
+    - balazska/nodejs_app:v1
+    sizeBytes: 100215316
+  - names:
+    - quay.io/prometheus/prometheus@sha256:478d0b68432ea289a2e8455cbc30ee38b7ade6d13b4f73877203184c64914d9b
+    - quay.io/prometheus/prometheus:v2.5.0
+    sizeBytes: 99822269
+  - names:
+    - k8s.gcr.io/kube-proxy@sha256:e57fd7593e2bdc161e41b8922e5fba6dbdab790608fc8671721eb26fbabd3090
+    - k8s.gcr.io/kube-proxy:v1.13.4
+    sizeBytes: 80254896
+  - names:
+    - calico/cni@sha256:9c03ff4ad1523dc1966a086fc2ec94978b2dce624fff881dce9982cf279f4830
+    - calico/cni:v3.3.4
+    sizeBytes: 75355674
+  - names:
+    - calico/node@sha256:81cead996ac7084b789b45f689912fc82db8cde00727eb7d97694da8e17ed083
+    - calico/node:v3.3.4
+    sizeBytes: 75264366
+  - names:
+    - quay.io/coreos/k8s-prometheus-adapter-amd64@sha256:cd44106e853564873e6bf261a672f0ee2122cdbd70800dafce2c3c26d0b4be95
+    - quay.io/coreos/k8s-prometheus-adapter-amd64:v0.4.1
+    sizeBytes: 60747300
+  - names:
+    - weaveworks/weave-npc@sha256:e51029aa3abcada82c59b5e5161b71dc14c04ca664b53bb1cdd2ebbf850bf258
+    - weaveworks/weave-npc:2.5.1
+    sizeBytes: 49569458
+  - names:
+    - quay.io/coreos/prometheus-operator@sha256:5abe9bdfd93ac22954e3281315637d9721d66539134e1c7ed4e97f13819e62f7
+    - quay.io/coreos/prometheus-operator:v0.29.0
+    sizeBytes: 45483873
+  - names:
+    - quay.io/prometheus/alertmanager@sha256:e6a3f28f282092d9790aaae393650852a9b7c2a7614dc3aa797a74a6beaa0700
+    - quay.io/prometheus/alertmanager:v0.16.1
+    sizeBytes: 42511439
+  - names:
+    - quay.io/prometheus/alertmanager@sha256:ba7f0a57348774f46d4476b71a2033914c1f1437920b5188eec54b145a5b7433
+    - quay.io/prometheus/alertmanager:v0.16.0
+    sizeBytes: 42502953
+  - names:
+    - quay.io/coreos/kube-rbac-proxy@sha256:9d07c391aeb1a9d02eb4343c113ed01825227c70c32b3cae861711f90191b0fd
+    - quay.io/coreos/kube-rbac-proxy:v0.4.1
+    sizeBytes: 41317870
+  - names:
+    - k8s.gcr.io/addon-resizer@sha256:a31822f30e947885d038812f4a5a5675e72f92c06cef17b1989c80426aa89012
+    - k8s.gcr.io/addon-resizer:1.8.4
+    sizeBytes: 38349857
+  - names:
+    - gcr.io/heptio-images/sonobuoy@sha256:11d129bc56862d008e3351a458faa3ca36a0780cb25efa38a54d163ebc150c77
+    - gcr.io/heptio-images/sonobuoy:latest
+    sizeBytes: 33410348
+  - names:
+    - quay.io/coreos/kube-state-metrics@sha256:b7a3143bd1eb7130759c9259073b9f239d0eeda09f5210f1cd31f1a530599ea1
+    - quay.io/coreos/kube-state-metrics:v1.5.0
+    sizeBytes: 31825332
+  - names:
+    - gcr.io/google-containers/addon-resizer-amd64@sha256:d00afd42fc267fa3275a541083cfe67d160f966c788174b44597434760e1e1eb
+    - gcr.io/google-containers/addon-resizer-amd64:2.1
+    sizeBytes: 26450138
+  - names:
+    - quay.io/coreos/prometheus-config-reloader@sha256:d4b5c90b0937b568d25baa38d8ca61ac927069f30f02e8757f0eae9ee335be23
+    - quay.io/coreos/prometheus-config-reloader:v0.29.0
+    sizeBytes: 21271393
+  - names:
+    - quay.io/prometheus/node-exporter@sha256:1b129a3801a0440f9c5b2afb20082dfdb31bf6092b561f5f249531130000cb83
+    - quay.io/prometheus/node-exporter:v0.17.0
+    sizeBytes: 20982005
+  - names:
+    - fortio/fortio@sha256:49f52a69d0c1f590683c6a800436136325592e07b37ee7a3ea283b8a74d3ae52
+    - fortio/fortio:latest_release
+    sizeBytes: 10242120
+  - names:
+    - gcr.io/google_containers/defaultbackend@sha256:ee3aa1187023d0197e3277833f19d9ef7df26cee805fef32663e06c7412239f9
+    - gcr.io/google_containers/defaultbackend:1.0
+    sizeBytes: 7513643
+  - names:
+    - quay.io/coreos/configmap-reload@sha256:e2fd60ff0ae4500a75b80ebaa30e0e7deba9ad107833e8ca53f0047c42c5a057
+    - quay.io/coreos/configmap-reload:v0.0.1
+    sizeBytes: 4785056
+  - names:
+    - k8s.gcr.io/pause@sha256:f78411e19d84a252e53bff71a4407a5686c46983a2c2eeed83929b888179acea
+    - k8s.gcr.io/pause:3.1
+    sizeBytes: 742472
+  nodeInfo:
+    architecture: amd64
+    bootID: aa275ffa-ddaf-4a07-a6b4-e8211fbdf21c
+    containerRuntimeVersion: docker://18.6.2
+    kernelVersion: 4.15.0-46-generic
+    kubeProxyVersion: v1.13.4
+    kubeletVersion: v1.13.4
+    machineID: 9807bb8fe7424f40aadb5f4d2dffc53c
+    operatingSystem: linux
+    osImage: Ubuntu 18.04.1 LTS
+    systemUUID: 9807BB8F-E742-4F40-AADB-5F4D2DFFC53C

@@ -1,0 +1,14 @@
+apiVersion: v1
+data:
+  timeout-client: 60s
+  timeout-client-fin: 60s
+  timeout-server: 60s
+  timeout-server-fin: 60s
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":null,"kind":"ConfigMap","metadata":{"annotations":{},"name":"haproxy-configmap","namespace":"default"}}
+  creationTimestamp: null
+  name: haproxy-configmap
+  selfLink: /api/v1/namespaces/default/configmaps/haproxy-configmap

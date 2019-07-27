@@ -1,0 +1,185 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2019-07-26T13:05:55Z"
+  generateName: alertmanager-main-
+  labels:
+    alertmanager: main
+    app: alertmanager
+    controller-revision-hash: alertmanager-main-75496767f7
+    statefulset.kubernetes.io/pod-name: alertmanager-main-1
+  name: alertmanager-main-1
+  namespace: monitoring
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: StatefulSet
+    name: alertmanager-main
+    uid: b9f12789-4b27-11e9-8f3b-fa163eb7a9f3
+  resourceVersion: "16842570"
+  selfLink: /api/v1/namespaces/monitoring/pods/alertmanager-main-1
+  uid: 1a91b15b-afa6-11e9-858a-fa163eb7a9f3
+spec:
+  containers:
+  - args:
+    - --config.file=/etc/alertmanager/config/alertmanager.yaml
+    - --cluster.listen-address=[$(POD_IP)]:6783
+    - --storage.path=/alertmanager
+    - --data.retention=120h
+    - --web.listen-address=:9093
+    - --web.route-prefix=/
+    - --cluster.peer=alertmanager-main-0.alertmanager-operated.monitoring.svc:6783
+    - --cluster.peer=alertmanager-main-1.alertmanager-operated.monitoring.svc:6783
+    - --cluster.peer=alertmanager-main-2.alertmanager-operated.monitoring.svc:6783
+    env:
+    - name: POD_IP
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: status.podIP
+    image: quay.io/prometheus/alertmanager:v0.16.1
+    imagePullPolicy: IfNotPresent
+    livenessProbe:
+      failureThreshold: 10
+      httpGet:
+        path: /api/v1/status
+        port: web
+        scheme: HTTP
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 3
+    name: alertmanager
+    ports:
+    - containerPort: 9093
+      name: web
+      protocol: TCP
+    - containerPort: 6783
+      name: mesh
+      protocol: TCP
+    readinessProbe:
+      failureThreshold: 10
+      httpGet:
+        path: /api/v1/status
+        port: web
+        scheme: HTTP
+      initialDelaySeconds: 3
+      periodSeconds: 5
+      successThreshold: 1
+      timeoutSeconds: 3
+    resources:
+      requests:
+        memory: 200Mi
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /etc/alertmanager/config
+      name: config-volume
+    - mountPath: /alertmanager
+      name: alertmanager-main-db
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: alertmanager-main-token-fpt2z
+      readOnly: true
+  - args:
+    - -webhook-url=http://localhost:9093/-/reload
+    - -volume-dir=/etc/alertmanager/config
+    image: quay.io/coreos/configmap-reload:v0.0.1
+    imagePullPolicy: IfNotPresent
+    name: config-reloader
+    resources:
+      limits:
+        cpu: 100m
+        memory: 25Mi
+      requests:
+        cpu: 100m
+        memory: 25Mi
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /etc/alertmanager/config
+      name: config-volume
+      readOnly: true
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: alertmanager-main-token-fpt2z
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  hostname: alertmanager-main-1
+  nodeName: worker-3
+  nodeSelector:
+    beta.kubernetes.io/os: linux
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext:
+    fsGroup: 2000
+    runAsNonRoot: true
+    runAsUser: 1000
+  serviceAccount: alertmanager-main
+  serviceAccountName: alertmanager-main
+  subdomain: alertmanager-operated
+  terminationGracePeriodSeconds: 0
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: config-volume
+    secret:
+      defaultMode: 420
+      secretName: alertmanager-main
+  - emptyDir: {}
+    name: alertmanager-main-db
+  - name: alertmanager-main-token-fpt2z
+    secret:
+      defaultMode: 420
+      secretName: alertmanager-main-token-fpt2z
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2019-07-26T13:05:55Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2019-07-26T13:06:30Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2019-07-26T13:06:30Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2019-07-26T13:05:55Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: docker://e4cd17681d6dd5c23e3a173c45036708a5351b1d7cc5eefb07ef7bda2c204734
+    image: quay.io/prometheus/alertmanager:v0.16.1
+    imageID: docker-pullable://quay.io/prometheus/alertmanager@sha256:e6a3f28f282092d9790aaae393650852a9b7c2a7614dc3aa797a74a6beaa0700
+    lastState: {}
+    name: alertmanager
+    ready: true
+    restartCount: 0
+    state:
+      running:
+        startedAt: "2019-07-26T13:06:07Z"
+  - containerID: docker://e328c7b553d9c18c6b6b1671e85d5fea97997323e3e52f19b1b77559797f9fb1
+    image: quay.io/coreos/configmap-reload:v0.0.1
+    imageID: docker-pullable://quay.io/coreos/configmap-reload@sha256:e2fd60ff0ae4500a75b80ebaa30e0e7deba9ad107833e8ca53f0047c42c5a057
+    lastState: {}
+    name: config-reloader
+    ready: true
+    restartCount: 0
+    state:
+      running:
+        startedAt: "2019-07-26T13:06:24Z"
+  hostIP: 172.16.0.7
+  phase: Running
+  podIP: 10.42.0.2
+  qosClass: Burstable
+  startTime: "2019-07-26T13:05:55Z"

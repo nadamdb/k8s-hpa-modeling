@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"run":"ingress-default-backend"},"name":"ingress-default-backend","namespace":"haproxy-controller"},"spec":{"ports":[{"name":"port-1","port":8080,"protocol":"TCP","targetPort":8080}],"selector":{"run":"ingress-default-backend"}}}
+  creationTimestamp: null
+  labels:
+    run: ingress-default-backend
+  name: ingress-default-backend
+  selfLink: /api/v1/namespaces/haproxy-controller/services/ingress-default-backend
+spec:
+  ports:
+  - name: port-1
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    run: ingress-default-backend
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}

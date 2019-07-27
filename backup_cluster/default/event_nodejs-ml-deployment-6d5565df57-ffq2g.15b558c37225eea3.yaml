@@ -1,0 +1,27 @@
+apiVersion: v1
+count: 1
+eventTime: null
+firstTimestamp: "2019-07-27T19:00:42Z"
+involvedObject:
+  apiVersion: v1
+  kind: Pod
+  name: nodejs-ml-deployment-6d5565df57-ffq2g
+  namespace: default
+  resourceVersion: "17018058"
+  uid: d4a1a6a0-b0a0-11e9-858a-fa163eb7a9f3
+kind: Event
+lastTimestamp: "2019-07-27T19:00:42Z"
+message: Successfully assigned default/nodejs-ml-deployment-6d5565df57-ffq2g to worker-1
+metadata:
+  creationTimestamp: "2019-07-27T19:00:42Z"
+  name: nodejs-ml-deployment-6d5565df57-ffq2g.15b558c37225eea3
+  namespace: default
+  resourceVersion: "17018062"
+  selfLink: /api/v1/namespaces/default/events/nodejs-ml-deployment-6d5565df57-ffq2g.15b558c37225eea3
+  uid: d4a5b520-b0a0-11e9-858a-fa163eb7a9f3
+reason: Scheduled
+reportingComponent: ""
+reportingInstance: ""
+source:
+  component: default-scheduler
+type: Normal

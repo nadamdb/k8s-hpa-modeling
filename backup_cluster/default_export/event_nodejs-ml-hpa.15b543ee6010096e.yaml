@@ -1,0 +1,24 @@
+apiVersion: v1
+count: 11
+eventTime: null
+firstTimestamp: "2019-07-27T12:38:56Z"
+involvedObject:
+  apiVersion: autoscaling/v2beta2
+  kind: HorizontalPodAutoscaler
+  name: nodejs-ml-hpa
+  namespace: default
+  resourceVersion: "17014688"
+  uid: 9092cb05-b068-11e9-858a-fa163eb7a9f3
+kind: Event
+lastTimestamp: "2019-07-27T20:19:28Z"
+message: 'New size: 1; reason: All metrics below target'
+metadata:
+  creationTimestamp: null
+  name: nodejs-ml-hpa.15b543ee6010096e
+  selfLink: /api/v1/namespaces/default/events/nodejs-ml-hpa.15b543ee6010096e
+reason: SuccessfulRescale
+reportingComponent: ""
+reportingInstance: ""
+source:
+  component: horizontal-pod-autoscaler
+type: Normal

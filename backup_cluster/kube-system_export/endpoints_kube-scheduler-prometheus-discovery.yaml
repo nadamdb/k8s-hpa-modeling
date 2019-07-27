@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: null
+  labels:
+    k8s-app: kube-scheduler
+  name: kube-scheduler-prometheus-discovery
+  selfLink: /api/v1/namespaces/kube-system/endpoints/kube-scheduler-prometheus-discovery
+subsets:
+- addresses:
+  - ip: 172.16.0.27
+    nodeName: master
+    targetRef:
+      kind: Pod
+      name: kube-scheduler-master
+      namespace: kube-system
+      resourceVersion: "15374592"
+      uid: 91c10d09-4b26-11e9-8f3b-fa163eb7a9f3
+  ports:
+  - name: http-metrics
+    port: 10251
+    protocol: TCP

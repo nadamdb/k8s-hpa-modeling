@@ -1,0 +1,28 @@
+apiVersion: v1
+count: 50
+eventTime: null
+firstTimestamp: "2019-07-27T18:45:51Z"
+involvedObject:
+  apiVersion: autoscaling/v2beta2
+  kind: HorizontalPodAutoscaler
+  name: nodejs-cpu-hpa
+  namespace: default
+  resourceVersion: "17018291"
+  uid: 506f5d36-b068-11e9-858a-fa163eb7a9f3
+kind: Event
+lastTimestamp: "2019-07-27T19:53:31Z"
+message: 'unable to get metrics for resource cpu: no metrics returned from resource
+  metrics API'
+metadata:
+  creationTimestamp: "2019-07-27T19:03:58Z"
+  name: nodejs-cpu-hpa.15b557f427d7cb38
+  namespace: default
+  resourceVersion: "17023071"
+  selfLink: /api/v1/namespaces/default/events/nodejs-cpu-hpa.15b557f427d7cb38
+  uid: 499141e2-b0a1-11e9-858a-fa163eb7a9f3
+reason: FailedGetResourceMetric
+reportingComponent: ""
+reportingInstance: ""
+source:
+  component: horizontal-pod-autoscaler
+type: Warning

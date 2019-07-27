@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: null
+  labels:
+    app: nodejs-cpu
+    tradeoff: "42"
+  name: nodejs-cpu-service
+  selfLink: /api/v1/namespaces/default/endpoints/nodejs-cpu-service
+subsets:
+- addresses:
+  - ip: 10.42.0.8
+    nodeName: worker-3
+    targetRef:
+      kind: Pod
+      name: nodejs-cpu-deployment-867f545687-mbxnt
+      namespace: default
+      resourceVersion: "16978047"
+      uid: 506ac983-b068-11e9-858a-fa163eb7a9f3
+  ports:
+  - port: 3000
+    protocol: TCP

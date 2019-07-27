@@ -1,0 +1,18 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"rbac.authorization.k8s.io/v1","kind":"ClusterRole","metadata":{"annotations":{},"name":"custom-metrics-server-resources"},"rules":[{"apiGroups":["custom.metrics.k8s.io"],"resources":["*"],"verbs":["*"]}]}
+  creationTimestamp: "2019-07-22T13:28:38Z"
+  name: custom-metrics-server-resources
+  resourceVersion: "16311522"
+  selfLink: /apis/rbac.authorization.k8s.io/v1/clusterroles/custom-metrics-server-resources
+  uid: 9cfdae37-ac84-11e9-858a-fa163eb7a9f3
+rules:
+- apiGroups:
+  - custom.metrics.k8s.io
+  resources:
+  - '*'
+  verbs:
+  - '*'

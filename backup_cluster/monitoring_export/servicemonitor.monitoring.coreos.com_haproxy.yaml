@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"monitoring.coreos.com/v1","kind":"ServiceMonitor","metadata":{"annotations":{},"labels":{"app":"haproxy-ingress"},"name":"haproxy","namespace":"monitoring"},"spec":{"endpoints":[{"interval":"5s","path":"/metrics","port":"stat"}],"jobLabel":"app","namespaceSelector":{"matchNames":["haproxy-controller"]},"selector":{"matchLabels":{"run":"haproxy-ingress"}}}}
+  generation: 1
+  name: haproxy
+  selfLink: /apis/monitoring.coreos.com/v1/namespaces/monitoring/servicemonitors/haproxy
+spec:
+  endpoints:
+  - interval: 5s
+    port: stat
+  namespaceSelector:
+    matchNames:
+    - haproxy-controller
+  selector:
+    matchLabels:
+      run: haproxy-ingress

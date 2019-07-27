@@ -1,0 +1,26 @@
+action: ""
+apiVersion: events.k8s.io/v1beta1
+deprecatedCount: 1
+deprecatedFirstTimestamp: "2019-07-27T19:52:28Z"
+deprecatedLastTimestamp: "2019-07-27T19:52:28Z"
+deprecatedSource:
+  component: kubelet
+  host: worker-1
+eventTime: null
+kind: Event
+metadata:
+  creationTimestamp: null
+  name: nodejs-ml-deployment-6d5565df57-l4rpd.15b55b96d2d13484
+  selfLink: /apis/events.k8s.io/v1beta1/namespaces/default/events/nodejs-ml-deployment-6d5565df57-l4rpd.15b55b96d2d13484
+note: Killing container with id docker://nodejs-app-ml:Need to kill Pod
+reason: Killing
+regarding:
+  apiVersion: v1
+  fieldPath: spec.containers{nodejs-app-ml}
+  kind: Pod
+  name: nodejs-ml-deployment-6d5565df57-l4rpd
+  namespace: default
+  resourceVersion: "17018376"
+  uid: 40711bf8-b0a1-11e9-858a-fa163eb7a9f3
+reportingInstance: ""
+type: Normal

@@ -1,0 +1,20 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  annotations:
+    autoscaling.alpha.kubernetes.io/metrics: '[{"type":"Object","object":{"target":{"kind":"Service","name":"nodejs-ml-service"},"metricName":"qps","targetValue":"90"}},{"type":"Object","object":{"target":{"kind":"Service","name":"nodejs-ml-service"},"metricName":"cpu","targetValue":"90G"}}]'
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"autoscaling/v2beta2","kind":"HorizontalPodAutoscaler","metadata":{"annotations":{},"name":"nodejs-ml-hpa","namespace":"default"},"spec":{"maxReplicas":80,"metrics":[{"object":{"describedObject":{"kind":"Service","name":"nodejs-ml-service"},"metric":{"name":"qps"},"target":{"type":"AverageValue","value":90}},"type":"Object"},{"object":{"describedObject":{"kind":"Service","name":"nodejs-ml-service"},"metric":{"name":"cpu"},"target":{"type":"AverageValue","value":90000000000}},"type":"Object"}],"minReplicas":1,"scaleTargetRef":{"apiVersion":"extensions/v1beta1","kind":"Deployment","name":"nodejs-ml-deployment"}}}
+  creationTimestamp: null
+  name: nodejs-ml-hpa
+  selfLink: /apis/autoscaling/v1/namespaces/default/horizontalpodautoscalers/nodejs-ml-hpa
+spec:
+  maxReplicas: 80
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: nodejs-ml-deployment
+status:
+  currentReplicas: 0
+  desiredReplicas: 0

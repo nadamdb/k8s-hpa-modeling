@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: null
+  labels:
+    k8s-app: kubelet
+  name: kubelet
+  selfLink: /api/v1/namespaces/kube-system/endpoints/kubelet
+subsets:
+- addresses:
+  - ip: 172.16.0.13
+    targetRef:
+      kind: Node
+      name: worker-1
+      uid: 6dc849a9-4b27-11e9-8f3b-fa163eb7a9f3
+  - ip: 172.16.0.19
+    targetRef:
+      kind: Node
+      name: worker-2
+      uid: 82980c51-4b27-11e9-8f3b-fa163eb7a9f3
+  - ip: 172.16.0.27
+    targetRef:
+      kind: Node
+      name: master
+      uid: 6858e0af-4b26-11e9-8f3b-fa163eb7a9f3
+  - ip: 172.16.0.7
+    targetRef:
+      kind: Node
+      name: worker-3
+      uid: 7727cdc1-a94f-11e9-858a-fa163eb7a9f3
+  ports:
+  - name: http-metrics
+    port: 10255
+    protocol: TCP
+  - name: cadvisor
+    port: 4194
+    protocol: TCP
+  - name: https-metrics
+    port: 10250
+    protocol: TCP

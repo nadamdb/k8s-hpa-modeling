@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  annotations:
+    deployment.kubernetes.io/desired-replicas: "1"
+    deployment.kubernetes.io/max-replicas: "2"
+    deployment.kubernetes.io/revision: "5"
+    deployment.kubernetes.io/revision-history: 1,3
+  creationTimestamp: "2019-07-18T13:21:32Z"
+  generation: 5
+  labels:
+    pod-template-hash: 69599bd497
+    run: haproxy-ingress
+  name: haproxy-ingress-69599bd497
+  namespace: haproxy-controller
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Deployment
+    name: haproxy-ingress
+    uid: f5d6ad49-a95e-11e9-858a-fa163eb7a9f3
+  resourceVersion: "16842525"
+  selfLink: /apis/apps/v1/namespaces/haproxy-controller/replicasets/haproxy-ingress-69599bd497
+  uid: f5d7c3de-a95e-11e9-858a-fa163eb7a9f3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      pod-template-hash: 69599bd497
+      run: haproxy-ingress
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        pod-template-hash: 69599bd497
+        run: haproxy-ingress
+    spec:
+      containers:
+      - args:
+        - --default-ssl-certificate=default/tls-secret
+        - --configmap=default/haproxy-configmap
+        - --default-backend-service=haproxy-controller/ingress-default-backend
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        image: haproxytech/kubernetes-ingress
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 1042
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: haproxy-ingress
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        - containerPort: 443
+          name: https
+          protocol: TCP
+        - containerPort: 1024
+          name: stat
+          protocol: TCP
+        resources:
+          requests:
+            cpu: 500m
+            memory: 50Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: haproxy-ingress-service-account
+      serviceAccountName: haproxy-ingress-service-account
+      terminationGracePeriodSeconds: 30
+status:
+  availableReplicas: 1
+  fullyLabeledReplicas: 1
+  observedGeneration: 5
+  readyReplicas: 1
+  replicas: 1

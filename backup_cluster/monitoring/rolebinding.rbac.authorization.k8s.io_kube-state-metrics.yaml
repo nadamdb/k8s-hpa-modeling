@@ -1,0 +1,19 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"rbac.authorization.k8s.io/v1","kind":"RoleBinding","metadata":{"annotations":{},"name":"kube-state-metrics","namespace":"monitoring"},"roleRef":{"apiGroup":"rbac.authorization.k8s.io","kind":"Role","name":"kube-state-metrics"},"subjects":[{"kind":"ServiceAccount","name":"kube-state-metrics"}]}
+  creationTimestamp: "2019-03-20T15:49:09Z"
+  name: kube-state-metrics
+  namespace: monitoring
+  resourceVersion: "1537"
+  selfLink: /apis/rbac.authorization.k8s.io/v1/namespaces/monitoring/rolebindings/kube-state-metrics
+  uid: b3203b21-4b27-11e9-8f3b-fa163eb7a9f3
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: kube-state-metrics
+subjects:
+- kind: ServiceAccount
+  name: kube-state-metrics

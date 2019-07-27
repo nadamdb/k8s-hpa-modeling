@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"run":"haproxy-ingress"},"name":"haproxy-ingress","namespace":"haproxy-controller"},"spec":{"ports":[{"name":"http","port":80,"protocol":"TCP","targetPort":80},{"name":"https","port":443,"protocol":"TCP","targetPort":443},{"name":"stat","port":1024,"protocol":"TCP","targetPort":1024}],"selector":{"run":"haproxy-ingress"},"type":"NodePort"}}
+  creationTimestamp: "2019-07-18T13:21:32Z"
+  labels:
+    run: haproxy-ingress
+  name: haproxy-ingress
+  namespace: haproxy-controller
+  resourceVersion: "15788063"
+  selfLink: /api/v1/namespaces/haproxy-controller/services/haproxy-ingress
+  uid: f5df18de-a95e-11e9-858a-fa163eb7a9f3
+spec:
+  clusterIP: 10.99.52.213
+  externalTrafficPolicy: Cluster
+  ports:
+  - name: http
+    nodePort: 30044
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  - name: https
+    nodePort: 31324
+    port: 443
+    protocol: TCP
+    targetPort: 443
+  - name: stat
+    nodePort: 30156
+    port: 1024
+    protocol: TCP
+    targetPort: 1024
+  selector:
+    run: haproxy-ingress
+  sessionAffinity: None
+  type: NodePort
+status:
+  loadBalancer: {}

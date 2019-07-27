@@ -1,0 +1,20 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"rbac.authorization.k8s.io/v1","kind":"RoleBinding","metadata":{"annotations":{},"name":"resource-metrics-auth-reader","namespace":"kube-system"},"roleRef":{"apiGroup":"rbac.authorization.k8s.io","kind":"Role","name":"extension-apiserver-authentication-reader"},"subjects":[{"kind":"ServiceAccount","name":"prometheus-adapter","namespace":"monitoring"}]}
+  creationTimestamp: "2019-03-20T15:49:09Z"
+  name: resource-metrics-auth-reader
+  namespace: kube-system
+  resourceVersion: "1585"
+  selfLink: /apis/rbac.authorization.k8s.io/v1/namespaces/kube-system/rolebindings/resource-metrics-auth-reader
+  uid: b33a1f76-4b27-11e9-8f3b-fa163eb7a9f3
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: extension-apiserver-authentication-reader
+subjects:
+- kind: ServiceAccount
+  name: prometheus-adapter
+  namespace: monitoring

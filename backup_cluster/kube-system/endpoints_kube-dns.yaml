@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: "2019-03-20T15:40:04Z"
+  labels:
+    k8s-app: kube-dns
+    kubernetes.io/cluster-service: "true"
+    kubernetes.io/name: KubeDNS
+  name: kube-dns
+  namespace: kube-system
+  resourceVersion: "15117342"
+  selfLink: /api/v1/namespaces/kube-system/endpoints/kube-dns
+  uid: 6e23034b-4b26-11e9-8f3b-fa163eb7a9f3
+subsets:
+- addresses:
+  - ip: 10.32.0.2
+    nodeName: master
+    targetRef:
+      kind: Pod
+      name: coredns-86c58d9df4-5k2j2
+      namespace: kube-system
+      resourceVersion: "15117272"
+      uid: 6e2654a1-4b26-11e9-8f3b-fa163eb7a9f3
+  - ip: 10.32.0.3
+    nodeName: master
+    targetRef:
+      kind: Pod
+      name: coredns-86c58d9df4-rjj8g
+      namespace: kube-system
+      resourceVersion: "15117262"
+      uid: 6e290026-4b26-11e9-8f3b-fa163eb7a9f3
+  ports:
+  - name: dns
+    port: 53
+    protocol: UDP
+  - name: dns-tcp
+    port: 53
+    protocol: TCP

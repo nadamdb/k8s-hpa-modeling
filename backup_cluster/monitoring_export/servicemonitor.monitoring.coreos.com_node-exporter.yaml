@@ -1,0 +1,23 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"monitoring.coreos.com/v1","kind":"ServiceMonitor","metadata":{"annotations":{},"labels":{"k8s-app":"node-exporter"},"name":"node-exporter","namespace":"monitoring"},"spec":{"endpoints":[{"bearerTokenFile":"/var/run/secrets/kubernetes.io/serviceaccount/token","interval":"30s","port":"https","scheme":"https","tlsConfig":{"insecureSkipVerify":true}}],"jobLabel":"k8s-app","selector":{"matchLabels":{"k8s-app":"node-exporter"}}}}
+  generation: 1
+  labels:
+    k8s-app: node-exporter
+  name: node-exporter
+  selfLink: /apis/monitoring.coreos.com/v1/namespaces/monitoring/servicemonitors/node-exporter
+spec:
+  endpoints:
+  - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    interval: 30s
+    port: https
+    scheme: https
+    tlsConfig:
+      insecureSkipVerify: true
+  jobLabel: k8s-app
+  selector:
+    matchLabels:
+      k8s-app: node-exporter

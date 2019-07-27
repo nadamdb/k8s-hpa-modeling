@@ -1,0 +1,25 @@
+action: ""
+apiVersion: events.k8s.io/v1beta1
+deprecatedCount: 719
+deprecatedFirstTimestamp: "2019-07-26T10:07:37Z"
+deprecatedLastTimestamp: "2019-07-27T20:18:28Z"
+deprecatedSource:
+  component: horizontal-pod-autoscaler
+eventTime: null
+kind: Event
+metadata:
+  creationTimestamp: null
+  name: model-deployment.15b4ed17d8d27f7a
+  selfLink: /apis/events.k8s.io/v1beta1/namespaces/default/events/model-deployment.15b4ed17d8d27f7a
+note: 'unable to get metrics for resource cpu: no metrics returned from resource metrics
+  API'
+reason: FailedGetResourceMetric
+regarding:
+  apiVersion: autoscaling/v2beta2
+  kind: HorizontalPodAutoscaler
+  name: model-deployment
+  namespace: default
+  resourceVersion: "16997269"
+  uid: a2ee29a0-501e-11e9-8f3b-fa163eb7a9f3
+reportingInstance: ""
+type: Warning

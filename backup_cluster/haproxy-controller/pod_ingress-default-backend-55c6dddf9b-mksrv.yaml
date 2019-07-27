@@ -1,0 +1,93 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2019-07-21T15:31:16Z"
+  generateName: ingress-default-backend-55c6dddf9b-
+  labels:
+    pod-template-hash: 55c6dddf9b
+    run: ingress-default-backend
+  name: ingress-default-backend-55c6dddf9b-mksrv
+  namespace: haproxy-controller
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: ReplicaSet
+    name: ingress-default-backend-55c6dddf9b
+    uid: f5cd5f5d-a95e-11e9-858a-fa163eb7a9f3
+  resourceVersion: "16192618"
+  selfLink: /api/v1/namespaces/haproxy-controller/pods/ingress-default-backend-55c6dddf9b-mksrv
+  uid: 944023af-abcc-11e9-858a-fa163eb7a9f3
+spec:
+  containers:
+  - image: gcr.io/google_containers/defaultbackend:1.0
+    imagePullPolicy: IfNotPresent
+    name: ingress-default-backend
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: default-token-4f88z
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: worker-2
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: default-token-4f88z
+    secret:
+      defaultMode: 420
+      secretName: default-token-4f88z
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2019-07-21T15:31:16Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2019-07-21T15:31:20Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2019-07-21T15:31:20Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2019-07-21T15:31:16Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: docker://8e4e65ee6e24e8ded70b1116b6ec23a3500ab437c6b44cbb69dc20cf081bc2ad
+    image: gcr.io/google_containers/defaultbackend:1.0
+    imageID: docker-pullable://gcr.io/google_containers/defaultbackend@sha256:ee3aa1187023d0197e3277833f19d9ef7df26cee805fef32663e06c7412239f9
+    lastState: {}
+    name: ingress-default-backend
+    ready: true
+    restartCount: 0
+    state:
+      running:
+        startedAt: "2019-07-21T15:31:19Z"
+  hostIP: 172.16.0.19
+  phase: Running
+  podIP: 10.36.0.7
+  qosClass: BestEffort
+  startTime: "2019-07-21T15:31:16Z"

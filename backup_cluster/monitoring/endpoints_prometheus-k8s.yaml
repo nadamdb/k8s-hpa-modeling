@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: "2019-03-20T15:49:09Z"
+  labels:
+    prometheus: k8s
+  name: prometheus-k8s
+  namespace: monitoring
+  resourceVersion: "16907303"
+  selfLink: /api/v1/namespaces/monitoring/endpoints/prometheus-k8s
+  uid: b374826e-4b27-11e9-8f3b-fa163eb7a9f3
+subsets:
+- addresses:
+  - ip: 10.42.0.9
+    nodeName: worker-3
+    targetRef:
+      kind: Pod
+      name: prometheus-k8s-1
+      namespace: monitoring
+      resourceVersion: "16907246"
+      uid: 9e3a85da-b007-11e9-858a-fa163eb7a9f3
+  - ip: 10.44.0.1
+    nodeName: worker-1
+    targetRef:
+      kind: Pod
+      name: prometheus-k8s-0
+      namespace: monitoring
+      resourceVersion: "16907302"
+      uid: ad300155-b007-11e9-858a-fa163eb7a9f3
+  ports:
+  - name: web
+    port: 9090
+    protocol: TCP

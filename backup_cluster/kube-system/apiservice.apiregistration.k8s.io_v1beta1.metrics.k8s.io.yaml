@@ -1,0 +1,27 @@
+apiVersion: apiregistration.k8s.io/v1
+kind: APIService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apiregistration.k8s.io/v1","kind":"APIService","metadata":{"annotations":{},"name":"v1beta1.metrics.k8s.io"},"spec":{"group":"metrics.k8s.io","groupPriorityMinimum":100,"insecureSkipTLSVerify":true,"service":{"name":"prometheus-adapter","namespace":"monitoring"},"version":"v1beta1","versionPriority":100}}
+  creationTimestamp: "2019-03-20T15:49:09Z"
+  name: v1beta1.metrics.k8s.io
+  resourceVersion: "17019672"
+  selfLink: /apis/apiregistration.k8s.io/v1/apiservices/v1beta1.metrics.k8s.io
+  uid: b32c8dd1-4b27-11e9-8f3b-fa163eb7a9f3
+spec:
+  group: metrics.k8s.io
+  groupPriorityMinimum: 100
+  insecureSkipTLSVerify: true
+  service:
+    name: prometheus-adapter
+    namespace: monitoring
+  version: v1beta1
+  versionPriority: 100
+status:
+  conditions:
+  - lastTransitionTime: "2019-07-27T19:16:33Z"
+    message: all checks passed
+    reason: Passed
+    status: "True"
+    type: Available

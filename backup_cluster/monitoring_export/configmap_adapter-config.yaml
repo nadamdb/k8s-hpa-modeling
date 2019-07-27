@@ -1,0 +1,37 @@
+apiVersion: v1
+data:
+  config.yaml: |
+    resourceRules:
+      cpu:
+        containerQuery: sum(rate(container_cpu_usage_seconds_total{<<.LabelMatchers>>}[1m])) by (<<.GroupBy>>)
+        nodeQuery: sum(1 - rate(node_cpu_seconds_total{mode="idle"}[1m]) * on(namespace, pod) group_left(node) node_namespace_pod:kube_pod_info:{<<.LabelMatchers>>}) by (<<.GroupBy>>)
+        resources:
+          overrides:
+            node:
+              resource: node
+            namespace:
+              resource: namespace
+            pod_name:
+              resource: pod
+        containerLabel: container_name
+      memory:
+        containerQuery: sum(container_memory_working_set_bytes{<<.LabelMatchers>>}) by (<<.GroupBy>>)
+        nodeQuery: sum(node:node_memory_bytes_total:sum{<<.LabelMatchers>>} - node:node_memory_bytes_available:sum{<<.LabelMatchers>>}) by (<<.GroupBy>>)
+        resources:
+          overrides:
+            node:
+              resource: node
+            namespace:
+              resource: namespace
+            pod_name:
+              resource: pod
+        containerLabel: container_name
+      window: 1m
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"config.yaml":"resourceRules:\n  cpu:\n    containerQuery: sum(rate(container_cpu_usage_seconds_total{\u003c\u003c.LabelMatchers\u003e\u003e}[1m])) by (\u003c\u003c.GroupBy\u003e\u003e)\n    nodeQuery: sum(1 - rate(node_cpu_seconds_total{mode=\"idle\"}[1m]) * on(namespace, pod) group_left(node) node_namespace_pod:kube_pod_info:{\u003c\u003c.LabelMatchers\u003e\u003e}) by (\u003c\u003c.GroupBy\u003e\u003e)\n    resources:\n      overrides:\n        node:\n          resource: node\n        namespace:\n          resource: namespace\n        pod_name:\n          resource: pod\n    containerLabel: container_name\n  memory:\n    containerQuery: sum(container_memory_working_set_bytes{\u003c\u003c.LabelMatchers\u003e\u003e}) by (\u003c\u003c.GroupBy\u003e\u003e)\n    nodeQuery: sum(node:node_memory_bytes_total:sum{\u003c\u003c.LabelMatchers\u003e\u003e} - node:node_memory_bytes_available:sum{\u003c\u003c.LabelMatchers\u003e\u003e}) by (\u003c\u003c.GroupBy\u003e\u003e)\n    resources:\n      overrides:\n        node:\n          resource: node\n        namespace:\n          resource: namespace\n        pod_name:\n          resource: pod\n    containerLabel: container_name\n  window: 1m\n"},"kind":"ConfigMap","metadata":{"annotations":{},"name":"adapter-config","namespace":"monitoring"}}
+  creationTimestamp: null
+  name: adapter-config
+  selfLink: /api/v1/namespaces/monitoring/configmaps/adapter-config

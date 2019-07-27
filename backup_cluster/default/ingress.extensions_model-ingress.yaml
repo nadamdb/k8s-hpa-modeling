@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  creationTimestamp: "2019-04-15T14:33:27Z"
+  generation: 4
+  name: model-ingress
+  namespace: default
+  resourceVersion: "3365346"
+  selfLink: /apis/extensions/v1beta1/namespaces/default/ingresses/model-ingress
+  uid: 6ea604e2-5f8b-11e9-8f3b-fa163eb7a9f3
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          serviceName: model-service
+          servicePort: 8080
+        path: /model
+status:
+  loadBalancer: {}

@@ -1,0 +1,27 @@
+apiVersion: apiregistration.k8s.io/v1
+kind: APIService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apiregistration.k8s.io/v1beta1","kind":"APIService","metadata":{"annotations":{},"name":"v1beta2.custom.metrics.k8s.io"},"spec":{"group":"custom.metrics.k8s.io","groupPriorityMinimum":100,"insecureSkipTLSVerify":true,"service":{"name":"custom-metrics-apiserver","namespace":"custom-metrics"},"version":"v1beta2","versionPriority":200}}
+  creationTimestamp: "2019-07-22T13:28:38Z"
+  name: v1beta2.custom.metrics.k8s.io
+  resourceVersion: "17019671"
+  selfLink: /apis/apiregistration.k8s.io/v1/apiservices/v1beta2.custom.metrics.k8s.io
+  uid: 9cfc95f8-ac84-11e9-858a-fa163eb7a9f3
+spec:
+  group: custom.metrics.k8s.io
+  groupPriorityMinimum: 100
+  insecureSkipTLSVerify: true
+  service:
+    name: custom-metrics-apiserver
+    namespace: custom-metrics
+  version: v1beta2
+  versionPriority: 200
+status:
+  conditions:
+  - lastTransitionTime: "2019-07-27T19:16:33Z"
+    message: all checks passed
+    reason: Passed
+    status: "True"
+    type: Available

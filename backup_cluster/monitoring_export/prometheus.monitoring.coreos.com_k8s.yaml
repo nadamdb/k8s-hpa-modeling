@@ -1,0 +1,40 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"monitoring.coreos.com/v1","kind":"Prometheus","metadata":{"annotations":{},"labels":{"prometheus":"k8s"},"name":"k8s","namespace":"monitoring"},"spec":{"alerting":{"alertmanagers":[{"name":"alertmanager-main","namespace":"monitoring","port":"web"}]},"baseImage":"quay.io/prometheus/prometheus","nodeSelector":{"beta.kubernetes.io/os":"linux"},"replicas":2,"resources":{"requests":{"memory":"400Mi"}},"ruleSelector":{"matchLabels":{"prometheus":"k8s","role":"alert-rules"}},"securityContext":{"fsGroup":2000,"runAsNonRoot":true,"runAsUser":1000},"serviceAccountName":"prometheus-k8s","serviceMonitorNamespaceSelector":{},"serviceMonitorSelector":{},"version":"v2.7.2"}}
+  generation: 1
+  labels:
+    prometheus: k8s
+  name: k8s
+  selfLink: /apis/monitoring.coreos.com/v1/namespaces/monitoring/prometheuses/k8s
+spec:
+  alerting:
+    alertmanagers:
+    - name: alertmanager-main
+      namespace: monitoring
+      port: web
+  baseImage: quay.io/prometheus/prometheus
+  enableAdminAPI: false
+  evaluationInterval: 5s
+  nodeSelector:
+    beta.kubernetes.io/os: linux
+  replicas: 2
+  resources:
+    requests:
+      memory: 400Mi
+  retention: 120h
+  ruleSelector:
+    matchLabels:
+      prometheus: k8s
+      role: alert-rules
+  scrapeInterval: 5s
+  securityContext:
+    fsGroup: 2000
+    runAsNonRoot: true
+    runAsUser: 1000
+  serviceAccountName: prometheus-k8s
+  serviceMonitorNamespaceSelector: {}
+  serviceMonitorSelector: {}
+  version: v2.7.2

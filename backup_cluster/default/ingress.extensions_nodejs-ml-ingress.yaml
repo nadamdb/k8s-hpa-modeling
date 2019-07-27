@@ -1,0 +1,24 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"extensions/v1beta1","kind":"Ingress","metadata":{"annotations":{},"name":"nodejs-ml-ingress","namespace":"default"},"spec":{"rules":[{"host":"nodejs-ml-app","http":{"paths":[{"backend":{"serviceName":"nodejs-ml-service","servicePort":3000},"path":"/"}]}}]}}
+  creationTimestamp: "2019-07-27T12:17:55Z"
+  generation: 1
+  name: nodejs-ml-ingress
+  namespace: default
+  resourceVersion: "16978223"
+  selfLink: /apis/extensions/v1beta1/namespaces/default/ingresses/nodejs-ml-ingress
+  uid: 908f64a5-b068-11e9-858a-fa163eb7a9f3
+spec:
+  rules:
+  - host: nodejs-ml-app
+    http:
+      paths:
+      - backend:
+          serviceName: nodejs-ml-service
+          servicePort: 3000
+        path: /
+status:
+  loadBalancer: {}

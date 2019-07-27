@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: "2019-07-24T15:20:04Z"
+  labels:
+    app: fortio
+  name: fortio
+  namespace: default
+  resourceVersion: "16583642"
+  selfLink: /api/v1/namespaces/default/endpoints/fortio
+  uid: 8309d505-ae26-11e9-858a-fa163eb7a9f3
+subsets:
+- addresses:
+  - ip: 10.36.0.5
+    nodeName: worker-2
+    targetRef:
+      kind: Pod
+      name: fortio-deploy-568867d769-qw6f9
+      namespace: default
+      resourceVersion: "16583641"
+      uid: 830c0ec7-ae26-11e9-858a-fa163eb7a9f3
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP

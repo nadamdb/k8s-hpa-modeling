@@ -1,0 +1,29 @@
+apiVersion: v1
+count: 1
+eventTime: null
+firstTimestamp: "2019-07-27T18:57:52Z"
+involvedObject:
+  apiVersion: v1
+  fieldPath: spec.containers{nodejs-app-cpu}
+  kind: Pod
+  name: nodejs-cpu-deployment-867f545687-sx4z9
+  namespace: default
+  resourceVersion: "17017748"
+  uid: 6f1f7456-b0a0-11e9-858a-fa163eb7a9f3
+kind: Event
+lastTimestamp: "2019-07-27T18:57:52Z"
+message: Container image "balazska/nodejs_app:v1" already present on machine
+metadata:
+  creationTimestamp: "2019-07-27T18:57:52Z"
+  name: nodejs-cpu-deployment-867f545687-sx4z9.15b5589c16241615
+  namespace: default
+  resourceVersion: "17017758"
+  selfLink: /api/v1/namespaces/default/events/nodejs-cpu-deployment-867f545687-sx4z9.15b5589c16241615
+  uid: 6fe31995-b0a0-11e9-858a-fa163eb7a9f3
+reason: Pulled
+reportingComponent: ""
+reportingInstance: ""
+source:
+  component: kubelet
+  host: worker-1
+type: Normal

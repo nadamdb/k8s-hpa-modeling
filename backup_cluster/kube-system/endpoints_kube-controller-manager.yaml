@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  annotations:
+    control-plane.alpha.kubernetes.io/leader: '{"holderIdentity":"master_7a633b8e-af2d-11e9-8c90-fa163eb7a9f3","leaseDurationSeconds":15,"acquireTime":"2019-07-25T22:42:46Z","renewTime":"2019-07-27T19:49:30Z","leaderTransitions":19}'
+  creationTimestamp: "2019-03-20T15:39:57Z"
+  name: kube-controller-manager
+  namespace: kube-system
+  resourceVersion: "17022689"
+  selfLink: /api/v1/namespaces/kube-system/endpoints/kube-controller-manager
+  uid: 6a45733f-4b26-11e9-8f3b-fa163eb7a9f3

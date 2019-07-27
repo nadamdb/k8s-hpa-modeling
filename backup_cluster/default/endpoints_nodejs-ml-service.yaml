@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: "2019-07-27T12:17:55Z"
+  labels:
+    app: nodejs-ml
+    tradeoff: "10"
+  name: nodejs-ml-service
+  namespace: default
+  resourceVersion: "17023097"
+  selfLink: /api/v1/namespaces/default/endpoints/nodejs-ml-service
+  uid: 908f6741-b068-11e9-858a-fa163eb7a9f3
+subsets:
+- addresses:
+  - ip: 10.42.0.10
+    nodeName: worker-3
+    targetRef:
+      kind: Pod
+      name: nodejs-ml-deployment-6d5565df57-sd9hp
+      namespace: default
+      resourceVersion: "16978242"
+      uid: 9088f798-b068-11e9-858a-fa163eb7a9f3
+  - ip: 10.44.0.2
+    nodeName: worker-1
+    targetRef:
+      kind: Pod
+      name: nodejs-ml-deployment-6d5565df57-wtf5c
+      namespace: default
+      resourceVersion: "17023094"
+      uid: 35e27064-b0a8-11e9-858a-fa163eb7a9f3
+  ports:
+  - port: 3000
+    protocol: TCP

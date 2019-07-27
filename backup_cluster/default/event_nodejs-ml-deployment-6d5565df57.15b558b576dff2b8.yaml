@@ -1,0 +1,27 @@
+apiVersion: v1
+count: 1
+eventTime: null
+firstTimestamp: "2019-07-27T18:59:41Z"
+involvedObject:
+  apiVersion: apps/v1
+  kind: ReplicaSet
+  name: nodejs-ml-deployment-6d5565df57
+  namespace: default
+  resourceVersion: "17017934"
+  uid: 908511a8-b068-11e9-858a-fa163eb7a9f3
+kind: Event
+lastTimestamp: "2019-07-27T18:59:41Z"
+message: 'Deleted pod: nodejs-ml-deployment-6d5565df57-78s4m'
+metadata:
+  creationTimestamp: "2019-07-27T18:59:41Z"
+  name: nodejs-ml-deployment-6d5565df57.15b558b576dff2b8
+  namespace: default
+  resourceVersion: "17017939"
+  selfLink: /api/v1/namespaces/default/events/nodejs-ml-deployment-6d5565df57.15b558b576dff2b8
+  uid: b0dae1d2-b0a0-11e9-858a-fa163eb7a9f3
+reason: SuccessfulDelete
+reportingComponent: ""
+reportingInstance: ""
+source:
+  component: replicaset-controller
+type: Normal

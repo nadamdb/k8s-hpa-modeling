@@ -1,0 +1,16 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  creationTimestamp: "2019-03-20T15:39:58Z"
+  name: system:coredns
+  resourceVersion: "227"
+  selfLink: /apis/rbac.authorization.k8s.io/v1/clusterrolebindings/system%3Acoredns
+  uid: 6b157a8b-4b26-11e9-8f3b-fa163eb7a9f3
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:coredns
+subjects:
+- kind: ServiceAccount
+  name: coredns
+  namespace: kube-system

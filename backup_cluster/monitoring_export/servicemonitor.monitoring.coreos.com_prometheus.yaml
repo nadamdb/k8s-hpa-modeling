@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"monitoring.coreos.com/v1","kind":"ServiceMonitor","metadata":{"annotations":{},"labels":{"k8s-app":"prometheus"},"name":"prometheus","namespace":"monitoring"},"spec":{"endpoints":[{"interval":"30s","port":"web"}],"selector":{"matchLabels":{"prometheus":"k8s"}}}}
+  generation: 1
+  labels:
+    k8s-app: prometheus
+  name: prometheus
+  selfLink: /apis/monitoring.coreos.com/v1/namespaces/monitoring/servicemonitors/prometheus
+spec:
+  endpoints:
+  - interval: 30s
+    port: web
+  selector:
+    matchLabels:
+      prometheus: k8s

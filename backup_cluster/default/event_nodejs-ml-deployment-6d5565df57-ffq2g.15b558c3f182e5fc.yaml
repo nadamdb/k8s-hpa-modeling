@@ -1,0 +1,29 @@
+apiVersion: v1
+count: 1
+eventTime: null
+firstTimestamp: "2019-07-27T19:00:44Z"
+involvedObject:
+  apiVersion: v1
+  fieldPath: spec.containers{nodejs-app-ml}
+  kind: Pod
+  name: nodejs-ml-deployment-6d5565df57-ffq2g
+  namespace: default
+  resourceVersion: "17018059"
+  uid: d4a1a6a0-b0a0-11e9-858a-fa163eb7a9f3
+kind: Event
+lastTimestamp: "2019-07-27T19:00:44Z"
+message: Started container
+metadata:
+  creationTimestamp: "2019-07-27T19:00:44Z"
+  name: nodejs-ml-deployment-6d5565df57-ffq2g.15b558c3f182e5fc
+  namespace: default
+  resourceVersion: "17018072"
+  selfLink: /api/v1/namespaces/default/events/nodejs-ml-deployment-6d5565df57-ffq2g.15b558c3f182e5fc
+  uid: d5eba4d1-b0a0-11e9-858a-fa163eb7a9f3
+reason: Started
+reportingComponent: ""
+reportingInstance: ""
+source:
+  component: kubelet
+  host: worker-1
+type: Normal

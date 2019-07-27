@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: "2019-03-20T15:49:27Z"
+  labels:
+    operated-prometheus: "true"
+  name: prometheus-operated
+  namespace: monitoring
+  ownerReferences:
+  - apiVersion: monitoring.coreos.com/v1
+    kind: Prometheus
+    name: k8s
+    uid: b3561804-4b27-11e9-8f3b-fa163eb7a9f3
+  resourceVersion: "1817"
+  selfLink: /api/v1/namespaces/monitoring/services/prometheus-operated
+  uid: be3aa93c-4b27-11e9-8f3b-fa163eb7a9f3
+spec:
+  clusterIP: None
+  ports:
+  - name: web
+    port: 9090
+    protocol: TCP
+    targetPort: web
+  selector:
+    app: prometheus
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}

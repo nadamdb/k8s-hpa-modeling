@@ -1,0 +1,35 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"monitoring.coreos.com/v1","kind":"ServiceMonitor","metadata":{"annotations":{},"labels":{"k8s-app":"kube-state-metrics"},"name":"kube-state-metrics","namespace":"monitoring"},"spec":{"endpoints":[{"bearerTokenFile":"/var/run/secrets/kubernetes.io/serviceaccount/token","honorLabels":true,"interval":"30s","port":"https-main","scheme":"https","scrapeTimeout":"30s","tlsConfig":{"insecureSkipVerify":true}},{"bearerTokenFile":"/var/run/secrets/kubernetes.io/serviceaccount/token","interval":"30s","port":"https-self","scheme":"https","tlsConfig":{"insecureSkipVerify":true}}],"jobLabel":"k8s-app","selector":{"matchLabels":{"k8s-app":"kube-state-metrics"}}}}
+  creationTimestamp: "2019-03-20T15:49:09Z"
+  generation: 8
+  labels:
+    k8s-app: kube-state-metrics
+  name: kube-state-metrics
+  namespace: monitoring
+  resourceVersion: "15792231"
+  selfLink: /apis/monitoring.coreos.com/v1/namespaces/monitoring/servicemonitors/kube-state-metrics
+  uid: b3238eb8-4b27-11e9-8f3b-fa163eb7a9f3
+spec:
+  endpoints:
+  - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    honorLabels: true
+    interval: 5s
+    port: https-main
+    scheme: https
+    scrapeTimeout: 5s
+    tlsConfig:
+      insecureSkipVerify: true
+  - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    interval: 5s
+    port: https-self
+    scheme: https
+    tlsConfig:
+      insecureSkipVerify: true
+  jobLabel: k8s-app
+  selector:
+    matchLabels:
+      k8s-app: kube-state-metrics

@@ -1,0 +1,29 @@
+action: ""
+apiVersion: events.k8s.io/v1beta1
+deprecatedCount: 1
+deprecatedFirstTimestamp: "2019-07-27T19:53:32Z"
+deprecatedLastTimestamp: "2019-07-27T19:53:32Z"
+deprecatedSource:
+  component: kubelet
+  host: worker-1
+eventTime: null
+kind: Event
+metadata:
+  creationTimestamp: "2019-07-27T19:53:32Z"
+  name: nodejs-ml-deployment-6d5565df57-wtf5c.15b55ba5b5e72034
+  namespace: default
+  resourceVersion: "17023089"
+  selfLink: /apis/events.k8s.io/v1beta1/namespaces/default/events/nodejs-ml-deployment-6d5565df57-wtf5c.15b55ba5b5e72034
+  uid: 369aa2d6-b0a8-11e9-858a-fa163eb7a9f3
+note: Container image "balazska/nodejs_app:v1" already present on machine
+reason: Pulled
+regarding:
+  apiVersion: v1
+  fieldPath: spec.containers{nodejs-app-ml}
+  kind: Pod
+  name: nodejs-ml-deployment-6d5565df57-wtf5c
+  namespace: default
+  resourceVersion: "17023082"
+  uid: 35e27064-b0a8-11e9-858a-fa163eb7a9f3
+reportingInstance: ""
+type: Normal

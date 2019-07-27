@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: "2019-03-26T23:26:52Z"
+  name: model-service
+  namespace: default
+  resourceVersion: "3851310"
+  selfLink: /api/v1/namespaces/default/services/model-service
+  uid: a2d8004d-501e-11e9-8f3b-fa163eb7a9f3
+spec:
+  clusterIP: 10.107.107.254
+  externalTrafficPolicy: Cluster
+  ports:
+  - nodePort: 30884
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: model
+  sessionAffinity: None
+  type: NodePort
+status:
+  loadBalancer: {}

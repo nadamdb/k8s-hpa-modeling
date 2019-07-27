@@ -1,0 +1,31 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"monitoring.coreos.com/v1","kind":"ServiceMonitor","metadata":{"annotations":{},"labels":{"k8s-app":"kube-controller-manager"},"name":"kube-controller-manager","namespace":"monitoring"},"spec":{"endpoints":[{"interval":"30s","metricRelabelings":[{"action":"drop","regex":"etcd_(debugging|disk|request|server).*","sourceLabels":["__name__"]}],"port":"http-metrics"}],"jobLabel":"k8s-app","namespaceSelector":{"matchNames":["kube-system"]},"selector":{"matchLabels":{"k8s-app":"kube-controller-manager"}}}}
+  creationTimestamp: "2019-03-20T15:49:09Z"
+  generation: 1
+  labels:
+    k8s-app: kube-controller-manager
+  name: kube-controller-manager
+  namespace: monitoring
+  resourceVersion: "1644"
+  selfLink: /apis/monitoring.coreos.com/v1/namespaces/monitoring/servicemonitors/kube-controller-manager
+  uid: b37cc3c0-4b27-11e9-8f3b-fa163eb7a9f3
+spec:
+  endpoints:
+  - interval: 30s
+    metricRelabelings:
+    - action: drop
+      regex: etcd_(debugging|disk|request|server).*
+      sourceLabels:
+      - __name__
+    port: http-metrics
+  jobLabel: k8s-app
+  namespaceSelector:
+    matchNames:
+    - kube-system
+  selector:
+    matchLabels:
+      k8s-app: kube-controller-manager

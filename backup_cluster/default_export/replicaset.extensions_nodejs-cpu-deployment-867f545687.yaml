@@ -1,0 +1,55 @@
+apiVersion: extensions/v1beta1
+kind: ReplicaSet
+metadata:
+  annotations:
+    deployment.kubernetes.io/desired-replicas: "1"
+    deployment.kubernetes.io/max-replicas: "2"
+    deployment.kubernetes.io/revision: "1"
+  creationTimestamp: null
+  generation: 1
+  labels:
+    app: nodejs-cpu
+    pod-template-hash: 867f545687
+  name: nodejs-cpu-deployment-867f545687
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Deployment
+    name: nodejs-cpu-deployment
+    uid: 5065e9a0-b068-11e9-858a-fa163eb7a9f3
+  selfLink: /apis/extensions/v1beta1/namespaces/default/replicasets/nodejs-cpu-deployment-867f545687
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nodejs-cpu
+      pod-template-hash: 867f545687
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: nodejs-cpu
+        pod-template-hash: 867f545687
+    spec:
+      containers:
+      - image: balazska/nodejs_app:v1
+        imagePullPolicy: IfNotPresent
+        name: nodejs-app-cpu
+        ports:
+        - containerPort: 3000
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 100m
+          requests:
+            cpu: 100m
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+  replicas: 0

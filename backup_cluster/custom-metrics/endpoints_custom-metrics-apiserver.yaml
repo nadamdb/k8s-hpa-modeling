@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: "2019-07-22T13:28:38Z"
+  name: custom-metrics-apiserver
+  namespace: custom-metrics
+  resourceVersion: "16311552"
+  selfLink: /api/v1/namespaces/custom-metrics/endpoints/custom-metrics-apiserver
+  uid: 9cfb43a8-ac84-11e9-858a-fa163eb7a9f3
+subsets:
+- addresses:
+  - ip: 10.42.0.4
+    nodeName: worker-3
+    targetRef:
+      kind: Pod
+      name: custom-metrics-apiserver-56bbb6cbd8-bbdfv
+      namespace: custom-metrics
+      resourceVersion: "16311550"
+      uid: 9d8f47af-ac84-11e9-858a-fa163eb7a9f3
+  ports:
+  - name: https
+    port: 6443
+    protocol: TCP
+  - name: http
+    port: 8080
+    protocol: TCP

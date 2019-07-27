@@ -1,0 +1,23 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"rbac.authorization.k8s.io/v1","kind":"Role","metadata":{"annotations":{},"name":"prometheus-k8s","namespace":"monitoring"},"rules":[{"apiGroups":[""],"resources":["services","endpoints","pods"],"verbs":["get","list","watch"]}]}
+  creationTimestamp: "2019-03-20T15:49:09Z"
+  name: prometheus-k8s
+  namespace: monitoring
+  resourceVersion: "1631"
+  selfLink: /apis/rbac.authorization.k8s.io/v1/namespaces/monitoring/roles/prometheus-k8s
+  uid: b360aeb1-4b27-11e9-8f3b-fa163eb7a9f3
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - services
+  - endpoints
+  - pods
+  verbs:
+  - get
+  - list
+  - watch

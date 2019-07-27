@@ -1,0 +1,27 @@
+action: ""
+apiVersion: events.k8s.io/v1beta1
+deprecatedCount: 1
+deprecatedFirstTimestamp: "2019-07-27T19:03:42Z"
+deprecatedLastTimestamp: "2019-07-27T19:03:42Z"
+deprecatedSource:
+  component: default-scheduler
+eventTime: null
+kind: Event
+metadata:
+  creationTimestamp: "2019-07-27T19:03:42Z"
+  name: nodejs-ml-deployment-6d5565df57-l4rpd.15b558ed8e35d0ec
+  namespace: default
+  resourceVersion: "17018377"
+  selfLink: /apis/events.k8s.io/v1beta1/namespaces/default/events/nodejs-ml-deployment-6d5565df57-l4rpd.15b558ed8e35d0ec
+  uid: 40729539-b0a1-11e9-858a-fa163eb7a9f3
+note: Successfully assigned default/nodejs-ml-deployment-6d5565df57-l4rpd to worker-1
+reason: Scheduled
+regarding:
+  apiVersion: v1
+  kind: Pod
+  name: nodejs-ml-deployment-6d5565df57-l4rpd
+  namespace: default
+  resourceVersion: "17018375"
+  uid: 40711bf8-b0a1-11e9-858a-fa163eb7a9f3
+reportingInstance: ""
+type: Normal

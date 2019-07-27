@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: null
+  name: model-service
+  selfLink: /api/v1/namespaces/default/endpoints/model-service
+subsets:
+- addresses:
+  - ip: 10.36.0.1
+    nodeName: worker-2
+    targetRef:
+      kind: Pod
+      name: model-deployment-55485dbf7b-hvh4f
+      namespace: default
+      resourceVersion: "9476938"
+      uid: 67497365-84ad-11e9-8f3b-fa163eb7a9f3
+  ports:
+  - port: 8080
+    protocol: TCP

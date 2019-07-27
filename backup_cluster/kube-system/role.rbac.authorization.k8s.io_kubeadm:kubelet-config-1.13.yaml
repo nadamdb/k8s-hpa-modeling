@@ -1,0 +1,18 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  creationTimestamp: "2019-03-20T15:39:57Z"
+  name: kubeadm:kubelet-config-1.13
+  namespace: kube-system
+  resourceVersion: "189"
+  selfLink: /apis/rbac.authorization.k8s.io/v1/namespaces/kube-system/roles/kubeadm%3Akubelet-config-1.13
+  uid: 6a6c0510-4b26-11e9-8f3b-fa163eb7a9f3
+rules:
+- apiGroups:
+  - ""
+  resourceNames:
+  - kubelet-config-1.13
+  resources:
+  - configmaps
+  verbs:
+  - get

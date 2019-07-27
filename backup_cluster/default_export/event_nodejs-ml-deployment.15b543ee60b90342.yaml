@@ -1,0 +1,24 @@
+apiVersion: v1
+count: 11
+eventTime: null
+firstTimestamp: "2019-07-27T12:38:56Z"
+involvedObject:
+  apiVersion: apps/v1
+  kind: Deployment
+  name: nodejs-ml-deployment
+  namespace: default
+  resourceVersion: "17014781"
+  uid: 90832e74-b068-11e9-858a-fa163eb7a9f3
+kind: Event
+lastTimestamp: "2019-07-27T20:19:28Z"
+message: Scaled down replica set nodejs-ml-deployment-6d5565df57 to 1
+metadata:
+  creationTimestamp: null
+  name: nodejs-ml-deployment.15b543ee60b90342
+  selfLink: /api/v1/namespaces/default/events/nodejs-ml-deployment.15b543ee60b90342
+reason: ScalingReplicaSet
+reportingComponent: ""
+reportingInstance: ""
+source:
+  component: deployment-controller
+type: Normal

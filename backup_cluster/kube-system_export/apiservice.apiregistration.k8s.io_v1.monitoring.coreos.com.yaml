@@ -1,0 +1,21 @@
+apiVersion: apiregistration.k8s.io/v1
+kind: APIService
+metadata:
+  creationTimestamp: null
+  labels:
+    kube-aggregator.kubernetes.io/automanaged: "true"
+  name: v1.monitoring.coreos.com
+  selfLink: /apis/apiregistration.k8s.io/v1/apiservices/v1.monitoring.coreos.com
+spec:
+  group: monitoring.coreos.com
+  groupPriorityMinimum: 1000
+  service: null
+  version: v1
+  versionPriority: 100
+status:
+  conditions:
+  - lastTransitionTime: "2019-07-27T20:26:16Z"
+    message: Local APIServices are always available
+    reason: Local
+    status: "True"
+    type: Available

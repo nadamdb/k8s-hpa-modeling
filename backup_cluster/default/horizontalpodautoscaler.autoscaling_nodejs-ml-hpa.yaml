@@ -1,0 +1,29 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  annotations:
+    autoscaling.alpha.kubernetes.io/conditions: '[{"type":"AbleToScale","status":"True","lastTransitionTime":"2019-07-27T12:18:56Z","reason":"ReadyForNewScale","message":"recommended
+      size matches current size"},{"type":"ScalingActive","status":"True","lastTransitionTime":"2019-07-27T14:12:38Z","reason":"ValidMetricFound","message":"the
+      HPA was able to successfully calculate a replica count from Service metric qps"},{"type":"ScalingLimited","status":"False","lastTransitionTime":"2019-07-27T18:39:31Z","reason":"DesiredWithinRange","message":"the
+      desired count is within the acceptable range"}]'
+    autoscaling.alpha.kubernetes.io/current-metrics: '[{"type":"Object","object":{"target":{"kind":"Service","name":"nodejs-ml-service"},"metricName":"qps","currentValue":"52702m"}},{"type":"Object","object":{"target":{"kind":"Service","name":"nodejs-ml-service"},"metricName":"cpu","currentValue":"0"}}]'
+    autoscaling.alpha.kubernetes.io/metrics: '[{"type":"Object","object":{"target":{"kind":"Service","name":"nodejs-ml-service"},"metricName":"qps","targetValue":"90"}},{"type":"Object","object":{"target":{"kind":"Service","name":"nodejs-ml-service"},"metricName":"cpu","targetValue":"90G"}}]'
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"autoscaling/v2beta2","kind":"HorizontalPodAutoscaler","metadata":{"annotations":{},"name":"nodejs-ml-hpa","namespace":"default"},"spec":{"maxReplicas":80,"metrics":[{"object":{"describedObject":{"kind":"Service","name":"nodejs-ml-service"},"metric":{"name":"qps"},"target":{"type":"AverageValue","value":90}},"type":"Object"},{"object":{"describedObject":{"kind":"Service","name":"nodejs-ml-service"},"metric":{"name":"cpu"},"target":{"type":"AverageValue","value":90000000000}},"type":"Object"}],"minReplicas":1,"scaleTargetRef":{"apiVersion":"extensions/v1beta1","kind":"Deployment","name":"nodejs-ml-deployment"}}}
+  creationTimestamp: "2019-07-27T12:17:56Z"
+  name: nodejs-ml-hpa
+  namespace: default
+  resourceVersion: "17023474"
+  selfLink: /apis/autoscaling/v1/namespaces/default/horizontalpodautoscalers/nodejs-ml-hpa
+  uid: 9092cb05-b068-11e9-858a-fa163eb7a9f3
+spec:
+  maxReplicas: 80
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: nodejs-ml-deployment
+status:
+  currentReplicas: 2
+  desiredReplicas: 2
+  lastScaleTime: "2019-07-27T19:53:31Z"

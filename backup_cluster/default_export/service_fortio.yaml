@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: fortio
+  name: fortio
+  selfLink: /api/v1/namespaces/default/services/fortio
+spec:
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: fortio
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}

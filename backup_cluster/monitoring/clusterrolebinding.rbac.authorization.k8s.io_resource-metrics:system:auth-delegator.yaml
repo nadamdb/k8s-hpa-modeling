@@ -1,0 +1,19 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"rbac.authorization.k8s.io/v1","kind":"ClusterRoleBinding","metadata":{"annotations":{},"name":"resource-metrics:system:auth-delegator"},"roleRef":{"apiGroup":"rbac.authorization.k8s.io","kind":"ClusterRole","name":"system:auth-delegator"},"subjects":[{"kind":"ServiceAccount","name":"prometheus-adapter","namespace":"monitoring"}]}
+  creationTimestamp: "2019-03-20T15:49:09Z"
+  name: resource-metrics:system:auth-delegator
+  resourceVersion: "1576"
+  selfLink: /apis/rbac.authorization.k8s.io/v1/clusterrolebindings/resource-metrics%3Asystem%3Aauth-delegator
+  uid: b3340012-4b27-11e9-8f3b-fa163eb7a9f3
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:auth-delegator
+subjects:
+- kind: ServiceAccount
+  name: prometheus-adapter
+  namespace: monitoring

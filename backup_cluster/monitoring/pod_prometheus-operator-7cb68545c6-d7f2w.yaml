@@ -1,0 +1,113 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2019-07-26T13:05:55Z"
+  generateName: prometheus-operator-7cb68545c6-
+  labels:
+    k8s-app: prometheus-operator
+    pod-template-hash: 7cb68545c6
+  name: prometheus-operator-7cb68545c6-d7f2w
+  namespace: monitoring
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: ReplicaSet
+    name: prometheus-operator-7cb68545c6
+    uid: b2b61f02-4b27-11e9-8f3b-fa163eb7a9f3
+  resourceVersion: "16842492"
+  selfLink: /api/v1/namespaces/monitoring/pods/prometheus-operator-7cb68545c6-d7f2w
+  uid: 1a8e5b04-afa6-11e9-858a-fa163eb7a9f3
+spec:
+  containers:
+  - args:
+    - --kubelet-service=kube-system/kubelet
+    - --logtostderr=true
+    - --config-reloader-image=quay.io/coreos/configmap-reload:v0.0.1
+    - --prometheus-config-reloader=quay.io/coreos/prometheus-config-reloader:v0.29.0
+    image: quay.io/coreos/prometheus-operator:v0.29.0
+    imagePullPolicy: IfNotPresent
+    name: prometheus-operator
+    ports:
+    - containerPort: 8080
+      name: http
+      protocol: TCP
+    resources:
+      limits:
+        cpu: 200m
+        memory: 200Mi
+      requests:
+        cpu: 100m
+        memory: 100Mi
+    securityContext:
+      allowPrivilegeEscalation: false
+      procMount: Default
+      readOnlyRootFilesystem: true
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: prometheus-operator-token-n7tk5
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: worker-3
+  nodeSelector:
+    beta.kubernetes.io/os: linux
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65534
+  serviceAccount: prometheus-operator
+  serviceAccountName: prometheus-operator
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: prometheus-operator-token-n7tk5
+    secret:
+      defaultMode: 420
+      secretName: prometheus-operator-token-n7tk5
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2019-07-26T13:05:55Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2019-07-26T13:06:03Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2019-07-26T13:06:03Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2019-07-26T13:05:55Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: docker://631e16ea3c861dc6e20957d9d3595a0a155b5ad7082cc123067a070fbc350279
+    image: quay.io/coreos/prometheus-operator:v0.29.0
+    imageID: docker-pullable://quay.io/coreos/prometheus-operator@sha256:5abe9bdfd93ac22954e3281315637d9721d66539134e1c7ed4e97f13819e62f7
+    lastState: {}
+    name: prometheus-operator
+    ready: true
+    restartCount: 0
+    state:
+      running:
+        startedAt: "2019-07-26T13:06:03Z"
+  hostIP: 172.16.0.7
+  phase: Running
+  podIP: 10.42.0.1
+  qosClass: Burstable
+  startTime: "2019-07-26T13:05:55Z"

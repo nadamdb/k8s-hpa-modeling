@@ -1,0 +1,32 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  annotations:
+    autoscaling.alpha.kubernetes.io/conditions: '[{"type":"AbleToScale","status":"True","lastTransitionTime":"2019-07-25T13:00:47Z","reason":"SucceededGetScale","message":"the
+      HPA controller was able to get the target''s current scale"},{"type":"ScalingActive","status":"False","lastTransitionTime":"2019-07-27T19:02:46Z","reason":"FailedGetResourceMetric","message":"the
+      HPA was unable to compute the replica count: unable to get metrics for resource
+      cpu: no metrics returned from resource metrics API"},{"type":"ScalingLimited","status":"True","lastTransitionTime":"2019-07-26T02:58:58Z","reason":"TooFewReplicas","message":"the
+      desired replica count is increasing faster than the maximum scale rate"}]'
+    autoscaling.alpha.kubernetes.io/current-metrics: '[{"type":"Object","object":{"target":{"kind":"Service","name":"test-service"},"metricName":"testmetric","currentValue":"0"}},{"type":"Resource","resource":{"name":"cpu","currentAverageUtilization":0,"currentAverageValue":"0"}}]'
+    autoscaling.alpha.kubernetes.io/metrics: '[{"type":"Object","object":{"target":{"kind":"Service","name":"test-service"},"metricName":"testmetric","targetValue":"100"}}]'
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"autoscaling/v2beta2","kind":"HorizontalPodAutoscaler","metadata":{"annotations":{},"name":"test-deployment","namespace":"default"},"spec":{"maxReplicas":8,"metrics":[{"object":{"describedObject":{"kind":"Service","name":"test-service"},"metric":{"name":"testmetric"},"target":{"type":"AverageValue","value":100}},"type":"Object"},{"resource":{"name":"cpu","target":{"averageUtilization":50,"type":"Utilization"}},"type":"Resource"}],"minReplicas":1,"scaleTargetRef":{"apiVersion":"extensions/v1beta1","kind":"Deployment","name":"test-deployment"}}}
+  creationTimestamp: "2019-07-25T12:59:17Z"
+  name: test-deployment
+  namespace: default
+  resourceVersion: "17018274"
+  selfLink: /apis/autoscaling/v1/namespaces/default/horizontalpodautoscalers/test-deployment
+  uid: 028b4ceb-aedc-11e9-858a-fa163eb7a9f3
+spec:
+  maxReplicas: 8
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: test-deployment
+  targetCPUUtilizationPercentage: 50
+status:
+  currentCPUUtilizationPercentage: 0
+  currentReplicas: 1
+  desiredReplicas: 1
+  lastScaleTime: "2019-07-26T02:57:58Z"

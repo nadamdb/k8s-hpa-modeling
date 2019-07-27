@@ -1,0 +1,27 @@
+action: ""
+apiVersion: events.k8s.io/v1beta1
+deprecatedCount: 64
+deprecatedFirstTimestamp: "2019-07-27T12:22:08Z"
+deprecatedLastTimestamp: "2019-07-27T18:59:51Z"
+deprecatedSource:
+  component: horizontal-pod-autoscaler
+eventTime: null
+kind: Event
+metadata:
+  creationTimestamp: "2019-07-27T12:22:08Z"
+  name: nodejs-cpu-hpa.15b54303a5182311
+  namespace: default
+  resourceVersion: "17017963"
+  selfLink: /apis/events.k8s.io/v1beta1/namespaces/default/events/nodejs-cpu-hpa.15b54303a5182311
+  uid: 2713cb52-b069-11e9-858a-fa163eb7a9f3
+note: 'New size: 1; reason: All metrics below target'
+reason: SuccessfulRescale
+regarding:
+  apiVersion: autoscaling/v2beta2
+  kind: HorizontalPodAutoscaler
+  name: nodejs-cpu-hpa
+  namespace: default
+  resourceVersion: "16978573"
+  uid: 506f5d36-b068-11e9-858a-fa163eb7a9f3
+reportingInstance: ""
+type: Normal

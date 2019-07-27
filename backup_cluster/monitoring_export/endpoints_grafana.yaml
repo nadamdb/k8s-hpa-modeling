@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: null
+  labels:
+    app: grafana
+  name: grafana
+  selfLink: /api/v1/namespaces/monitoring/endpoints/grafana
+subsets:
+- addresses:
+  - ip: 10.42.0.7
+    nodeName: worker-3
+    targetRef:
+      kind: Pod
+      name: grafana-5f5677f45d-qmvcm
+      namespace: monitoring
+      resourceVersion: "16842562"
+      uid: 1a8ffefd-afa6-11e9-858a-fa163eb7a9f3
+  ports:
+  - name: http
+    port: 3000
+    protocol: TCP

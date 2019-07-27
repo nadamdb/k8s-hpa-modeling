@@ -1,0 +1,103 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2019-07-26T13:05:55Z"
+  generateName: test-deployment-78dbc77b9f-
+  labels:
+    app: test
+    pod-template-hash: 78dbc77b9f
+  name: test-deployment-78dbc77b9f-jfhzb
+  namespace: default
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: ReplicaSet
+    name: test-deployment-78dbc77b9f
+    uid: 0c46c698-aad5-11e9-858a-fa163eb7a9f3
+  resourceVersion: "16842483"
+  selfLink: /api/v1/namespaces/default/pods/test-deployment-78dbc77b9f-jfhzb
+  uid: 1a90463b-afa6-11e9-858a-fa163eb7a9f3
+spec:
+  containers:
+  - image: balazska/test-server:fixed-serving-v2
+    imagePullPolicy: IfNotPresent
+    name: test-server
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+    resources:
+      limits:
+        cpu: 300m
+      requests:
+        cpu: 300m
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /media
+      name: log
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: default-token-kh6h8
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: worker-3
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - hostPath:
+      path: /media
+      type: Directory
+    name: log
+  - name: default-token-kh6h8
+    secret:
+      defaultMode: 420
+      secretName: default-token-kh6h8
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2019-07-26T13:05:55Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2019-07-26T13:06:00Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2019-07-26T13:06:00Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2019-07-26T13:05:55Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: docker://7c240de2ad4376f676097118dca17b5220f97cacfbea7cf5f203d63d7ad17331
+    image: balazska/test-server:fixed-serving-v2
+    imageID: docker-pullable://balazska/test-server@sha256:14ae8d1ed79e5a55cd72d5fb3fb062cbee701a4744f4b88e04852bffca2cc503
+    lastState: {}
+    name: test-server
+    ready: true
+    restartCount: 0
+    state:
+      running:
+        startedAt: "2019-07-26T13:05:59Z"
+  hostIP: 172.16.0.7
+  phase: Running
+  podIP: 10.42.0.5
+  qosClass: Burstable
+  startTime: "2019-07-26T13:05:55Z"

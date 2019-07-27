@@ -1,0 +1,29 @@
+action: ""
+apiVersion: events.k8s.io/v1beta1
+deprecatedCount: 1
+deprecatedFirstTimestamp: "2019-07-27T19:11:45Z"
+deprecatedLastTimestamp: "2019-07-27T19:11:45Z"
+deprecatedSource:
+  component: kubelet
+  host: worker-2
+eventTime: null
+kind: Event
+metadata:
+  creationTimestamp: "2019-07-27T19:11:45Z"
+  name: nodejs-ml-deployment-6d5565df57-7d8zr.15b5595deb31c9c9
+  namespace: default
+  resourceVersion: "17019178"
+  selfLink: /apis/events.k8s.io/v1beta1/namespaces/default/events/nodejs-ml-deployment-6d5565df57-7d8zr.15b5595deb31c9c9
+  uid: 6019a530-b0a2-11e9-858a-fa163eb7a9f3
+note: Started container
+reason: Started
+regarding:
+  apiVersion: v1
+  fieldPath: spec.containers{nodejs-app-ml}
+  kind: Pod
+  name: nodejs-ml-deployment-6d5565df57-7d8zr
+  namespace: default
+  resourceVersion: "17019162"
+  uid: 5f0b612e-b0a2-11e9-858a-fa163eb7a9f3
+reportingInstance: ""
+type: Normal

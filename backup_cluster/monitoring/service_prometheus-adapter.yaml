@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"name":"prometheus-adapter"},"name":"prometheus-adapter","namespace":"monitoring"},"spec":{"ports":[{"name":"https","port":443,"targetPort":6443}],"selector":{"name":"prometheus-adapter"}}}
+  creationTimestamp: "2019-03-20T15:49:09Z"
+  labels:
+    name: prometheus-adapter
+  name: prometheus-adapter
+  namespace: monitoring
+  resourceVersion: "1593"
+  selfLink: /api/v1/namespaces/monitoring/services/prometheus-adapter
+  uid: b34593b9-4b27-11e9-8f3b-fa163eb7a9f3
+spec:
+  clusterIP: 10.96.203.138
+  ports:
+  - name: https
+    port: 443
+    protocol: TCP
+    targetPort: 6443
+  selector:
+    name: prometheus-adapter
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}

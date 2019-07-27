@@ -1,0 +1,30 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  annotations:
+    cloud.weave.works/launcher-info: |-
+      {
+        "original-request": {
+          "url": "/k8s/v1.10/net.yaml?k8s-version=Q2xpZW50IFZlcnNpb246IHZlcnNpb24uSW5mb3tNYWpvcjoiMSIsIE1pbm9yOiIxMyIsIEdpdFZlcnNpb246InYxLjEzLjQiLCBHaXRDb21taXQ6ImMyN2I5MTNmZGRkMWE2YzQ4MGMyMjkxOTFhMDg3Njk4YWE5MmYwYjEiLCBHaXRUcmVlU3RhdGU6ImNsZWFuIiwgQnVpbGREYXRlOiIyMDE5LTAyLTI4VDEzOjM3OjUyWiIsIEdvVmVyc2lvbjoiZ28xLjExLjUiLCBDb21waWxlcjoiZ2MiLCBQbGF0Zm9ybToibGludXgvYW1kNjQifQpTZXJ2ZXIgVmVyc2lvbjogdmVyc2lvbi5JbmZve01ham9yOiIxIiwgTWlub3I6IjEzIiwgR2l0VmVyc2lvbjoidjEuMTMuNCIsIEdpdENvbW1pdDoiYzI3YjkxM2ZkZGQxYTZjNDgwYzIyOTE5MWEwODc2OThhYTkyZjBiMSIsIEdpdFRyZWVTdGF0ZToiY2xlYW4iLCBCdWlsZERhdGU6IjIwMTktMDItMjhUMTM6MzA6MjZaIiwgR29WZXJzaW9uOiJnbzEuMTEuNSIsIENvbXBpbGVyOiJnYyIsIFBsYXRmb3JtOiJsaW51eC9hbWQ2NCJ9Cg==",
+          "date": "Wed Mar 20 2019 15:45:32 GMT+0000 (UTC)"
+        },
+        "email-address": "support@weave.works"
+      }
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"rbac.authorization.k8s.io/v1beta1","kind":"RoleBinding","metadata":{"annotations":{"cloud.weave.works/launcher-info":"{\n  \"original-request\": {\n    \"url\": \"/k8s/v1.10/net.yaml?k8s-version=Q2xpZW50IFZlcnNpb246IHZlcnNpb24uSW5mb3tNYWpvcjoiMSIsIE1pbm9yOiIxMyIsIEdpdFZlcnNpb246InYxLjEzLjQiLCBHaXRDb21taXQ6ImMyN2I5MTNmZGRkMWE2YzQ4MGMyMjkxOTFhMDg3Njk4YWE5MmYwYjEiLCBHaXRUcmVlU3RhdGU6ImNsZWFuIiwgQnVpbGREYXRlOiIyMDE5LTAyLTI4VDEzOjM3OjUyWiIsIEdvVmVyc2lvbjoiZ28xLjExLjUiLCBDb21waWxlcjoiZ2MiLCBQbGF0Zm9ybToibGludXgvYW1kNjQifQpTZXJ2ZXIgVmVyc2lvbjogdmVyc2lvbi5JbmZve01ham9yOiIxIiwgTWlub3I6IjEzIiwgR2l0VmVyc2lvbjoidjEuMTMuNCIsIEdpdENvbW1pdDoiYzI3YjkxM2ZkZGQxYTZjNDgwYzIyOTE5MWEwODc2OThhYTkyZjBiMSIsIEdpdFRyZWVTdGF0ZToiY2xlYW4iLCBCdWlsZERhdGU6IjIwMTktMDItMjhUMTM6MzA6MjZaIiwgR29WZXJzaW9uOiJnbzEuMTEuNSIsIENvbXBpbGVyOiJnYyIsIFBsYXRmb3JtOiJsaW51eC9hbWQ2NCJ9Cg==\",\n    \"date\": \"Wed Mar 20 2019 15:45:32 GMT+0000 (UTC)\"\n  },\n  \"email-address\": \"support@weave.works\"\n}"},"labels":{"name":"weave-net"},"name":"weave-net","namespace":"kube-system"},"roleRef":{"apiGroup":"rbac.authorization.k8s.io","kind":"Role","name":"weave-net"},"subjects":[{"kind":"ServiceAccount","name":"weave-net","namespace":"kube-system"}]}
+  creationTimestamp: "2019-03-20T15:45:32Z"
+  labels:
+    name: weave-net
+  name: weave-net
+  namespace: kube-system
+  resourceVersion: "1015"
+  selfLink: /apis/rbac.authorization.k8s.io/v1/namespaces/kube-system/rolebindings/weave-net
+  uid: 3219af5b-4b27-11e9-8f3b-fa163eb7a9f3
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: weave-net
+subjects:
+- kind: ServiceAccount
+  name: weave-net
+  namespace: kube-system

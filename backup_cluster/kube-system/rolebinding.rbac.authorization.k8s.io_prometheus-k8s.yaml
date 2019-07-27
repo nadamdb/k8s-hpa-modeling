@@ -1,0 +1,20 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"rbac.authorization.k8s.io/v1","kind":"RoleBinding","metadata":{"annotations":{},"name":"prometheus-k8s","namespace":"kube-system"},"roleRef":{"apiGroup":"rbac.authorization.k8s.io","kind":"Role","name":"prometheus-k8s"},"subjects":[{"kind":"ServiceAccount","name":"prometheus-k8s","namespace":"monitoring"}]}
+  creationTimestamp: "2019-03-20T15:49:09Z"
+  name: prometheus-k8s
+  namespace: kube-system
+  resourceVersion: "1626"
+  selfLink: /apis/rbac.authorization.k8s.io/v1/namespaces/kube-system/rolebindings/prometheus-k8s
+  uid: b35a7493-4b27-11e9-8f3b-fa163eb7a9f3
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: prometheus-k8s
+subjects:
+- kind: ServiceAccount
+  name: prometheus-k8s
+  namespace: monitoring

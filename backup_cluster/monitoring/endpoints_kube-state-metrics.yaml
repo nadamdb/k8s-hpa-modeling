@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: "2019-03-20T15:49:09Z"
+  labels:
+    k8s-app: kube-state-metrics
+  name: kube-state-metrics
+  namespace: monitoring
+  resourceVersion: "15777395"
+  selfLink: /api/v1/namespaces/monitoring/endpoints/kube-state-metrics
+  uid: b321b003-4b27-11e9-8f3b-fa163eb7a9f3
+subsets:
+- addresses:
+  - ip: 10.36.0.6
+    nodeName: worker-2
+    targetRef:
+      kind: Pod
+      name: kube-state-metrics-7fb8b47448-qv2lg
+      namespace: monitoring
+      resourceVersion: "15777386"
+      uid: 782d2bf5-a94f-11e9-858a-fa163eb7a9f3
+  ports:
+  - name: https-self
+    port: 9443
+    protocol: TCP
+  - name: https-main
+    port: 8443
+    protocol: TCP
