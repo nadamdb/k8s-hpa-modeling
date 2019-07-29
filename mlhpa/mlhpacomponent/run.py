@@ -159,8 +159,7 @@ class Connector(object):
     @staticmethod
     def query_prometheus(query='kube_pod_info'):
         try:
-            response = requests.get('http://{0}:{1}/api/v1/query'.format(PROMETHEUS_IP, PROMETHEUS_PORT),
-                                    params={'query': query})
+            response = requests.get('http://{0}:{1}/api/v1/query'.format(PROMETHEUS_IP, PROMETHEUS_PORT), params={'query': query})
             results = response.json()['data']['result']
             return results
         except Exception:
