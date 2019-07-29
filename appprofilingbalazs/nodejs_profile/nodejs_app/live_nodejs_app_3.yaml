@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-app-3
+  labels:
+    app: nodejs-3
+spec:
+  replicas: 8
+  selector:
+    matchLabels:
+      app: nodejs-3
+  template:
+    metadata:
+      labels:
+        app: nodejs-3
+    spec:
+      containers:
+      - name: nodejs-app-3
+        image: balazska/nodejs_app:v1
+        resources:
+          limits:
+            cpu: "50m"
+          requests:
+            cpu: "50m"
+        ports:
+        - containerPort: 3000
+      nodeSelector:
+        type: sut
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: nodejs-service-3
+  labels:
+    app: nodejs-3
+  annotations:
+    haproxy.org/check: "enabled"
+    haproxy.org/forwarded-for: "enabled"
+    haproxy.org/load-balance: "roundrobin"
+spec:
+  selector:
+    app: nodejs-3
+  ports:
+  - protocol: TCP
+    port: 3000
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nodejs-ingress-3
+  namespace: default
+spec:
+  rules:
+  - host: nodejsapp-3
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: nodejs-service-3
+          servicePort: 3000
+

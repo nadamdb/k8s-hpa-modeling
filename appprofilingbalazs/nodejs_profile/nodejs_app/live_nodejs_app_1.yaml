@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-app-1
+  labels:
+    app: nodejs-1
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: nodejs-1
+  template:
+    metadata:
+      labels:
+        app: nodejs-1
+    spec:
+      containers:
+      - name: nodejs-app-1
+        image: balazska/nodejs_app:v1
+        resources:
+          limits:
+            cpu: "100m"
+          requests:
+            cpu: "100m"
+        ports:
+        - containerPort: 3000
+      nodeSelector:
+        type: sut
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: nodejs-service-1
+  labels:
+    app: nodejs-1
+  annotations:
+    haproxy.org/check: "enabled"
+    haproxy.org/forwarded-for: "enabled"
+    haproxy.org/load-balance: "roundrobin"
+spec:
+  selector:
+    app: nodejs-1
+  ports:
+  - protocol: TCP
+    port: 3000
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nodejs-ingress-1
+  namespace: default
+spec:
+  rules:
+  - host: nodejsapp-1
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: nodejs-service-1
+          servicePort: 3000
+

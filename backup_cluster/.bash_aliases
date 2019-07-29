@@ -1,0 +1,6 @@
+alias adamcommit='git -c user.name='nadamdb' -c user.email='nagyadam.db@gmail.com' commit'
+alias adampull='git -c user.name='nadamdb' -c user.email='nagyadam.db@gmail.com' pull'
+alias llh='ll -h'
+alias pan='kubectl get po --all-namespaces'
+alias san='kubectl get svc --all-namespaces'
+alias dan='kubectl get deployments --all-namespaces'

@@ -1,0 +1,13 @@
+deploy:
+  sut_worker: worker-3
+  benchmark_worker: worker-2
+  service_ip: 10.96.50.135 #filled automatically
+  fortio_ip: 10.97.198.103 #filley automatically
+measurement:
+  max_cpu: 7
+  cpus: ['100m','100m','100m','100m','100m']
+  start_qps: 0
+  step: 50
+  max_benchmark: 30
+  max_request_lost: 10 #percent of lost requests, if we reach this, the loop will stop
+  benchmark_time: 60 # time of one benchmark test (in seconds)

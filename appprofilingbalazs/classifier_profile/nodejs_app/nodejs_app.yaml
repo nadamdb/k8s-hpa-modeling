@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-app
+  labels:
+    app: nodejs
+spec:
+  replicas: [POD_COUNT]
+  selector:
+    matchLabels:
+      app: nodejs
+  template:
+    metadata:
+      labels:
+        app: nodejs
+    spec:
+      containers:
+      - name: nodejs-app
+        image: balazska/catvsdog:v2
+        resources:
+          limits:
+            cpu: "[CPU]"
+          requests:
+            cpu: "[CPU]"
+        ports:
+        - containerPort: 3000
+      nodeSelector:
+        type: sut
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: nodejs-service
+spec:
+  selector:
+    app: nodejs
+  ports:
+  - protocol: TCP
+    port: 3000
+  type: ClusterIP
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nodejs-ingress
+  namespace: default
+spec:
+  rules:
+  - host: nodejsapp
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: nodejs-service
+          servicePort: 3000
+
