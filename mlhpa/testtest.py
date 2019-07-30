@@ -1,6 +1,10 @@
-import requests
-from mlhpacomponent.config import *
+import os
+import time
 
-query = "kube_service_labels"
-response = requests.get('http://{0}:{1}/api/v1/query'.format(PROMETHEUS_IP, PROMETHEUS_PORT), params={'query': query})
-print(response)
+s = time.time()
+for i in range(0, 1):
+    os.system('curl -I --no-keepalive -s -o /dev/null -H "Host: nodejs-cpu-app" http://172.16.0.7:30044 &')
+    #os.system('wget -t 1 -q -b --timeout 0.1 --no-http-keep-alive -O /dev/null --header "Host: nodejs-cpu-app" http://172.16.0.7:30044')
+    time.sleep(0.001)
+e = time.time()
+print(e-s)
