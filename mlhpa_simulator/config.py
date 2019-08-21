@@ -1,0 +1,25 @@
+# Configs
+
+PROMETHEUS_IP = '10.106.36.184'
+PROMETHEUS_PORT = '9090'
+
+WEBSERVER_DEUBG = True
+WEBSERVER_HOST = '0.0.0.0'
+WEBSERVER_PORT = '8888'
+
+HAPROXY_IP = '10.97.177.199'
+HAPROX_PORT = '80'
+
+SERVICE_NAME = 'test-service'
+METRIC_NAME = 'test-metric'
+CPU_METRIC_NAME = 'cpu-metric'
+NAMESPACE = 'default'
+LABEL_NAME = 'test'
+DEPLOYMENT_NAME = 'test-deployment'
+
+# Relative error is between -2 and 2; 0 is the best
+GRADE_THRESHOLD = 0.4
+
+TRAINING_TIME_INTERVAL_MINUTES = 2
+VALUE_TIME_INTERVAL_SEC = '1s'
+WAITING_TIME_AFTER_CREATION_SEC = 20
